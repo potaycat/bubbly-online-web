@@ -252,6 +252,17 @@ a {
   background-size: cover;
 }
 
+.cards-wrapper {
+    padding: 0 7px;
+}
+.card {
+    background-color: #fff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    border-radius: 15px;
+}
+.card-container {
+    padding: 0 17px;
+}
 /***************************/
 /* END OF UNIVERSAL STYLE */
 /*************************/

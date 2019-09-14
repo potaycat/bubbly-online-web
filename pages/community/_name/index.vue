@@ -1,5 +1,5 @@
 <template>
-    <div class="stream-container">
+    <div class="cards-wrapper">
         <CommunityInfo :community="community" />
 
         <PostCard
@@ -24,6 +24,7 @@ import PostCard from "@/components/post/PostCard";
 import CommunityInfo from "@/components/community/CommunityInfo";
 import MembersBlock from "@/components/community/MembersBlock";
 export default {
+    layout: "immerse",
     components: {
         CommunityInfo,
         PostCard,

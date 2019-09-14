@@ -1,17 +1,20 @@
 <template>
-    <section class="c_info">
-        <img id="pic" :src="community.icon_img" />
-        <div class="big_pic">
+    <transition name="fade" appear>
+        <div class="c-info card">
             <img id="cover" :src="community.cover_img" />
-            <section id="name">{{ community.name }}</section>
-            <section id="bio">{{ community.moto }}</section>
-            <div class="c_actions">
-                <div class="bt">
-                    <Button text="Join" fill />
+            <img class="comu_icon" :src="community.icon_img" />
+            <section class="card-container">
+                <div id="smol-info">Public • 1234 members</div>
+                <div id="name">
+                    What a heella long name dont you think question mark
                 </div>
-            </div>
+                <div id="bio">{{ community.moto }}</div>
+                <div class="c-actions">
+                    <Button text="Join" />
+                </div>
+            </section>
         </div>
-    </section>
+    </transition>
 </template>
 
 <script>
@@ -25,51 +28,46 @@ export default {
 </script>
 
 <style scoped>
-.big_pic {
-    background-color: white;
+.c-info {
     max-width: 950px;
     min-width: 300px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    border-radius: 15px;
-    margin: -8px 8px 0 8px;
 }
-.big_pic #cover {
+
+.c-info #cover {
     border-radius: 15px 15px 0 0;
     /*box-shadow: inset 0 0 10px #000;*/
-    top: 0;
-    left: 0;
+    /* top: 0; */
+    right: 0;
     width: 100%;
-    height: 300px;
+    height: 270px;
     z-index: -1;
 }
-#pic {
+.c-info .comu_icon {
     border: 3px solid #fff;
     position: relative;
-    top: 340px;
-    left: 20px;
-    border-radius: 25%;
+    left: 11px;
+    margin-top: -70px;
     width: 100px;
     height: 100px;
-    margin-top: -999px;
 }
-.big_pic #name {
-    margin: 5px 0 0 125px;
+.c-info #smol-info {
+    color: gray;
+    /* text-align: right; */
+    margin: -27px 0 7px 105px;
+    font-size: 14px;
+}
+.c-info #name {
+    margin: 2px 0 5px;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 23px;
 }
-.big_pic #bio {
-    padding: 12px 17px;
+.c-info #bio {
+    padding: 10px 0;
     /* text-align: center; */
 }
 
-.c_actions {
-    padding: 7px 17px 17px 17px;
-    display: flex;
-    justify-content: center;
-}
-
-.c_actions .bt {
+.c-actions {
+    padding: 8px 0 20px;
     width: 100%;
-    margin: auto;
 }
 </style>

@@ -3,10 +3,11 @@
         <div class="the_big_frame"> <div class="la_content">
             <div style="min-height:69px"/>
                 <transition-group name="list-complete" class="lift">
-            <div v-for="community in fetchedData"
+            <nuxt-link v-for="community in fetchedData"
                 :key="community.id"
                 class="_c_block bg"
                 :style="'background-image:url('+community.cover_img+')'"
+                :to="`/community/${community.id}`"
             >
                 <img class="comu_icon" :src="community.icon_img"/>
                 <div class="_txt">
@@ -15,7 +16,7 @@
                     <!-- <p class="_pop">1350 members</p> -->
                     <!--p class="_description">{{ community.intro }} </p-->
                 </div>
-            </div>
+            </nuxt-link>
                 </transition-group>
             <div style="min-height: 69px"/>
 
