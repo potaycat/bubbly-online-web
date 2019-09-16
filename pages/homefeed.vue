@@ -10,7 +10,10 @@ import LeFeed from '@/components/post/LeFeed'
 export default {
     components: {
         LeFeed,
-    }
+    },
+    created() {
+        this.$store.commit('changeDestination', 1)
+    },
 }
 </script>
 

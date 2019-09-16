@@ -1,23 +1,24 @@
 {
-  "name": "hellowo",
-  "version": "1.0.0",
-  "description": "My amazing Nuxt.js project",
-  "author": "shadoPotato",
-  "private": true,
-  "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate"
-  },
-  "dependencies": {
-    "@nuxtjs/axios": "^5.4.1",
-    "@nuxtjs/pwa": "^2.6.0",
-    "cross-env": "^5.2.0",
-    "nuxt": "^2.6.3",
-    "vue": "^2.6.10"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.11"
-  }
+    "name": "hellowo",
+    "version": "1.0.0",
+    "description": "My Nuxt.js project",
+    "author": "catPotato",
+    "private": true,
+    "scripts": {
+        "dev": "nuxt",
+        "build": "nuxt build",
+        "start": "nuxt start",
+        "generate": "nuxt generate"
+    },
+    "dependencies": {
+        "@nuxtjs/axios": "^5.4.1",
+        "@nuxtjs/pwa": "^2.6.0",
+        "cross-env": "^5.2.0",
+        "nuxt": "^2.6.3",
+        "vue": "^2.6.10",
+        "vue-native-websocket": "^2.0.13"
+    },
+    "devDependencies": {
+        "nodemon": "^1.18.11"
+    }
 }

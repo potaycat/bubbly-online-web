@@ -24,9 +24,6 @@ export default {
             subTTL: ["MY CHATS", "EXPLORE"],
         }
     },
-    created() {
-        this.$store.commit('changeTab', 3)
-    },
 }
 </script>
 

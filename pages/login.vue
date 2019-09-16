@@ -49,7 +49,7 @@ export default {
   },
 
     created() {
-        this.$store.commit('changeTab', 99)
+        this.$store.commit('changeDestination', 99)
     },
   data() {
     return {

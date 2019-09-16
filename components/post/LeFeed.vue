@@ -27,9 +27,6 @@ export default {
             subTTL: ["CỘNG ĐỒNG", "CÁ NHÂN"],
         }
     },
-    created() {
-        this.$store.commit('changeTab', 1)
-    },
 }
 </script>
 

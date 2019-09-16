@@ -1,11 +1,11 @@
 <template>
-    <nav class="banner"
+    <nav class="banner top-main"
         v-bind:style="[$store.state.scrollinUp ? null: {'margin-top':'-56px'}]">
-        <div id="generic_banner">
+        <div id="top-nav-bar">
             <n-link to="">
                 <img class="pfp" :src="pfp" />
             </n-link>
-            <p>{{ tabName }}</p>
+            <p>{{ destiName }}</p>
             <n-link to="/settings"><button
                 class="btn"
                 @click="bacc()">
@@ -36,8 +36,8 @@ export default {
         activeSubTab() {
             return this.$store.state.activeSubTab
         },
-        tabName() {
-            switch (this.$store.state.activeTab) {
+        destiName() {
+            switch (this.$store.state.top_level_destination) {
                 case 1:
                     return "Post Feed"
                 case 2:
@@ -75,22 +75,22 @@ export default {
     /* margin-top: -56px; */
 }
 
-#generic_banner {
+#top-nav-bar {
     display: flex;
     height: 56px;
 }
-#generic_banner .pfp {
+#top-nav-bar .pfp {
     width: 33px;
     height: 33px;
     margin: 13px 15px;
 }
-#generic_banner p {
+#top-nav-bar p {
     margin: auto;
     margin-left: 5px;
     font-weight: bold;
     font-size: 18px;
 }
-#generic_banner .btn {
+#top-nav-bar .btn {
     margin: 15px 11px;
 }
 </style>

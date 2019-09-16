@@ -35,7 +35,7 @@ export default {
         }
     },
     created() {
-        this.$store.commit('changeTab', 4);
+        this.$store.commit('changeDestination', 4);
     },
 }
 </script>

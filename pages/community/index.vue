@@ -14,6 +14,7 @@ export default {
         ComuList,
     },
     created() {
+        this.$store.commit('changeDestination', 2)
     },
 }
 </script>

@@ -13,6 +13,7 @@ export default {
         ConvoList,
     },
     created() {
+        this.$store.commit('changeDestination', 3)
     },
 }
 </script>

@@ -17,24 +17,24 @@ textarea{
 
 /* element customizing */
 img {
-  -webkit-user-drag: none;
-  object-fit: cover;
+    -webkit-user-drag: none;
+    object-fit: cover;
 }
 button{
-  cursor: pointer;
-  outline: none;
-  border-style: none;
-  background: none;
+    cursor: pointer;
+    outline: none;
+    border-style: none;
+    background: none;
 }
 
 a {
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-drag: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  color: #000;
-  text-decoration: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    color: #000;
+    text-decoration: none;
 }
 
 /* END of element customizing */
@@ -178,7 +178,7 @@ a {
 /* UNIVERSAL STYLE */
 /*******************/
 .reset {
-  all: unset
+    all: unset
 }
 
 
@@ -215,6 +215,7 @@ a {
   display: flex;
   padding: 15px 30px;
   background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%);
+  z-index: 9999;
   width: 100%;
 }
 .sub_tab button{
@@ -237,14 +238,14 @@ a {
 }
 
 .pfp {
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  border-radius: 100px;
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
 }
 .comu_icon {
-  -webkit-border-radius: 25%;
-  -moz-border-radius: 25%;
-  border-radius: 25%;
+    -webkit-border-radius: 25%;
+    -moz-border-radius: 25%;
+    border-radius: 25%;
 }
 
 .bg {
@@ -274,22 +275,20 @@ a {
  /* DAT BIG FRAME */
 /* ************* */
 .the_big_frame {
-  height: 100%;
-  width: 100%;
-  position: fixed; top: 0;
-  display: flex;
-  /* background: #ffcdfd
-  transition: background-image 1s ease-in-out; */
+    height: 100%;
+    width: 100%;
+    position: absolute; top: 0; left: 0;
+    display: flex;
+    /* transition: background-image 1s ease-in-out; */
 }
 
 .la_content {
-  width: 100%;
-  width: 100vw;
-  /* position: absolute; top: 0; */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  overflow: auto;
+    width: 100%;
+    /* position: absolute; top: 0; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: auto;
 }
   /* ******************** */
  /* END OF DAT BIG FRAME */
