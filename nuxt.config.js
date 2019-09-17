@@ -40,7 +40,7 @@ module.exports = {
   */
   plugins: [
     '@/plugins/sock',
-    '@/plugins/social_share',
+    // '@/plugins/social_share',
   ],
 
   /*
