@@ -1,8 +1,16 @@
-export const subTabs = {
+import Tabs from '@/components/actions/Tabs'
+export const tabs = {
+    components: {
+        Tabs
+    },
     data() {
         return {
-            tabs: ["tab 1", "tab 2"],
-            currentTab: 1
+            currentTab: 0
         }
     },
+    methods: {
+        newTab(num) {
+            this.currentTab = num
+        }
+    }
 }

@@ -9,7 +9,8 @@
                 <i class="material-icons-round">arrow_back</i>
             </button>
 
-            <transition appear name="slide_up"><span id="title">
+            <transition appear name="slide_up">
+            <span v-if="$store.state.detailBanner.text" id="title">
                 {{ $store.state.detailBanner.text }}
             </span></transition>
                 

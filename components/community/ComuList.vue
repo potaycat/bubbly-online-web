@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import { subTabs } from '@/mixins/subTabs'
-
 import Mien from './list/Mien'
 // import Find from './list/ExploreChats'
 
@@ -19,12 +17,8 @@ export default {
         Mien,
         // FindChats,
     },
-    mixins: [
-        subTabs,
-    ],
     data() {
         return {
-            subTTL: "",
         }
     },
 }

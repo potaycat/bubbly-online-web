@@ -1,6 +1,5 @@
 <template>
-    <nav class="banner top-main"
-        v-bind:style="[$store.state.scrollinUp ? null: {'margin-top':'-56px'}]">
+    <nav :class="['banner', $store.state.scrollinUp ? null: 'top-lev-contract']">
         <div id="top-nav-bar">
             <n-link to="">
                 <img class="pfp" :src="pfp" />
@@ -12,30 +11,12 @@
                 <i class="material-icons-round">settings</i>
             </button></n-link>
         </div>
-
-        <transition name="fade">
-            <div v-if="tabList" class="sub_tab">
-                <button v-for="(tab, index) in tabList"
-                    :key="index"
-                    @click="$store.commit('changeSubTab', index)"
-                    v-bind:id="[activeSubTab==index ? 'focusing' :null]"
-                >{{ tab }}</button>
-            </div>
-        </transition>
-
     </nav>
 </template>
 
 <script>
-
 export default {
     computed: {
-        tabList() {
-            return this.$store.state.subTabs
-        },
-        activeSubTab() {
-            return this.$store.state.activeSubTab
-        },
         destiName() {
             switch (this.$store.state.top_level_destination) {
                 case 1:
@@ -58,8 +39,6 @@ export default {
             if (pfp) return pfp.profile_pic
             return null
         }
-    },
-    methods: {
     },
     created() {
         this.$store.dispatch('jwtlogin/loadProfile')

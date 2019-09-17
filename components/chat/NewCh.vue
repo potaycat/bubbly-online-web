@@ -284,4 +284,32 @@ export default {
     margin: 2px 4px 0 5px;
 }
 
+
+
+.sub_tab{
+  display: flex;
+  padding: 15px 30px;
+  background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%);
+  z-index: 9999;
+  width: 100%;
+}
+.sub_tab button{
+  margin: auto;
+  border-radius: 100px; /* breaks transitions, be careful */
+  padding: 5.5px;
+  width: 999px;
+  font-weight: bold;
+  font-size: 11px;
+  
+  background: #00000000;
+  color: #00000055;
+}
+.sub_tab #focusing {
+  background: #ddd;
+  color: #000;
+}
+.sub_tab :active {
+  background: #eee;
+}
+
 </style>

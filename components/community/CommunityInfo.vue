@@ -10,7 +10,7 @@
                 </div>
                 <div id="bio">{{ community.moto }}</div>
                 <div class="c-actions">
-                    <Button text="Join" />
+                    <Button text="Join" fill/>
                 </div>
             </section>
         </div>
@@ -31,6 +31,7 @@ export default {
 .c-info {
     max-width: 950px;
     min-width: 300px;
+    margin: 0 8px;
 }
 
 .c-info #cover {
