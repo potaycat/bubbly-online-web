@@ -1,34 +1,31 @@
 <template>
-    <div id="inPost">
+    <div id="post-full-view">
         <div class="the_big_frame">
                 <transition appear name="fade_in">
-            <div v-if="cantviewpost" class="la_content" style="padding:34%">
-                Can't view post <br>:(
-            </div>
-            <div v-else class="la_content">
-
+            <div class="la_content" ref="postScroll">
                 <div style="min-height:56px"/>
                 
-                <h3 class="_pf_title" v-if="post.title">{{ post.title }}</h3>
+                <h3 ref="title" class="pf-title" v-if="post.title">{{ post.title }}</h3>
 
-                <n-link class="_pf_author" :to="'/user/' + post.content.author.username">
+                <n-link class="pf-author" :to="'/user/' + post.content.author.username">
                     <img class="pfp" :src="post.content.author.profile_pic"/>
-                    <div class="_pf_txtxt glow">
+                    <div class="author-name glow">
                         <p class="_pf_username" :style="'color:#'+post.content.author.fave_color">{{ post.content.author.alias }}</p>
-                        <div class="_pf_time">{{ timeAgo(post.content.timestamp) }}</div>
+                        <div class="pf-timestamp">{{ timeAgo(post.content.timestamp) }}</div>
                     </div>
                 </n-link>
 
-                <p class="_pf_text">{{ post.content.text }}</p>
+                <BubblyMarkdownParse class="pf-content" :content="post.content" />
 
                 <div>
-                <img v-for="attachment in post.content.attachments"
-                    class="_pf_img"
-                    :key="attachment.ordering"
-                    :src="attachment.content"
-                /></div>
+                    <img v-for="attachment in post.content.attachments"
+                        class="pf-images"
+                        :key="attachment.ordering"
+                        :src="attachment.content"
+                    />
+                </div>
 
-                <div class="glow"><n-link to="" class="_pf_where">
+                <div class="glow"><n-link to="" class="pf-where">
                     <img class="comu_icon" :src=" post.allocated_to.icon_img">
                     <p>Bài viết được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
                 </n-link></div>
@@ -93,64 +90,64 @@
                     </social-sharing>
                 </div> -->
 
-        <div class="_PFull_stuff">
-                <section class="glow">Reactions <span>View detail</span></section> 
-            <div class="_pf_reactions">
-                <React v-for="react in post.content.react_count"
-                    :key="react.react"
-                    :reactId="react.react"
-                    :reactCount="react.count"
-                    :reactData="post.content.reacts"
-                    size= "_rea_big"
-                />
-                <AddReact size="_smol_addo" :community="post.allocated_to.id"/>
-            </div>
-        </div>
-        
-        <div class="_PFull_stuff _PF_comments">
-            <section>Comments <span>({{post.comment_count}})</span></section>
+                <section class="pf-stuff">
+                    <p class="stuff-label glow">Reactions <span>View detail</span></p> 
+                    <div class="_pf_reactions">
+                        <React v-for="react in post.content.react_count"
+                            :key="react.react"
+                            :reactId="react.react"
+                            :reactCount="react.count"
+                            :reactData="post.content.reacts"
+                            size= "_rea_big"
+                        />
+                        <AddReact size="_smol_addo" :community="post.allocated_to.id"/>
+                    </div>
+                </section>
                 
-            <div class="_add_cmt glow">
-                <img class="pfp" :src="pfp">
-                <span>Add yours...</span>
-            </div>
-
-            <div v-for="cmt in post.comments"
-                :key="cmt.id"
-                class="_pf_comments" 
-            >
-                <div class="_le_cmt">
-                    <img class="pfp" :src="cmt.content.author.profile_pic">
-                    <div class="_cmt_txt">
-                        <div class="_cmt_info">
-                            <div class="_cmt_alias"> {{cmt.content.author.alias}} </div>
-                            <div class="_cmt_time">• {{timeAgo(cmt.content.timestamp)}}</div>
-                            <div class="glow"><i class="material-icons-round">more_horiz</i></div>
-                        </div>
-                        <p> {{cmt.content.text}} </p>
+                <section class="pf-stuff _PF_comments">
+                    <div>Comments <span>({{post.comment_count}})</span></div>
                         
-                        <div v-for="atch in cmt.content.attachments"
-                            :key="atch.ordering"
-                        >
-                            <img v-if="atch.type==2" class="_cmt_pic" :src="atch.content">
-                        </div>
+                    <div class="_add_cmt glow">
+                        <img class="pfp" :src="pfp">
+                        <span>Add yours...</span>
+                    </div>
 
-                        <div class="_cmt_reacts">
-                            <React v-for="react in cmt.content.react_count"
-                                :key="react.react"
-                                :reactId="react.react"
-                                :reactCount="react.count"
-                                :reactData="cmt.content.reacts"
-                                size= "_rea_smol"
-                            />
-                            <AddReact size="_smol_addo" :community="post.allocated_to.id"/>
+                    <div v-for="cmt in post.comments"
+                        :key="cmt.id"
+                        class="_pf_comments" 
+                    >
+                        <div class="_le_cmt">
+                            <img class="pfp" :src="cmt.content.author.profile_pic">
+                            <div class="_cmt_txt">
+                                <div class="_cmt_info">
+                                    <div class="_cmt_alias"> {{cmt.content.author.alias}} </div>
+                                    <div class="_cmt_time">• {{timeAgo(cmt.content.timestamp)}}</div>
+                                    <div class="glow"><i class="material-icons-round">more_horiz</i></div>
+                                </div>
+                                <p> {{cmt.content.text}} </p>
+                                
+                                <div v-for="atch in cmt.content.attachments"
+                                    :key="atch.ordering"
+                                >
+                                    <img v-if="atch.type==2" class="_cmt_pic" :src="atch.content">
+                                </div>
+
+                                <div class="_cmt_reacts">
+                                    <React v-for="react in cmt.content.react_count"
+                                        :key="react.react"
+                                        :reactId="react.react"
+                                        :reactCount="react.count"
+                                        :reactData="cmt.content.reacts"
+                                        size= "_rea_smol"
+                                    />
+                                    <AddReact size="_smol_addo" :community="post.allocated_to.id"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                </section>
 
-                <div style="min-height:200px"/>
+                <div style="min-height:100px"/>
             </div>
                 </transition>
         </div>
@@ -158,11 +155,14 @@
 </template>
 
 <script>
-import React from './React'
-import AddReact from './AddReact'
 import { timeAgo } from '@/mixins/timeAgo'
+
+import BubblyMarkdownParse from './BubblyMarkdownParse'
+import React from './react/React'
+import AddReact from './react/AddReact'
 export default {
     components: {
+        BubblyMarkdownParse,
         React,
         AddReact,
     },
@@ -170,17 +170,13 @@ export default {
         timeAgo,
     ],
     props: [
-        'slug',
+        'post',
     ],
     data() {
         return {
-            cantviewpost: false,
         }
     },
     computed: {
-        post() {
-            return this.$store.state.post.currentPost
-        },
         bannerText() {
             if (this.post.title) {
                 return this.post.title
@@ -193,28 +189,11 @@ export default {
             return null
         },
     },
-    asyncData ({ $axios, params }) {
-
-    },
-    created() {
-        if (!this.post) {
-            this.cantviewpost = true
-        }
-        this.$axios.get(`posts/${this.slug}/?format=json`, 
-            this.$store.state.pheader)
-        .then(res => {
-            this.$store.commit('post/loadPost', res.data)
-            this.cantviewpost = false //bruh this
-        })
-        .catch(error => {
-            this.cantviewpost = true
-            console.log(error);
-        })
-    },
     mounted() {
-        let container = document.querySelector(".la_content")
+        const tt = this.$refs.title
+        const container = this.$refs.postScroll
         container.addEventListener('scroll', () => {
-            if (container.scrollTop > 65) {
+            if (container.scrollTop > tt.offsetTop) {
                 this.$store.commit('detailBanner/loadText', this.bannerText)
             } else {
                 this.$store.commit('detailBanner/loadText', null)
@@ -224,20 +203,21 @@ export default {
             passive: true
         })
     },
-    destroyed() {
-        this.$store.commit('post/loadPost', null)
-    }
 }
 </script>
 
-<style>
-/* #inPost .the_big_frame {
+<style scoped>
+/* #post-full-view .the_big_frame {
     background: white;
     z-index: 9999999;
 } */
 
-._pf_title {
-    padding: 10px 15px;
+#post-full-view .la_content {
+    padding: 0 15px;
+}
+
+.pf-title {
+    padding: 10px 0;
     width: 100%;
     border: 0;
     border-bottom: 1px;
@@ -245,61 +225,54 @@ export default {
     border-color: #eee;
 }
 
-._pf_author {
-    margin: 10px 15px;
-    margin-top: 20px;
+.pf-author {
+    margin: 20px 0 10px;
     display: flex;
 }
-._pf_author .pfp {
+.pf-author .pfp {
     width: 35px;
     height: 35px;
 }
-._pf_author ._pf_txtxt {
+.pf-author .author-name {
     margin-left: 8px;
     font-size: 15px;
 }
-._pf_author ._pf_time {
+.pf-author .pf-timestamp {
     pointer-events: none;
     font-size: 11px;
-    margin-top: 2px;
+    margin: 2px 0 5px;
     color: #aaa;
 }
 
-._pf_text {
-    margin: 10px 15px;
-    margin-top: 5px;
-}
-._pf_img {
+.pf-images {
     width: 100%;
 }
 
-._pf_where {
+.pf-where {
     display: flex;
-    margin: 15px;
-    margin-bottom: 30px;
+    margin: 20px 0 20px;
 }
-._pf_where .comu_icon {
+.pf-where .comu_icon {
     height: 32px;
     width: 32px;
     margin: auto 10px auto 0;
 }
-._pf_where p {
+.pf-where p {
     pointer-events: none;
     margin: auto;
     font-size: 13px;
     color: #aaa;
 }
 
-._PFull_stuff {
+.pf-stuff {
     width: 100%;
 }
-._PFull_stuff section {
-    margin: 0 15px;
+.pf-stuff .stuff-label {
     color: #444;
     /* font-weight: 500; */
     display: flex;
 }
-._PFull_stuff section span {
+.pf-stuff .stuff-label span {
     font-weight: normal;
     margin: auto 0 auto auto;
     color: #999;
@@ -309,7 +282,7 @@ export default {
 ._pf_reactions {
     /* border: */
     
-    padding: 10px 15px;
+    padding: 10px 0;
     /* max-height: 120px; */
     overflow: auto;
 }
@@ -327,7 +300,7 @@ export default {
 }
 ._add_cmt {
     display: flex;
-    padding: 12px 15px 2px 15px;
+    padding: 12px 0 2px 0;
 }
 ._add_cmt span {
     /* background: #00000022; */

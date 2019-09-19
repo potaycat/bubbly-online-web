@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import LeFeed from '@/components/post/LeFeed'
+import LeFeed from '@/components/LeFeed'
 export default {
     components: {
         LeFeed,

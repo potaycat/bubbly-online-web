@@ -3,7 +3,7 @@
         <div class="c-info card">
             <img id="cover" :src="community.cover_img" />
             <img class="comu_icon" :src="community.icon_img" />
-            <section class="card-container">
+            <section class="c-info-container">
                 <div id="smol-info">Public • 1234 members</div>
                 <div id="name">
                     What a heella long name dont you think question mark
@@ -42,6 +42,9 @@ export default {
     width: 100%;
     height: 270px;
     z-index: -1;
+}
+.c-info-container {
+    padding: 0 16px;
 }
 .c-info .comu_icon {
     border: 3px solid #fff;

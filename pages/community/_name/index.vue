@@ -1,5 +1,6 @@
 <template>
-    <div class="the_big_frame"><div class="la_content" ref="scroll">
+    <div class="the_big_frame"><div class="la_content
+    " ref="scroll">
         <div style="min-height:60px"/>
         <CommunityInfo :community="community" />
 
@@ -10,32 +11,36 @@
             @switchTo="newTab"
         /></div>
         
-        <CommunityInfo :community="community" />
-        <CommunityInfo :community="community" />
+        <keep-alive>
+            <div v-if="currentTab==0">
+                <CommunityInfo :community="community" />
+                <CommunityInfo :community="community" />
+                <CommunityInfo :community="community" />
+            </div>
+            <PublicChats :community="community" v-if="currentTab==1" />
+        </keep-alive>
+
     </div></div>
 </template>
 
 <script>
 import { tabs } from '@/mixins/tabs'
 
-import PostCard from "@/components/post/PostCard";
-import CommunityInfo from "@/components/community/CommunityInfo";
-import MembersBlock from "@/components/community/MembersBlock";
+import CommunityInfo from "@/components/community/CommunityInfo"
+import PublicChats from "@/components/community/list/PublicChats"
+
 export default {
     layout: "immerse",
     components: {
         CommunityInfo,
-        PostCard,
-        MembersBlock
+        PublicChats,
     },
     mixins: [
         tabs
     ],
 
     async asyncData({ $axios, params }) {
-        let communityInfoRes = await $axios.$get(
-            `/communities/${params.name}/?format=json`
-        );
+        let communityInfoRes = await $axios.$get(`/communities/${params.name}/?format=json`)
         // let communityPostsRes = await $axios.$get(`/posts/feed?format=json&community=${communityInfoRes.id}`)
 
         return {
@@ -44,48 +49,60 @@ export default {
         };
     },
     head: {
-        title: "Cộng đồng trên this"
+        title: "`${community.name} | Bubbly`"
     },
     data() {
         return {
             lockTabs: false,
         }
     },
+    created() {
+        this.$store.commit('detailBanner/loadText', null)
+        this.$store.commit('detailBanner/loadPic', {})
+    },
     mounted() {
         let tabs = this.$refs.tbContainer
         const scroll = this.$refs.scroll
         scroll.addEventListener('scroll', () => {
-            if (scroll.scrollTop > tabs.offsetTop-31) {
+            if (scroll.scrollTop > tabs.offsetTop-23) {
                 this.lockTabs = true
             } else this.lockTabs = false
             if (scroll.scrollTop > 350) {
                 this.$store.commit('detailBanner/loadText', this.community.name)
+                this.$store.commit('detailBanner/loadPic', {
+                    src: this.community.icon_img,
+                    style:'square'
+                })
             } else {
                 this.$store.commit('detailBanner/loadText', null)
+                this.$store.commit('detailBanner/loadPic', {})
             }
         }, {
             capture: true,
             passive: true})
-    },
+    }
 };
 </script>
 
 <style>
 #tb-container {
     min-height: 75px;
-    padding: 15px 0;
+    padding: 35px 0;
     /* margin: 0 -8px; */
     width: 100%;
 }
 .tabs-block {
-    /* background: #000 */
+    /* background: #000; */
+    padding-top: 0;
 }
 .fixed-tabs {
+    transition: .2s;
     position: fixed;
+    /* margin-left: -8px; */
     top: 56px;
-    padding-top: 0;
+    width: 100%;
     background: linear-gradient(180deg,
         rgba(255,255,255,0.88) 50%,
-        rgba(255,255,255,0.0) 100%);
+        #ffffff00 100%);
 }
 </style>

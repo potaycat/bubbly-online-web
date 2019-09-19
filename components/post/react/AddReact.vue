@@ -1,20 +1,22 @@
 <template>
-    <i v-if="!addReact" @click="toggle()" :id="size" class="_addo material-icons-round">insert_emoticon</i>
-    <i v-else>
-        <div id="_rea_add_bg" @click="toggle()"/>
-            <transition name="fade" appear>
-        <div @click="toggle()" class="_react_adding lift" :style="'top:'+why+'px'">
-            <!-- <i class="material-icons-round" style="margin:auto">cancel</i> -->
-            <img src="@/assets/thumb_up.png">
-                <!-- <transition-group appear name="fade_in" class="glow"> -->
-            <img v-for="icon in iconList"
-                :key="icon.id"
-                :src="icon.img_ref"
-            >
-                <!-- </transition-group> -->
+    <div style="react-container">
+        <i @click="toggle()" :id="size" class="_addo material-icons-round">insert_emoticon</i>
+        <div v-if="addReact">
+            <div id="_rea_add_bg" @click="toggle()"/>
+                <transition name="fade" appear>
+            <div @click="toggle()" class="_react_adding lift" :style="'top:'+why+'px'">
+                <!-- <i class="material-icons-round" style="margin:auto">cancel</i> -->
+                <img src="@/assets/thumb_up.png">
+                    <!-- <transition-group appear name="fade_in" class="glow"> -->
+                <img v-for="icon in iconList"
+                    :key="icon.id"
+                    :src="icon.img_ref"
+                >
+                    <!-- </transition-group> -->
+            </div>
+                </transition>
         </div>
-            </transition>
-    </i>
+    </div>
 </template>
 
 <script>
@@ -47,15 +49,18 @@ export default {
 </script>
 
 <style>
+.react-container {
+    display: inline;
+}
+
 ._addo {
     cursor: pointer;
     color: #aaa;
-    display: inline;
     border-radius: 10px;
 }
 #_norm_addo{
     font-size: 20px;
-    margin: 3px;
+    margin: 4px;
     margin-bottom: 0;
 }
 #_smol_addo{

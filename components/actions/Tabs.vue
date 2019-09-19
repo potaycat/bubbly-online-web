@@ -39,7 +39,7 @@ export default {
   font-weight: bold;
   font-size: 11px;
   
-  background: #00000000;
+  background: #ffffff00;
   color: #00000055;
 }
 .tabs #focusing {

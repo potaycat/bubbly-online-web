@@ -2,7 +2,8 @@ export const chatLs = {
     methods: {
         displayLastMsg(msg){
             let string = ""
-            if (msg.author==this.$store.state.jwtlogin.my_profile.id) {
+            // if (msg.author==this.$store.state.jwtlogin.my_profile.id) {
+            if (msg.author==this.$store.state.jwtlogin.stored_profile.id) {
                 string += "Me: " 
             }
             switch (msg.msg_type) {
@@ -46,9 +47,10 @@ export const chatLs = {
         },
 
         toChat(room){
-            this.$store.commit('detailBanner/loadText', this.getRoomTitle(room)); // optimize!
-            this.$store.commit('chat/loadChat', room)
             this.$router.push('/chat/t/' + room.id)
+            this.$store.commit('detailBanner/loadPic', {})
+            this.$store.commit('detailBanner/loadText', room.name ? room.name : "Chat cộng đồng"); // fix this!
+            this.$store.commit('chat/loadChat', room)
         },
     },
 }

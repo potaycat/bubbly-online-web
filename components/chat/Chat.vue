@@ -1,6 +1,6 @@
 <template>
     <div id="inChat">
-        <div class="the_big_frame" v-bind:style="[moring ? {'filter':'blur(15px)'} :null]"><div class="la_content">
+        <div class="the_big_frame" v-bind:style="[moring ? {'filter':'blur(15px)'} :null]"><div ref="scrollCtn" class="la_content">
             <transition appear name="fade_in">
                 <img class="_chat_bg"></transition>
             <div style="min-height: 65px"/>
@@ -29,7 +29,7 @@
                 @barHeight="bottomShift"
             />
         </div></div>
-        <ChatInfo v-if="moring && threadInfo"/>
+        <ChatInfo v-if="moring && fullyLoaded" :threadInfo="threadInfo"/>
         <!-- <button style="position:fixed;top:550px;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
     </div>
 </template>
@@ -55,8 +55,8 @@ export default {
 
             loading4More: false,
             reachedEnd: false,
-
             atBottom: true,
+            fullyLoaded: false
         }
     },
     updated() {
@@ -85,18 +85,18 @@ export default {
             this.conversation.push( myMsg );
         },
         bottomShift(height) {
-            let butt = document.querySelector("#_bottomH");
+            const butt = document.querySelector("#_bottomH");
             butt.style["min-height"] = height
         },
         butt(){ this.atBottom=!this.atBottom },
 
         scroll2Bottom() {
-            let container = document.querySelector(".la_content");
+            const container = this.$refs.scrollCtn
             if (container.scrollHeight-container.clientHeight> container.scrollTop + 90){
                 container.scrollTop = container.scrollHeight;
             }
             else {
-                let butter = setInterval(() => { container.scrollBy(0, 1) }, 1)// smooth scroll
+                const butter = setInterval(() => { container.scrollBy(0, 1) }, 1)// smooth scroll
                 setTimeout(() => {
                     clearInterval(butter) // smooth scroll is tiring bruh
                 }, 300);
@@ -114,7 +114,7 @@ export default {
                 this.$store.state.pheader)
             .then(res => {
                 if (res.data.length < 20) this.reachedEnd = true
-                let container = document.querySelector(".la_content");
+                const container = this.$refs.scrollCtn
                 if (container.scrollTop == 0) {container.scrollTop = 100}
                 
                 this.conversation.unshift(...res.data.reverse());
@@ -123,23 +123,28 @@ export default {
         },
 
         initRoom(){
-            if (!this.$store.state.detailBanner.text) {
-                let owo = this.threadInfo.meta_data
-                if (owo.room_type == "group") {
-                    let t = this.threadInfo.name
+            const owo = this.threadInfo.meta_data
+            this.$store.commit('detailBanner/loadText', this.threadInfo.name ? this.threadInfo.name : "Chat cộng đồng");
+            switch (owo.room_type) {
+                case "group":
+                    const t = this.threadInfo.name
                     if (!t) {
                         t = "Nhóm chat gồm "+owo.data.member_count.toString()+" người"
                     }
-                    this.$store.commit('detailBanner/loadText', t);
-                }
-                if (owo.room_type == "direct") {
-                    let prases = ['Chat riêng', 'Chat riêng', 'Chat riêng', 'Chat riêng', 'Chat riêng', 'Chat riêng', 'Chat riêng', 'Thì thầm'];//, 'Nói nhỏ', 'Cách cảm'];
-                    let t = prases[Math.floor(Math.random() * prases.length)]; // reconsider this .-.
-                    this.$store.commit('detailBanner/loadText', t+" với "+owo.data.alias);
-                }
+                    this.$store.commit('detailBanner/loadText', t)
+                    break;
+                case "direct": 
+                    this.$store.commit('detailBanner/loadText', owo.data.alias);
+                    this.$store.commit('detailBanner/loadPic', {
+                        src: owo.data.profile_pic,
+                        style:'circle'
+                    })
+                    break;
+                default:
+                    break;
             }
             this.$nextTick(() => {
-                let bg = document.querySelector("#inChat ._chat_bg")
+                const bg = document.querySelector("#inChat ._chat_bg")
                 if (this.threadInfo.bg_img) {
                     bg.src = this.threadInfo.bg_img
                 } else if (!bg.style.background) {
@@ -151,7 +156,7 @@ export default {
         }
     },
     created() {
-        let body = document.querySelector('body')
+        const body = document.querySelector('body')
         body.style['overscroll-behavior']= 'contain';
 
         this.$connect(this.$store.state.wsBase+'ws/chat/'+this.$route.params.id+'/?token='+this.$store.state.jwtlogin.jwt)
@@ -159,22 +164,25 @@ export default {
         // delete this.threadInfo.last_few_msgs
         if (this.conversation.length==0) this.fetch('')
         // else this.fetch(this.conversation[0].id)
-        if (this.threadInfo) {
+        try {
             this.initRoom()
+        } catch (error) {
+            console.log(error)
         }
         this.$axios.get('chat/room/?format=json&id='+this.$route.params.id, 
             this.$store.state.pheader)
-        .then(res => {
-            this.$store.commit('chat/loadChat', res.data)
-            this.initRoom()
-        })
+            .then(res => {
+                this.fullyLoaded = true
+                this.$store.commit('chat/loadChat', res.data)
+                this.initRoom()
+            })
         
         this.$options.sockets.onmessage = (res) => {
-            let recived = JSON.parse(res.data)
+            const recived = JSON.parse(res.data)
 
             if (recived.msg_data.msg_type == 9){ // typing indicator            
                 if (recived.user.id != this.$store.state.jwtlogin.my_profile.id) {
-                    let index = this.typing.findIndex(x => x.user.id ==recived.user.id);
+                    const index = this.typing.findIndex(x => x.user.id ==recived.user.id);
                     if (index == -1){
                         this.typing.push({
                             user: recived.user,
@@ -194,15 +202,15 @@ export default {
             else {
                 if (recived.msg_data.author.id != this.$store.state.jwtlogin.my_profile.id){
                     this.conversation.push( recived.msg_data );
-                    let index =this.typing.findIndex(x => x.user.id ==recived.msg_data.author.id)
+                    const index =this.typing.findIndex(x => x.user.id ==recived.msg_data.author.id)
                     if (index != -1){ //remove "typing" status
                         clearTimeout(this.typing[index].selfDestruct);
                         this.typing.splice(index, 1);
                     }
                 }
                 else {
-                    let index =this.conversation.findIndex(x => x.id==recived.f_pseudoId)
-                    let changeThis = this.conversation[index]
+                    const index =this.conversation.findIndex(x => x.id==recived.f_pseudoId)
+                    const changeThis = this.conversation[index]
                     
                     changeThis.timestamp = recived.msg_data.timestamp;
                     changeThis.realId = recived.msg_data.id; // fixes auto re-render
@@ -212,7 +220,7 @@ export default {
     },
     mounted() {
         // INFINITE SCROLL // Can't mixins due to distinct functionalities 
-        let container = document.querySelector(".la_content");
+        const container = this.$refs.scrollCtn
         container.addEventListener('scroll', () => {
             // console.log(evt);
             if (container.scrollTop <= 400) {

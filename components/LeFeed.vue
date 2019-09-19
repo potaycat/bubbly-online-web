@@ -17,7 +17,7 @@
 <script>
 import { tabs } from '@/mixins/tabs'
 
-import HomeFeed from './HomeFeed'
+import HomeFeed from './post/HomeFeed'
 import MyChats from '@/components/chat/list/Mien'
 
 export default {
@@ -30,6 +30,3 @@ export default {
     ],
 }
 </script>
-
-<style>
-</style>

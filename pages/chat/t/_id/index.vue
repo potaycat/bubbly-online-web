@@ -22,7 +22,7 @@ export default {
     },
     created() {
         this.$store.dispatch('jwtlogin/loadProfile');
-    },
+    }
 }
 </script>
 

@@ -2,25 +2,32 @@
     <div>
         <nav class="banner detail"
         v-bind:style="[$store.state.detailBanner.text ? {'box-shadow':'0 0 15px #ccc'} :null]">
-            <button
-                class="btn _detail_bar_back"
+            <div
+                class="_detail_bar_back db-item"
                 @click="bacc()"
             >
                 <i class="material-icons-round">arrow_back</i>
-            </button>
+            </div>
 
             <transition appear name="slide_up">
-            <span v-if="$store.state.detailBanner.text" id="title">
-                {{ $store.state.detailBanner.text }}
-            </span></transition>
+                <img v-if="$store.state.detailBanner.picSrc"
+                    :src="$store.state.detailBanner.picSrc"
+                    :class="['db-icon', 'db-item', picStyle]" 
+                >
+            </transition>
+
+            <transition appear name="slide_up">
+                <span v-if="$store.state.detailBanner.text" class="db-title db-item">
+                    {{ $store.state.detailBanner.text }}
+                </span>
+            </transition>
                 
-            <button v-if="!$store.state.detailBanner.moring"
-                class="btn _detail_bar_info"
+            <div v-if="!$store.state.detailBanner.moring"
+                class="_detail_bar_info db-item"
                 @click="openInfo()"
             >
                 <i class="material-icons-round">more_vert</i><!-- info more_vert -->
-            </button>
-            <!--img id="pfp" :src="p.profile_pic" /-->
+            </div>
         </nav>
         <div style="min-height:56px"/>
     </div>
@@ -28,6 +35,24 @@
 
 <script>
 export default {
+    computed: {
+        picStyle() {
+            console.log(this.$store.state.detailBanner.picStyle);
+            
+            switch (this.$store.state.detailBanner.picStyle) {
+                case 'circle':
+                    return 'pfp'
+                case 'square':
+                    return 'comu_icon'
+                default:
+                    return ''
+            }
+        },
+    },
+    created() {
+        this.$store.commit('detailBanner/loadText', null)
+        this.$store.commit('detailBanner/loadPic', {})
+    },
     methods: {
         openInfo() {
             this.$store.commit('detailBanner/openInfo', true)
@@ -53,23 +78,31 @@ export default {
     overflow: hidden;
     display: flex;
 }
+.db-item {
+    margin: auto 5px;
+}
+.db-item .material-icons-round{
+    padding-top: 4px;
+}
 ._detail_bar_back {
     color: rgb(72, 133, 237);
-    padding: 10px 15px;
+    padding-left: 5px;
 }
-._detail_bar_info {
-    color: rgb(72, 133, 237);
-    padding: 10px 15px;
-    margin-left: auto;
-
+.db-icon {
+    height: 30px;
+    width: 30px;
 }
-.detail #title {
-    margin-top: 16px;
+.detail .db-title {
     font-size: 16px;
     font-weight:600;
     overflow: hidden;
     /* max-width: calc(100% - 120px); */
     white-space: nowrap;
+}
+._detail_bar_info {
+    color: rgb(72, 133, 237);
+    margin-left: auto;
+    padding-left: 5px;
 }
 
 .slide_up-enter-active,

@@ -42,7 +42,6 @@ export default {
     },
     created() {
         this.$store.dispatch('jwtlogin/loadProfile')
-        this.$store.commit('detailBanner/loadText', null)
     },
 }
 </script>

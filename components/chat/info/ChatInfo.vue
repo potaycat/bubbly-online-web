@@ -26,12 +26,10 @@
         <div class="_set_info" v-else-if="type=='group'">
             <img v-if="threadInfo.bg_img" class="pfp" :src="threadInfo.bg_img">
             <img v-else class="pfp" style="filter: invert(1)" src="~assets/grup_de.png">
-            <div v-if="threadInfo.name" id="_alias">{{ threadInfo.name }}</div>
-            <div v-else id="_alias">Chưa đặt tên</div>
+            <div id="_alias">{{ threadInfo.name ? threadInfo.name : 'Nhóm chưa đặt tên' }}</div>
         </div>
         <div class="_set_info" v-else-if="type=='public'">
-            <div v-if="threadInfo.name" id="_alias">{{ threadInfo.name }}</div>
-            <div v-else id="_alias">Chưa đặt tên</div>
+            <div id="_alias">{{ threadInfo.name ? threadInfo.name : 'Chat cộng đồng' }}</div>
             <div class="glow _chat_cmd_list">
                 <div class="_chat_cmd">
                     <img class="comu_icon" :src="threadInfo.meta_data.data.icon_img">
@@ -45,8 +43,7 @@
             <div v-if="type=='group'" class="_chat_cmd" @click="more_members=!more_members">
                 <i class="material-icons-round">people_outline</i>
                 <p>Chat Members ({{threadInfo.meta_data.data.member_count}})</p>
-                <i v-if="more_members" class="material-icons-round">expand_less</i>
-                <i v-else class="material-icons-round">expand_more</i>
+                <i class="material-icons-round">{{ more_members ? 'expand_less' : 'expand_more'}}</i>
             </div>
         </div>
         <div style="margin-top:-20px"/>
@@ -112,7 +109,7 @@ export default {
         Roomates,
     },
     props: [
-        // 'threadInfo',
+        'threadInfo',
     ],
     data() {
         return {
@@ -123,11 +120,11 @@ export default {
         }
     },
     computed: {
-        threadInfo() {
-            return this.$store.state.chat.currentChat
-        },
+        // threadInfo() {
+        //     return this.$store.state.chat.currentChat
+        // },
         isAdmin() {
-            let i = this.threadInfo.roommate_info
+            const i = this.threadInfo.roommate_info
             if (i) return i.has_admin_role
             return false
         },

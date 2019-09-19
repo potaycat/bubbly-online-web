@@ -1,20 +1,19 @@
 <template>
-    <div id="postFeed">
-        <div class="the_big_frame"><div class="la_content">
+    <div id="postFeed" class="the_big_frame">
+        <div class="la_content cards-wrapper">
             <div style="min-height:115px"/>
+
             <PostCard v-for="post in fetchedData"
                 :key ="post.content_id"
                 :post ="post"
             />
-            <!-- <PseudoPostCard /> -->
-            <div style="min-height: 120px"/>  <!-- delete this -->
-            
+                <!-- <PseudoPostCard /> -->
+            <div style="min-height: 120px"/>
         </div>
         <FAB @clicked="toggleMemAdd()"
             icon= "add"
             actionName= "Write a post"
         />
-        </div>
     </div>
 </template>
 
@@ -54,6 +53,3 @@ export default {
     },
 }
 </script>
-
-<style>
-</style>

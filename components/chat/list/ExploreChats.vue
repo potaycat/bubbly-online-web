@@ -15,10 +15,10 @@
                 class="room_p bg"
                 @click="toChat(room)"
                 :key="room.id"
-                :style="'background:'+getDisplayPic(room, roomCluster.community)"
+                :style="`background:url(${room.bg_img ? room.bg_img : roomCluster.community.cover_img}) center`"
             >
                 <div class="tt">
-                    <div class="name">{{ getRoomTitle(room, roomCluster.community) }}</div>
+                    <div class="name">{{ room.name ? room.name : "Phòng chat cộng đồng" }}</div>
                     <span>{{ tiemstamp(room.last_msg.timestamp) }}</span>
                 </div>
                 <p class="last">{{ displayLastMsg(room.last_msg) }}</p>
@@ -43,19 +43,8 @@ export default {
         }
     },
     methods: {
-        getDisplayPic(room, community) {
-            let srcurl = ""
-            if (room.bg_img) srcurl = room.bg_img
-            else srcurl = community.cover_img
-            return "url(" + srcurl + ") center"
-        },
-        getRoomTitle(room) {
-            if (room.name) return room.name
-            return "Phòng chat cộng đồng"
-        },
-
         urlConstruct(offset) {
-            return 'communities/joined-public-rooms/'
+            return 'communities/joined/avail-rooms/'
         },
     },
 }
