@@ -82,7 +82,7 @@ export default {
     margin: auto 5px;
 }
 .db-item .material-icons-round{
-    padding-top: 4px;
+    padding-top: 3px;
 }
 ._detail_bar_back {
     color: rgb(72, 133, 237);

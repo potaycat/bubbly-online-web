@@ -10,9 +10,7 @@
         <nuxt-link class="post-info" :to="`/community/${post.allocated_to.id}`">
             <img class="comu_icon glow" :src="post.allocated_to.icon_img"/>
             <div class="p-info-text">
-                <div class="glow">
-                    <strong>{{ post.allocated_to.name }}</strong>
-                </div>
+                <strong>{{ post.allocated_to.name }}</strong>
                 <div class="_smol">
                     <span class="glow">
                         Posted by 
@@ -164,7 +162,7 @@ export default {
     display: flex;
     color: #bbb;
     margin: auto;
-    padding: 8px;
+    padding: 9px;
     font-weight: bold;
     width: 50%;
 }

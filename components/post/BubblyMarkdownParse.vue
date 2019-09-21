@@ -1,30 +1,64 @@
 <template>
     <div>
-        <p v-for="(p, index) in postText"
+        <BlockFormat v-for="(b, index) in blocks"
             :key="index"
-            class="text-content"
+            class="content-block"
+            :block="b"
+            :attachments="content.attachments"
+            @attchGotten="attchGotten"
+        />
+        <div v-for="attachment in unusedAttchs"
+            :key="attachment.ordering"
+            class="unused-attchs"
         >
-            {{ p }}
-        </p>
+            <img v-if="attachment.type==2"
+                :src="attachment.content"
+            />
+        </div>
     </div>
 </template>
 
 <script>
+import BlockFormat from './secondMdParse'
 export default {
     props: [
         'content',
     ],
-    computed: {
-        postText() {
-            const txt = this.content.text.split(/\r?\n/)
-            return txt
+    components: {
+        BlockFormat
+    },
+    data() {
+        return {
+            usedAttchs: []
         }
     },
+    computed: {
+        blocks() {
+            return this.content.text.split(/\r?\n/)
+        },
+        unusedAttchs() {
+            return this.content.attachments.filter((d, i) => this.usedAttchs.indexOf(i) == -1)
+        }
+    },
+    methods: {
+        attchGotten(index) {
+            this.usedAttchs.push(index)
+        }
+    }
 }
 </script>
 
 <style>
-.text-content {
-    padding-bottom: 10px;
+.content-block div *{
+    margin-bottom: 6px;
+    width: 100%;
+}
+
+.unused-attchs {
+    margin: 15px -15px 0 -15px;
+
+}
+.unused-attchs *{
+    width: 100%;
 }
 </style>

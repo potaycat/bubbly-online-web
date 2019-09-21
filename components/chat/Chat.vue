@@ -1,36 +1,40 @@
 <template>
     <div id="inChat">
-        <div class="the_big_frame" v-bind:style="[moring ? {'filter':'blur(15px)'} :null]"><div ref="scrollCtn" class="la_content">
+        <div class="the_big_frame" v-bind:style="[moring ? {'filter':'blur(15px)'} :null]">
             <transition appear name="fade_in">
-                <img class="_chat_bg"></transition>
-            <div style="min-height: 65px"/>
-
-            <transition name="fade">
-                <div v-if="reachedEnd" class="_thread_beginning">
-                    👋 Welcome to the beginning<br>of this conversation </div>
+                <img class="chat-bg"
+                >
             </transition>
+            <div ref="scrollCtn" class="la_content">
+                <div style="min-height: 65px"/>
 
-            <div v-if="loading4More" class="_fetchin_indcat"><Spinner/>
+                <transition name="fade">
+                    <div v-if="reachedEnd" class="_thread_beginning">
+                        👋 Welcome to the beginning<br>of this conversation </div>
+                </transition>
+
+                <div v-if="loading4More" class="_fetchin_indcat"><Spinner/>
+                </div>
+                <Bubble v-for="(message, index) in conversation"
+                    :key="message.id"
+                    :message="message"
+                    :prev="conversation[index-1]"
+                />
+                <PeepTyping :peeps="typing"/>
+                
+                <div id="_bottomH" style="transition:.2s"/><div style="min-height: 44px;"/>
+                
+                <div class="nopaque"><transition name="just_slide_up" >
+                    <button v-if="!atBottom" id="_s2b_btn" @click="jump2Present()">Jump to present</button>
+                </transition></div>
+                <SendBox
+                    @sentMeMsg="viewMyMsgNow"
+                    @barHeight="bottomShift"
+                />
             </div>
-            <Bubble v-for="(message, index) in conversation"
-                :key="message.id"
-                :message="message"
-                :prev="conversation[index-1]"
-            />
-            <PeepTyping :peeps="typing"/>
-            
-            <div id="_bottomH" style="transition:.2s"/><div style="min-height: 44px;"/>
-            
-            <div class="nopaque"><transition name="just_slide_up" >
-                <button v-if="!atBottom" id="_s2b_btn" @click="jump2Present()">Jump to present</button>
-            </transition></div>
-            <SendBox
-                @sentMeMsg="viewMyMsgNow"
-                @barHeight="bottomShift"
-            />
-        </div></div>
+        </div>
         <ChatInfo v-if="moring && fullyLoaded" :threadInfo="threadInfo"/>
-        <!-- <button style="position:fixed;top:550px;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
+        <!-- <button style="position:fixed;top:50%;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
     </div>
 </template>
 
@@ -144,12 +148,12 @@ export default {
                     break;
             }
             this.$nextTick(() => {
-                const bg = document.querySelector("#inChat ._chat_bg")
+                const bg = document.querySelector("#inChat .chat-bg")
                 if (this.threadInfo.bg_img) {
                     bg.src = this.threadInfo.bg_img
                 } else if (!bg.style.background) {
-                    bg.style.background= 'linear-gradient(' + Math.floor(Math.random() * (360)) // random degree
-                        +'deg,' + 'rgb(252,0,0)' + ',' + 'rgb(0, 0, 255)' +')'
+                    bg.style.background= `linear-gradient(${Math.floor(Math.random()*360) // random degree
+                    }deg, #ff0000, #0000ff)`
                 }
             })
 
@@ -230,7 +234,7 @@ export default {
             }
             if (container.scrollHeight - container.clientHeight <= container.scrollTop + 80) { // +57 is for hiding url bar
                 if(!this.atBottom) this.butt()
-            } else { if(this.atBottom) this.butt() }
+            } else if(this.atBottom) this.butt()
         }, {
             capture: true,
             passive: true})
@@ -245,7 +249,7 @@ export default {
 
 <style>
 /* big frame at main css */
-#inChat .the_big_frame ._chat_bg{
+#inChat .the_big_frame .chat-bg{
     z-index: -999;
     height: 100%;
     width: 100%;
