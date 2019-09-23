@@ -28,17 +28,21 @@ export default {
             return null
         },
         textFormatting() {
-            let styles = ''
             const open = this.block.indexOf("[")
             const close = this.block.indexOf("]")
-            if (open==0 && close!=1 && open<close) {
-                styles = this.block.slice(1,close).toLowerCase().split('').join(' ')
+            if (open==0 && open<close) {
+                const styles = this.block.slice(1,close).toLowerCase().split('')
+                // https://medium.com/@caymanbruce/finding-duplicate-characters-in-a-string-in-javascript-94e2cb23ab5e
+                const duplicates = styles.sort().join('').match(/(.)\1+/g)
+                if (duplicates == null) {
+                    return styles.join(' ')
+                }
             }
-            return styles
+            return ''
         },
         text() {
             if (this.textFormatting) {
-                return this.block.slice(this.block.indexOf("]")+1);
+                return this.block.slice(this.block.indexOf("]")+1)
             }
             return this.block
         },
@@ -69,6 +73,7 @@ export default {
 .r { color: red }
 .p { color: hotpink }
 .x { color: blue }
+.a { color: aqua }
 .h { font-size: 27px }
 .t { font-size: 11px }
 .n { font-family: "Comic Sans MS", cursive, sans-serif }

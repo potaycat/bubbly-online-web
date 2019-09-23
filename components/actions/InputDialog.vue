@@ -44,7 +44,7 @@ export default {
     methods: {
         inputted(val) {
             if (val!=="") {
-                this.$emit('btn_emmited', val)
+                this.$emit('clicked', val)
             }
         },
     },
@@ -59,7 +59,7 @@ export default {
     z-index: 999;
     margin: auto;
     /* background: #ffffffdd; */
-    background: linear-gradient(160deg, #fff 0, #ffffffdd 50%, #fff 100%);
+    background: linear-gradient(160deg, #fff 0, #ffffffee 50%, #fff 100%);
     border-radius: 15px;
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     width: 320px;

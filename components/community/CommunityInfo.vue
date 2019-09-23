@@ -6,11 +6,11 @@
             <section class="c-info-container">
                 <div id="smol-info">Public • 1234 members</div>
                 <div id="name">
-                    What a heella long name dont you think question mark
+                    {{ community.name }}
                 </div>
                 <div id="bio">{{ community.moto }}</div>
                 <div class="c-actions">
-                    <Button text="Join" fill/>
+                    <Button text="Join" :size="['5px', '0']" fil/>
                 </div>
             </section>
         </div>
@@ -40,7 +40,7 @@ export default {
     /* top: 0; */
     right: 0;
     width: 100%;
-    height: 270px;
+    height: 250px;
     z-index: -1;
 }
 .c-info-container {
@@ -61,7 +61,7 @@ export default {
     font-size: 14px;
 }
 .c-info #name {
-    margin: 2px 0 5px;
+    margin: 5px 0 2px;
     font-weight: bold;
     font-size: 23px;
 }

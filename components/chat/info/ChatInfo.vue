@@ -15,7 +15,7 @@
                 <div class="_chat_cmd">
                     <i class="material-icons-round">person</i>
                     <p>View Profile</p>
-                    <i class="material-icons-round">launch</i>
+                    <i class="material-icons-round">arrow_forward</i>
                 </div>
                 <div class="_chat_cmd" @click="command=2">
                     <i class="material-icons-round">block</i>
@@ -91,7 +91,7 @@
         </div>
         <!-- <p id="tssss">{{ threadInfo }}</p> -->
         <InputDialog v-if="command"
-            @btn_emmited="loadDatInfo"
+            @clicked="loadDatInfo"
             :leDisplay = "diagContent"
         />
     </div>

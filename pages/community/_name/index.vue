@@ -1,12 +1,12 @@
 <template>
     <div class="the_big_frame"><div class="la_content
     " ref="scroll">
-        <div style="min-height:60px"/>
+        <div style="min-height:57px"/>
         <CommunityInfo :community="community" />
 
         <div id="tb-container" ref="tbContainer"><Tabs
             :class="['tabs-block', lockTabs ? 'fixed-tabs': null]"
-            :tabs="['POSTS', 'CHAT ROOMS', 'INFO']"
+            :tabs="['POSTS', 'CHAT ROOMS', 'ABOUT']"
             :currentTab="currentTab"
             @switchTo="newTab"
         /></div>
@@ -40,7 +40,7 @@ export default {
     ],
 
     async asyncData({ $axios, params }) {
-        let communityInfoRes = await $axios.$get(`/communities/${params.name}/?format=json`)
+        const communityInfoRes = await $axios.$get(`/communities/${params.name}/?format=json`)
         // let communityPostsRes = await $axios.$get(`/posts/feed?format=json&community=${communityInfoRes.id}`)
 
         return {

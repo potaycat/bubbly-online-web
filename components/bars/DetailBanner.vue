@@ -37,8 +37,6 @@
 export default {
     computed: {
         picStyle() {
-            console.log(this.$store.state.detailBanner.picStyle);
-            
             switch (this.$store.state.detailBanner.picStyle) {
                 case 'circle':
                     return 'pfp'

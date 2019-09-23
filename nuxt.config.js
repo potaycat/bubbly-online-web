@@ -17,6 +17,7 @@ module.exports = {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/icon?family=Material+Icons+Round" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" },
     ],
     script: [
       // { type:'text/javascript', src: "https://platform-api.sharethis.com/js/sharethis.js#property=5d0a8453e73ce9001239bd61&product='inline-share-buttons'"}

@@ -11,7 +11,9 @@
             :key="cmt.id"
             class="le-cmt" 
         >
-            <img class="pfp" :src="cmt.content.author.profile_pic">
+            <nuxt-link :to="'/user/' + cmt.content.author.username">
+                <img class="pfp" :src="cmt.content.author.profile_pic">
+            </nuxt-link>
             <div class="cmt-content">
                 <div class="cmt-info glow">
                     <div class="cmt-author-name"> {{cmt.content.author.alias}}&nbsp;</div>

@@ -1,89 +1,127 @@
 <template>
-    <section class="user_info">
-        <img id="pic" :src="pfp"/>
-        <div class="big_pic">
-            <img id="cover" :src="cover"/>
-            <div class="profile_actions">
-                <Button class="bt" text = "Follow" />
-                <n-link class="bt" :to="'/chat/direct/'+username">
-                    <Button text = "Chat" fill = "true"/>
-                </n-link>
+    <div>
+        <transition name="fade" appear >
+            <div class="p-info card">
+                <img id="cover" :src="profile.cover_photo" />
+                <img class="pfp" :src="profile.profile_pic" />
+                <section class="p-info-container">
+                    <div id="p-actions">
+                        <Button id="top" text="Follow" :size="['5px', '42px']" />
+                        <Button id="bottom" text="Chat" @clicked="confirmChat=!confirmChat" :size="['5px', '42px']" fill/>
+                    </div>
+                    <div id="p-actions" v-if="false">
+                        <Button id="top" text="Edit profile" :size="['5px', '42px']"/>
+                    </div>
+                    <div id="name">
+                        What a heella long name dont you think question mark
+                    </div>
+                    <p id="bio" class="littler-info">{{ profile.bio }}</p>
+                    <p class="littler-info">{{ profile.location }}</p>
+                    <p class="littler-info">{{ profile.location }}</p>
+                </section>
             </div>
-            <section class="name">
-                <strong id="alias">{{ alias }}</strong>
-                <span id="username">@{{ username }}</span>
-                <p id="bio"><!--strong>Giới thiệu: </strong-->{{ short_bio }}</p>
-            </section>
-        </div>
-    </section>
+        </transition>
+        
+        <InputDialog v-if="confirmChat"
+            @clicked="toChat"
+            :leDisplay ="{
+                title: `Chat with ${profile.alias}?`,
+                description: 'This will create a new private room if there are not any yet'
+            }"
+        />
+    </div>
 </template>
 
 <script>
 import Button from '@/components/actions/Button'
+import InputDialog from '@/components/actions/InputDialog'
 export default {
     props: [
-		'pfp',
-		'cover',
-		'alias',
-		'username',
-		'short_bio',
+		'profile',
     ],
     components: {
-        Button
+        Button,
+        InputDialog
+    },
+    data() {
+        return {
+            confirmChat: false,
+        }
+    },
+    methods: {
+        toChat(confirmed) {
+            this.confirmChat=!this.confirmChat
+            if (confirmed) {
+                const data = {
+                    ai_dee: null,
+                    participants: [{identity: this.profile.id}],
+                }
+                this.$axios.post('chat/add/',
+                data, this.$store.state.pheader)
+                    .then(res => {
+                        this.$router.push('/chat/t/'+res.data.id)
+                    })
+            }
+        },
     },
 }
 </script>
 
 <style scoped>
-.big_pic {
-    background-color: white;
+.p-info {
     max-width: 950px;
     min-width: 300px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-    border-radius: 15px;
-    margin: -8px 8px 0 8px;
+    margin: 0 8px;
 }
-.big_pic #cover {
+
+.p-info #cover {
     border-radius: 15px 15px 0 0;
     /*box-shadow: inset 0 0 10px #000;*/
-    top: 0;
+    /* top: 0; */
+    right: 0;
     width: 100%;
-    height: 300px;
+    height: 200px;
     z-index: -1;
 }
-.profile_actions {
-    margin: 0 0 8px 0;
-    display: flex;
-    justify-content: flex-end;
+.p-info-container {
+    padding: 0 16px;
 }
-
-.profile_actions .bt {
-    margin: 10px 15px 10px 0;
-}
-
-#pic {
-    border: 3px solid #fff;
-    position:relative;
-    top: 355px;
-    left: 20px;
-    border-radius: 50%;
+.p-info .pfp {
+    border: 3px solid rgb(253, 247, 247);
+    position: relative;
+    left: 11px;
+    margin-top: -20px;
     width: 100px;
     height: 100px;
-    margin-top: -999px;
+}
+.p-info #p-actions {
+    margin: -80px 0 7px 107px;
+    font-size: 14px;
+    display: flex;
+    /* flex-direction: column; */
+    flex-wrap: wrap;
+    height: 72px;
+}
+.p-info #p-actions *{
+    margin: auto 0;
+}
+#p-actions #top{
+    margin-left: auto;
+}
+#p-actions #bottom{
+    margin-left: 11px;
 }
 
-.big_pic .name {
-    padding: 2px 0 10px 15px;
-    display: flex;
-    flex-direction: column;
+.p-info #name {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 23px;
 }
-.big_pic .name #alias {
-    font-size: 22px
+.p-info #bio {
+    padding: 3px 0;
 }
-.big_pic .name #username {
-    color: #aaa;
-}
-.big_pic .name #bio {
-    padding: 10px 0 8px 0;
+.p-info .littler-info {
+    margin: 5px 0;
+    /* text-align: center; */
 }
 </style>

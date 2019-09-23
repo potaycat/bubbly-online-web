@@ -5,11 +5,11 @@
             class="_p"
             :key="roomCluster.community.id"
         >
-            <div  class="glow"><div class="_p_info">
+            <div class="glow"><nuxt-link :to="`/community/${roomCluster.community.id}`" class="_p_info">
                 <img class="comu_icon" :src="roomCluster.community.icon_img">
                 <p>{{ roomCluster.community.name }}</p>
-                <i class="material-icons-round">launch</i>
-            </div></div>
+                <i class="material-icons-round">arrow_forward</i>
+            </nuxt-link></div>
 
             <div class="lift"><div v-for="room in roomCluster.recently_active"
                 class="room_p bg"
@@ -57,7 +57,7 @@ export default {
 }
 
 ._p_info .material-icons-round {
-    margin: 10px 6px 0 0;
+    margin: 9px 6px 0 0;
     font-size: 19px;
     color: #777;
 }

@@ -14,9 +14,11 @@
                 <div class="_smol">
                     <span class="glow">
                         Posted by 
-                        <span :style="'color:#'+post.content.author.fave_color">
+                        <nuxt-link :to="'/user/' + post.content.author.username"
+                            :style="'color:#'+post.content.author.fave_color"
+                        >
                             {{ post.content.author.alias }}
-                        </span>
+                        </nuxt-link>
                     </span>
                     <span>• {{ timeAgo(post.content.timestamp) }}</span>
                 </div>
@@ -48,12 +50,12 @@
             <div class="_p_action glow">
                 <button>
                  <!-- style="border-bottom-left-radius:10px"> -->
-                    <i class="material-icons-round">comment</i>
+                    <i class="material-icons-outlined">comment</i>
                     <p>Comment</p>
                 </button>
                 <button>
                 <!-- style="border-bottom-right-radius:10px"> -->
-                    <i class="material-icons-round">share</i>
+                    <i class="material-icons-outlined">share</i>
                     <p>Share</p>
                 </button>
             </div>
@@ -97,7 +99,7 @@ export default {
 
 .post-info {
     margin: 10px 0;
-    display: flex;
+    display: inline-flex;
 }
 .post-info .comu_icon {
     width: 28px;
@@ -162,18 +164,18 @@ export default {
     display: flex;
     color: #bbb;
     margin: auto;
-    padding: 9px;
+    padding: 8px;
     font-weight: bold;
     width: 50%;
 }
 ._p_action p {
     pointer-events: none;
     margin: auto;
-    margin-left: 10px;
+    margin-left: 6px;
 }
 ._p_action i {
     pointer-events: none;
-    font-size: 15px;
+    font-size: 19px;
     margin: auto;
     margin-right: 0;
 }

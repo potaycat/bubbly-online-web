@@ -2,11 +2,8 @@
     <!-- <button v-bind:class="{'fillMyButton':fill,  'myButton':!fill}">{{ text }}</button> -->
     <div
         :class="['myButton lift', fill ? null : 'no-shadow']"
-        :style="
-            `background: linear-gradient(65deg, #${color[0]} 0%, #${
-                color[1]
-            } 100%)`
-        "
+        :style="`background: linear-gradient(65deg, #${color[0]} 0%, #${
+            color[1]} 100%)`"
         @click="$emit('clicked')"
     >
         <div
@@ -25,11 +22,11 @@ export default {
         fill: { type: Boolean },
         size: {
             type: Array,
-            default: () => ["6px", "45px"]
+            default: () => ['3px', '20px']
         },
         color: {
             type: Array,
-            default: () => ["2c3e50", "fd746c"]
+            default: () => ['2c3e50', 'fd746c']
         }
     }
 };
@@ -41,7 +38,7 @@ export default {
     -webkit-border-radius: 100px;
     border-radius: 100px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    padding: 1px;
+    padding: 0.6pt;
     cursor: pointer;
 }
 .no-shadow {
@@ -57,7 +54,7 @@ export default {
 }
 .dont-fill {
     color: unset;
-    background: #fff;
     mix-blend-mode: screen;
+    background: #fff;
 }
 </style>
