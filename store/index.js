@@ -2,9 +2,9 @@
 
 export const state = () => ({
     wsBase: 'ws://localhost:8000/',
-    pheader: { headers: { Authorization: "JWT " + localStorage.getItem('t') } },
+    authHeader: localStorage.getItem('t')? {headers: {Authorization: "JWT "+localStorage.getItem('t')}} :null,
 
-    top_level_destination: 1,
+    topLevelDestination: 1,
     scrollinUp: true,
 
     scrollPosition: {},
@@ -13,7 +13,7 @@ export const state = () => ({
 
 export const mutations = {
     changeDestination(state, tab) {
-        state.top_level_destination = tab
+        state.topLevelDestination = tab
     },
     toggleScrDir(state) {
         state.scrollinUp = !state.scrollinUp

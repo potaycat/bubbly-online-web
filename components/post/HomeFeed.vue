@@ -1,10 +1,10 @@
 <template>
     <div id="postFeed" class="the_big_frame">
-        <div class="la_content cards-wrapper">
-            <div style="min-height:115px"/>
+        <div class="la_content cards-wrapper" ref="feed">
+            <div style="min-height:105px"/>
 
             <PostCard v-for="post in fetchedData"
-                :key ="post.content_id"
+                :key ="post.id"
                 :post ="post"
             />
                 <!-- <PseudoPostCard /> -->
@@ -18,38 +18,22 @@
 </template>
 
 <script>
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, scrlDirection } from '@/mixins/feedingFrenzy'
 
 import PostCard from './PostCard'
-import Spinner from '@/components/Spinner'
-
 
 import FAB from '@/components/actions/FAB'
 
 export default {
     components: {
         PostCard,
-        Spinner,
         FAB,
     },
-    mixins: [
-        feedingFrenzy,
-    ],
+    mixins: [feedingFrenzy, scrlDirection],
     data() {
         return {
-            cache: 'st_feed',
-            bruh: false
+            feedUrl: 'posts/feed/',
         }
-    },
-    created() {
-        setInterval(() => {
-            this.bruh = ! this.bruh
-        }, 1000);
-    },
-    methods: {
-        urlConstruct(offset) {
-            return 'posts/feed'
-        },
     },
 }
 </script>

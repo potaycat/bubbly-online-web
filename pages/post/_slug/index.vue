@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import PostFullView from '@/components/post/PostFullView'
+import PostFullView from '@/components/post/full/PostFullView'
 export default {
     layout: 'immerse',
     components: {
@@ -25,8 +25,8 @@ export default {
         this.$store.commit('detailBanner/loadText', null)
         this.$store.commit('detailBanner/loadPic', {})
         
-        this.$axios.get(`posts/${this.$route.params.slug}/?format=json`, 
-            this.$store.state.pheader)
+        this.$axios.get(`posts/${this.$route.params.slug}`, 
+            this.$store.state.authHeader)
             .then(res => {
                 this.post = res.data
             })

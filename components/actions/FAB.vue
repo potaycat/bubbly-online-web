@@ -1,12 +1,17 @@
 <template>
-    <div class="FAB lift">
-        <button @click="$emit('clicked')">
-            <i style="pointer-events: none" class="material-icons-round">{{icon}}</i>
-            <transition name="text_begone">
-                <span v-if="$store.state.scrollinUp">&nbsp; {{actionName}}</span>
-            </transition>
-        </button>
-    </div>
+    <button class="FAB box-shadow-2 lift"
+        @click="$emit('clicked')"
+        @mouseleave="resetDrag"
+        @mouseup="resetDrag"
+        @mousedown="startDrag"
+        @mousemove="doDrag"
+        :style="`transform:translate(-${buttonPos[0]}px,-${buttonPos[1]}px)`"
+    >
+        <i class="material-icons-round">{{icon}}</i>
+        <transition name="text_begone">
+            <span v-if="$store.state.scrollinUp">&nbsp; {{actionName}}</span>
+        </transition>
+    </button>
 </template>
 
 <script>
@@ -14,13 +19,44 @@ export default {
     props: [
         'actionName',
         'icon',
-    ]
+    ],
+    data() {
+        return {
+            dragable: false,
+            firstMouseLoc: [0, 0],
+            secndMouseLoc: [0, 0],
+        }
+    },
+    computed: {
+        buttonPos() {
+            return [
+                (this.firstMouseLoc[0]-this.secndMouseLoc[0]),
+                (this.firstMouseLoc[1]-this.secndMouseLoc[1])
+            ]
+        }
+    },
+    methods: {
+        startDrag() {
+            this.dragable = true
+            this.firstMouseLoc = [event.clientX , event.clientY]
+            this.secndMouseLoc = [event.clientX , event.clientY]
+        },
+        doDrag() {
+            if (this.dragable) {
+                this.secndMouseLoc = [event.clientX , event.clientY]
+            }
+        },
+        resetDrag() {
+            this.dragable = false
+            this.firstMouseLoc = [0, 0]
+            this.secndMouseLoc = [0, 0]
+        },
+    },
 }
 </script>
 
 <style>
-.FAB button{
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 10px rgba(0,0,0,0.23);
+.FAB{
     position: fixed;
     bottom: 70px;
     right: 20px;
@@ -32,9 +68,6 @@ export default {
 }
 .FAB span{
     margin: 4px 0;
-    pointer-events: none;
-}.FAB button :not( :active ){
-    transition: .15s;
 }
 
 .text_begone-enter-active,

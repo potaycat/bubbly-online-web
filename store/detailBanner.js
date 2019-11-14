@@ -21,3 +21,9 @@ export const mutations = {
     state.moring = boolval;
   },
 }
+
+export const getters = {
+  hmbrgrLaunchd: (state) => {
+    return state.moring
+  }
+}

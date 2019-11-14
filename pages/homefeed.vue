@@ -13,6 +13,8 @@ export default {
     },
     created() {
         this.$store.commit('changeDestination', 1)
+        this.$store.dispatch("reactIcons/getMyIcons")
+        
     },
 }
 </script>

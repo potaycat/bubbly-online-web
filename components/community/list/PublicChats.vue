@@ -1,17 +1,17 @@
 <template>
-    <div id="community-chats" class="cards-wrapper lift">
+    <div id="community-chats" class="cards-wrapper">
         <div v-for="room in fetchedData"
-            class="c-p-room bg"
+            class="c-p-room box-shadow-2 bg lift"
             @click="toChat(room)"
             :key="room.id"
             :style="`background:url(${room.bg_img ? room.bg_img : community.cover_img}) center`"
         >
             <div class="text-info">
                 <div class="name">{{ room.name ? room.name : "Phòng chat cộng đồng" }}</div>
-                <span>{{ tiemstamp(room.last_msg.timestamp) }}</span>
+                <span>{{ room.last_msg.timestamp | tiemstamp}}</span>
             </div>
             <p class="last"><strong>{{ room.description }}</strong></p>
-            <p class="last">{{ displayLastMsg(room.last_msg) }}</p>
+            <p class="last">{{ room.last_msg | lastMsgDspl }}</p>
         </div>
     </div>
 </template>
@@ -30,12 +30,12 @@ export default {
     ],
     data() {
         return {
-            cache: 'st_pChats',
+            feedUrl: `communities/${this.community.id}/public-rooms/`,
         }
     },
-    methods: {
-        urlConstruct(offset) {
-            return `communities/${this.community.id}/public-rooms/`
+    computed: {
+        scrollCtnr() {
+            return this.$parent.$refs.feed
         },
     },
 }
@@ -44,9 +44,9 @@ export default {
 <style>
 #community-chats {
     width: 100%;
+    padding: 0 20px;
 }
 #community-chats .c-p-room {
-    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
     height: 160px;
     margin-bottom: 20px;
     border-radius: 25px;
@@ -59,7 +59,6 @@ export default {
     color: #fff;
     margin-top: auto;
     text-shadow: 0px 0px 10px #000;
-    pointer-events: none;
     display: flex;
 }
 #community-chats .c-p-room .name {
@@ -83,7 +82,6 @@ export default {
     font-size: 14px;
     max-height: 53px;
     overflow: hidden;
-    pointer-events: none;
     word-break: break-all;
 }
 #community-chats .c-p-room span {

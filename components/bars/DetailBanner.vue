@@ -3,7 +3,7 @@
         <nav class="banner detail"
         v-bind:style="[$store.state.detailBanner.text ? {'box-shadow':'0 0 15px #ccc'} :null]">
             <div
-                class="_detail_bar_back db-item"
+                class="_detail_bar_back db-item push"
                 @click="bacc()"
             >
                 <i class="material-icons-round">arrow_back</i>
@@ -22,8 +22,8 @@
                 </span>
             </transition>
                 
-            <div v-if="!$store.state.detailBanner.moring"
-                class="_detail_bar_info db-item"
+            <div v-if="!moring && moring!=null"
+                class="_detail_bar_info db-item push"
                 @click="openInfo()"
             >
                 <i class="material-icons-round">more_vert</i><!-- info more_vert -->
@@ -36,12 +36,13 @@
 <script>
 export default {
     computed: {
+        moring() {return this.$store.state.detailBanner.moring},
         picStyle() {
             switch (this.$store.state.detailBanner.picStyle) {
                 case 'circle':
                     return 'pfp'
                 case 'square':
-                    return 'comu_icon'
+                    return 'cmnty-ico'
                 default:
                     return ''
             }
@@ -56,7 +57,7 @@ export default {
             this.$store.commit('detailBanner/openInfo', true)
         },
         bacc() {
-            if (this.$store.state.detailBanner.moring) {
+            if (this.moring) {
                 this.$store.commit('detailBanner/openInfo', false)
             } else {
                 // this.$store.commit('detailBanner/loadText', null);

@@ -1,17 +1,28 @@
 <template>
-    <div>
-        <p v-if="msg_type==1" class="_w txt_msg" v-bind:id="isMe">{{ content }}</p>
+    <div :class="['_msg-ct', isMe ? '_ct-is-me': null]">
+        <p v-if="msg_type==1" class="m-ct__txt">{{ content }}</p>
 
-        <div v-if="msg_type==3" class="yt_embed" v-bind:id="isMe">
-        <iframe width="276" height="155" :src="ytLink" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div v-else-if="msg_type==3" class="m-ct__yt-embed">
+            <iframe width="276" height="155" :src="ytLink" frameborder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
         </div>
 
-        <div v-if="msg_type==2" style="display:flex; flex-direction:column">
-        <img class="_w picture_msg" :src="content">
+        <div v-else-if="msg_type==2" :style="[{'display':'flex', }]">
+            <img class="m-ct__img" :src="content">
         </div>
 
-        <p v-if="msg_type==10" class="_w deleted_msg">Đã xóa một tin nhắn</p>        
-
+        <p v-else-if="msg_type==8" class="m-ct__txt _m-ct__chat-chng">Made the chat room</p>
+        <p v-else-if="msg_type==5" class="m-ct__txt _m-ct__chat-chng">
+            Added {{content==1?"someone":`${content} people`}} to the chat</p>
+        <p v-else-if="msg_type==6" class="m-ct__txt _m-ct__chat-chng">Changed chat name to <strong>{{ content }}</strong></p>
+        <p v-else-if="msg_type==7" class="m-ct__txt _m-ct__chat-chng">
+            Changed chat background
+            <img :src="content" class="m-ct__new-bg">
+        </p>
+        
+        <p v-else-if="msg_type==10" class="m-ct__txt _m-ct__deleted">Đã xóa một tin nhắn</p>
     </div>
 </template>
 
@@ -24,40 +35,45 @@ export default {
     ],
     computed: {
         ytLink() { 
-            return "https://www.youtube-nocookie.com/embed/" + this.content
+            return `https://www.youtube-nocookie.com/embed/${this.content}`
         },
     }
 }
 </script>
 
 <style>
-._w {
-    max-width: 70vw;
+._msg-ct {
+    display: inline-block;
+    max-width: 75%;
 }
-.txt_msg {
-    /* user-select: text; */
+.m-ct__txt {
     border-radius: 20px;
     /* word-break: break-all; */
     word-wrap: break-word;
     padding: 6px 11px;
     background: rgba(255, 255, 255, 0.95);
-    color: #000;
 } 
-.txt_msg#true { /*override friend's bubble*/
+._ct-is-me .m-ct__txt { /*my bubble*/
     background: rgba(72, 133, 237, 0.95);
     color: #fff;
 }
 
-.deleted_msg {
-    border-radius: 20px;
-    /* word-break: break-all; */
-    word-wrap: break-word;
-    padding: 6px 11px;
+._m-ct__chat-chng {
+    background: hsla(0, 0%, 69%, 0.719) !important;
+    color: #fff;
+    font-style: italic;
+}
+.m-ct__new-bg {
+    display: block;
+    max-width: 100%;
+}
+
+._m-ct__deleted {
     background: #88888888;
     font-style: italic;
 }
 
-.yt_embed{
+.m-ct__yt-embed{
     /* max-width: 280px; */
     border-radius: 20px;
     overflow: hidden;
@@ -66,9 +82,10 @@ export default {
     background: #00000077;
 }
 
-.picture_msg {
+.m-ct__img {
     border-radius: 20px;
-    margin: 1px 0;
     background: #00000077;
+    width: 100%;
+    max-height: 10000px;
 }
 </style>

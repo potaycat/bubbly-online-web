@@ -1,5 +1,5 @@
 <template>
-    <section class="relationships">
+    <section class="relationships box-shadow-2">
         <h3 id="flng">Following</h3>
         <div id="s">
             <n-link class="pfp-l" :to="'/user/' + user.to_user.username" v-for="user in following" :key="user.id">
@@ -29,8 +29,6 @@ export default {
 .relationships {
     background-color: white;
     max-width: 700px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    
     border-radius: 15px;
     border: 1px;
     border-style: solid;

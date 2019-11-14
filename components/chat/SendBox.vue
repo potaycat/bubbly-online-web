@@ -1,26 +1,25 @@
 <template>
-    <div class="_send_box">
-        <div class="lift">
-        <button @click="" class="_sb_btn" href="#"><i class="material-icons-round">add</i></button>
-        <button @click="" class="_sb_btn" href="#"><i class="material-icons-round">insert_photo</i></button>
-        </div>
-        <div class="input">
-            <!-- for .style to flipping work vvvvv -->
+    <div id="_send-box">
+        <button @click="" class="_sb__btn box-shadow-4 push lift" href="#">
+            <i class="material-icons-round">add</i></button>
+        <button @click="contentType=2;pushMsg()" class="_sb__btn box-shadow-4 push lift" href="#">
+            <i class="material-icons-outlined">photo_library</i></button>
+        <div id="sb__input" class="box-shadow-4">
             <textarea
-                type="text"
-                placeholder="Your message"
-                name="da_message"
-                v-model="msg"
-
-                @keydown.enter.exact.prevent
-                @keyup.enter.exact="pushMsg()"
-                @keydown.enter.shift.exact="msg+'\n'"
-
+                ref="dynH"
+                placeholder="Your message..."
                 autocomplete="off"
+                v-model="input"
+                @keydown.enter.exact.prevent
+                @keyup.enter.exact="contentType=1;pushMsg()"
+                @keydown.enter.shift.exact="input+'\n'"
                 @input= "startTypin()"
             />
+            <button @click="contentType=1;pushMsg()" id="_sb__send-btn" 
+                :style="[input ? {'transform':'translateY(-3px) rotate(-40deg)'} : {'color':'#00000033'}]"
+            ><i class="nopaque material-icons-round">send</i>
+            </button>
         </div>
-        <button @click="pushMsg()" id="_send_btn" class="nopaque" v-bind:style="[!msg ? {'color':'#00000033'} : {'transform':'rotate(-40deg)'}]"><i class="material-icons-round">send</i></button>
     </div>
 </template>
 
@@ -28,45 +27,46 @@
 export default {
     data() {
         return {
-            msg: "",
+            input: "",
             signalable : true,
             pseudoId: 0,
+            contentType: 1,
         }
     },
-    // non-reactive data {
+    // an ok place to put constants {
         le_height: "27px",
     // }
     computed: {
-        msg_content() { 
-            if (this.msg.replace(/\s/g, '')!="") {
-                let ifYtLink = (this.youtube_parser(this.msg))
+        msg_content() {
+            if (this.input.replace(/\s/g, '')!="") {
+                const ifYtLink = (this.youtubeParser(this.input))
                 if (ifYtLink) {
                     return [3, ifYtLink]                    
                 }
-                return [1, this.msg]
+                return [this.contentType, this.input]
             }
-            return false
+            return null
         },
     },
     methods: {
-        youtube_parser(url){ //https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
-            let regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/
-            let match = url.match(regExp)
-            return (match&& !/\s/.test(url) &&match[1].length==11)? match[1] : false
+        youtubeParser(url) { //https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
+            const regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/
+            const match = url.match(regExp)
+            return (match && !/\s/.test(url) && match[1].length==11) ? match[1] : false
         },
         scroll2Bottom() {
-            let container = document.querySelector(".la_content")
+            const container = document.querySelector(".la_content")
             container.scrollTop = container.scrollHeight
         },
 
         pushMsg() {
             if(this.msg_content) {
-                this.$emit('sentMeMsg', {
-                    author: this.$store.state.jwtlogin.my_profile,
+                this.$emit('outBoxing', {
+                    author: this.$store.state.auth.my_profile,
                     id: this.pseudoId,
                     msg_type: this.msg_content[0],
                     content: this.msg_content[1],
-                    timestamp: "sendin",
+                    timestamp: "sndng",
                 })
                 this.$socket.sendObj({
                     f_pseudoId: this.pseudoId,
@@ -74,36 +74,33 @@ export default {
                     f_content: this.msg_content[1],
                 })
                 this.signalable = true
-                this.msg = ""
+                this.input = ""
                 this.pseudoId +=1
                 this.resetHeight()
             }
         },
-
         signalTyping(){
-            try { this.$socket.send("typin") } catch (error) {}
+            try { this.$socket.send("tpng") } catch (error) {}
         },
-
-        startTypin(){
-            let input = document.querySelector("._send_box textarea")
-            input.style["height"] = this.$options.le_height
-            if (input.clientHeight < input.scrollHeight) {
-                if (input.scrollHeight < 105) input.style["height"] = input.scrollHeight +"px"
-                else {input.style["height"] = "105px"}
-            }
-            this.$emit('barHeight', input.style["height"])
-            
-            this.scroll2Bottom()
+        startTypin(){            
             if (this.signalable) {
                 this.signalTyping()
-                this.signalable = false;
+                this.signalable = false
                 setTimeout(() => { this.signalable = true }, 8000)
             }
-        },
 
+            const txtA = this.$refs.dynH
+            txtA.style["height"] = this.$options.le_height
+            if (txtA.clientHeight < txtA.scrollHeight) {
+                if (txtA.scrollHeight < 105) txtA.style["height"] = txtA.scrollHeight+3 +"px"
+                else {txtA.style["height"] = "105px"}
+            }
+            this.$emit('barHeight', txtA.style["height"])
+            this.scroll2Bottom()
+        },
         resetHeight() {
-            let input = document.querySelector("._send_box textarea")
-            input.style["height"] = this.$options.le_height
+            const txtA = this.$refs.dynH
+            txtA.style["height"] = this.$options.le_height
             this.$emit('barHeight', this.$options.le_height)
         }
     },
@@ -114,51 +111,39 @@ export default {
 </script>
 
 <style>
-._send_box {
-    background-color: transparent;
+#_send-box {
     overflow: hidden;
     position: fixed;
     bottom: 0;
-    width: 100%;
     z-index: 999;
     display: flex;
-    padding: 10px 0;
+    padding: 10px 3px;
+    width: 100%;
+    /* width: 110%;
+    margin-left: -10%; */
 }
-._send_box ._sb_btn {  
+#_send-box ._sb__btn {  
     border-radius: 100px;
    
     width: 35px;
     height: 35px;
-    
-    color: #fff;
     padding: 5px;
-    
-    background: rgba(72, 133, 237, 0.95);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-}
-._send_box .lift {
     margin: auto 0 1px 5px;
-}
-
-._send_box .input{
-    outline: none;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
-    /* border: 1px;
-    border-style: solid;
-    border-color: #eee; */
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    margin: auto 5px;
-    width: calc(100% - 95px);
-
-    font-size: 14px;
     
-    /* border: none;
-    background: #ffffff77; */
+    color: rgba(72, 133, 237, 0.95);
+    background: #fff;
 }
-._send_box textarea {
+
+#_send-box #sb__input{
+    border-radius: 20px;
+    font-size: 14px;
+    /* border: solid 1px #eee; */
+    background: rgba(255, 255, 255, 0.95);
+    margin: auto 6px;
+    width: 100%;
+
+}
+#_send-box textarea {
     resize: none;
     margin: 6px 0 0 8px;
     outline: none;
@@ -169,17 +154,10 @@ export default {
     font-size: 14px;
     
 }
-._send_box #_send_btn{
+#_send-box #_sb__send-btn{
     transition: .2s;
-
     color: rgb(72, 133, 237);
-    text-align: center;
-    vertical-align: middle;
-    padding: 3px 0 0 9px;
-    
-    position: relative;
-    right: 45px;
-    margin-right: -99px;
+    position: absolute;
+    bottom: 12px;
 }
-
 </style>

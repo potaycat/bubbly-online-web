@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import ConvoList from '@/components/chat/ConvoList'
+import ConvoList from '@/components/chat/list'
 export default {
     components: {
         ConvoList,

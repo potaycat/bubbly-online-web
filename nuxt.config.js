@@ -40,6 +40,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    '@/plugins/filters', // Vue filters
     '@/plugins/sock',
     // '@/plugins/social_share',
   ],
@@ -74,12 +75,12 @@ module.exports = {
   },
   
   router: {
-    scrollBehavior (to, from, savedPosition) {
-      if (savedPosition) {
-        return savedPosition
-      } else {
-        return { x: 0, y: 0 }
-      }
-    }
+    // scrollBehavior (to, from, savedPosition) {
+    //   if (savedPosition) {
+    //     return savedPosition
+    //   } else {
+    //     return { x: 0, y: 0 }
+    //   }
+    // }
   }
 }

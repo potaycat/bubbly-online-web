@@ -1,51 +1,43 @@
 <template>
-    <div class="the_big_frame"><div class="la_content">
-        <div style="min-height:110px"/>
+    <div class="the_big_frame"><div class="la_content" ref="feed">
+        <div style="min-height:105px"/>
         <div v-for="roomCluster in fetchedData"
             class="_p"
-            :key="roomCluster.community.id"
+            :key="roomCluster.id"
         >
-            <div class="glow"><nuxt-link :to="`/community/${roomCluster.community.id}`" class="_p_info">
-                <img class="comu_icon" :src="roomCluster.community.icon_img">
-                <p>{{ roomCluster.community.name }}</p>
+            <nuxt-link :to="`/community/${roomCluster.id}`" class="_p_info glow">
+                <img class="cmnty-ico" :src="roomCluster.icon_img">
+                <p>{{ roomCluster.name }}</p>
                 <i class="material-icons-round">arrow_forward</i>
-            </nuxt-link></div>
+            </nuxt-link>
 
-            <div class="lift"><div v-for="room in roomCluster.recently_active"
-                class="room_p bg"
+            <div v-for="room in roomCluster.recently_active"
+                class="pblc-chats box-shadow-2 bg lift"
                 @click="toChat(room)"
                 :key="room.id"
-                :style="`background:url(${room.bg_img ? room.bg_img : roomCluster.community.cover_img}) center`"
+                :style="`background:url(${room.bg_img ? room.bg_img : roomCluster.cover_img}) center`"
             >
-                <div class="tt">
+                <div class="pblc-chats__txt">
                     <div class="name">{{ room.name ? room.name : "Phòng chat cộng đồng" }}</div>
-                    <span>{{ tiemstamp(room.last_msg.timestamp) }}</span>
+                    <span>{{ room.last_msg.timestamp | tiemstamp }}</span>
                 </div>
-                <p class="last">{{ displayLastMsg(room.last_msg) }}</p>
-            </div></div>
+                <p class="pblc-chats__last">{{ room.last_msg | lastMsgDspl }}</p>
+            </div>
         </div>
         <div style="min-height: 69px"/>
     </div></div>
 </template>
 
 <script>
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, scrlDirection } from '@/mixins/feedingFrenzy'
 import { chatLs } from '@/mixins/chatLs'
 
 export default {
-    mixins: [
-        feedingFrenzy,
-        chatLs,
-    ],
+    mixins: [feedingFrenzy, chatLs, scrlDirection],
     data() {
         return {
-            cache: 'st_pChats',
+            feedUrl: 'chat/explore/',
         }
-    },
-    methods: {
-        urlConstruct(offset) {
-            return 'communities/joined/avail-rooms/'
-        },
     },
 }
 </script>
@@ -66,7 +58,7 @@ export default {
     display: flex;
     padding: 5px;
 }
-._p ._p_info .comu_icon {
+._p ._p_info .cmnty-ico {
     height: 35px;
     width: 35px;
     
@@ -74,33 +66,30 @@ export default {
 }
 ._p ._p_info p {
     word-spacing: 0;
-    pointer-events: none;
     margin:auto;
     margin-left: 3px;
     font-weight: bold;
     /* font-size: 15px; */
 }
 
-.room_p {
+.pblc-chats {
     /* box-shadow: inset 0 -10px 10px -10px #000000; */
     /* width: 100%; */
-    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
     height: 120px;
-    margin: 2px 10px 10px 63px;
+    margin: 2px 25px 10px 60px;
     border-radius: 25px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
 
 }
-.room_p .tt {
+.pblc-chats .pblc-chats__txt {
     color: #fff;
     margin-top: auto;
-    text-shadow: 0px 0px 10px #000;
-    pointer-events: none;
+    text-shadow: 0px 0px 6px #000;
     display: flex;
 }
-.room_p .name {
+.pblc-chats .name {
     font-size: 18px;
     overflow: hidden;
     padding: 1px 5px 5px 14px;
@@ -109,7 +98,7 @@ export default {
     font-weight: bold;
     max-height: 50px;
 }
-.room_p .last {
+.pblc-chats .pblc-chats__last {
     margin: 0 14px 9px 14px;
 
     /* border-radius: 20px;
@@ -117,14 +106,13 @@ export default {
     padding: 4px 8px;
     background: rgba(255, 255, 255, 0.95); */
     color: #eee;
-    text-shadow: 0px 0px 3px #444;
+    text-shadow: 0px 0px 4px #222;
     font-size: 14px;
     max-height: 53px;
     overflow: hidden;
-    pointer-events: none;
     word-break: break-all;
 }
-.room_p span {
+.pblc-chats span {
     font-size: 14px;
     margin: 5px 14px 0 auto;
 }

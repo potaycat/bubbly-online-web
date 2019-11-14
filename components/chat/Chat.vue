@@ -3,17 +3,18 @@
         <div class="the_big_frame" v-bind:style="[moring ? {'filter':'blur(15px)'} :null]">
             <transition appear name="fade_in">
                 <img class="chat-bg"
-                >
+                    :style="'background:'+roomBackground"
+                />
             </transition>
             <div ref="scrollCtn" class="la_content">
                 <div style="min-height: 65px"/>
 
                 <transition name="fade">
-                    <div v-if="reachedEnd" class="_thread_beginning">
+                    <div v-if="reachedEnd" class="_thread-beginning">
                         👋 Welcome to the beginning<br>of this conversation </div>
                 </transition>
 
-                <div v-if="loading4More" class="_fetchin_indcat"><Spinner/>
+                <div v-if="loading4More" class="_fetch-indcat"><Spinner/>
                 </div>
                 <Bubble v-for="(message, index) in conversation"
                     :key="message.id"
@@ -22,226 +23,224 @@
                 />
                 <PeepTyping :peeps="typing"/>
                 
-                <div id="_bottomH" style="transition:.2s"/><div style="min-height: 44px;"/>
+                <div ref="sndBxLev" style="transition:.2s"/><div style="min-height: 44px;"/>
                 
-                <div class="nopaque"><transition name="just_slide_up" >
-                    <button v-if="!atBottom" id="_s2b_btn" @click="jump2Present()">Jump to present</button>
-                </transition></div>
+                <transition name="just_slide_up" >
+                    <button v-if="!atBottom" id="chat__s2b-btn box-shadow-2" class="nopaque" @click="jump2Present()">Jump to present</button>
+                </transition>
                 <SendBox
-                    @sentMeMsg="viewMyMsgNow"
+                    @outBoxing="showAnyway"
                     @barHeight="bottomShift"
                 />
             </div>
         </div>
-        <ChatInfo v-if="moring && fullyLoaded" :threadInfo="threadInfo"/>
+        <ChatInfo v-if="moring && fullyLoaded" :threadInfo="threadInfo" :title="roomTitle[1]"/>
         <!-- <button style="position:fixed;top:50%;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
     </div>
 </template>
 
 <script>
 import SendBox from './SendBox'
-import Bubble from './bubble/Bubble'
-import Spinner from '@/components/Spinner'
+import Bubble from './bubble'
 import PeepTyping from './PeepTyping'
-import ChatInfo from './info/ChatInfo'
+import ChatInfo from './info'
+import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+
 export default {
     components: {
         SendBox,
         Bubble,
-        Spinner,
         PeepTyping,
         ChatInfo,
     },
+    mixins: [feedingFrenzy],
     data() {
         return {
-            conversation: [], //equavelent to fetched data
+            feedUrl: `chat/${this.$route.params.id}/history/`,
             typing: [],
-
-            loading4More: false,
-            reachedEnd: false,
             atBottom: true,
             fullyLoaded: false
         }
     },
+    computed: {
+        conversation() {return this.fetchedData.slice().reverse()},
+        threadInfo() {return this.$store.state.chat.currentChat},
+        moring() {return this.$store.state.detailBanner.moring},
+        roomBackground() {
+            if (this.threadInfo) {
+                if (this.threadInfo.bg_img) {
+                    return `url(${this.threadInfo.bg_img})`
+                }
+            }
+            return `linear-gradient(${Math.floor(Math.random()*360) // random degree
+                }deg, #ff0000, #0000ff)`
+        },
+        roomTitle() {
+            const owo = this.threadInfo            
+            if (owo) {
+                const t = this.threadInfo.name
+                switch (owo.room_type) {
+                    case 'direct':
+                        return [
+                            {
+                                src: owo.room_type_data.profile_pic,
+                                style: 'circle'
+                            },
+                            t ? t : owo.room_type_data.alias
+                        ]
+                    case 'group':
+                        return [null, t ? t : `Nhóm chat gồm ${owo.room_type_data.member_count.toString()} người`]
+                    case 'public':
+                        return [
+                            {
+                                src: owo.room_type_data.bg_img,
+                                style: 'square'
+                            },
+                            t ? t : "Chat cộng đồng"
+                        ]
+                }
+            }
+            return [null, "Loading..."]
+        },
+    },
+    watch: {
+        fetchedData() {
+            const container = this.$refs.scrollCtn
+            if (container.scrollTop < 1) {container.scrollTop = 2} // fixes sticking to top
+        },
+        roomTitle: {
+            immediate: true,
+            handler(newVal) {
+                if (newVal[0]) this.$store.commit('detailBanner/loadPic', newVal[0])
+                this.$store.commit('detailBanner/loadText', newVal[1])
+            },
+        },
+    },
     updated() {
-        // console.log("oh no");
-        
         // this.$nextTick(function () {})
         if (this.atBottom) this.scroll2Bottom()
     },
-    computed: {
-        moring() {
-            return this.$store.state.detailBanner.moring
-        },
-        threadInfo() {
-            return this.$store.state.chat.currentChat
-        },
-    },
     methods: {
+        scrllActive() {
+            const container = this.$refs.scrollCtn
+            container.addEventListener('scroll', () => {
+                // console.log(evt);
+                if (container.scrollTop <= 350) {
+                    if (!this.loading4More && !this.reachedEnd) {
+                        this.fetch();
+                    }
+                }
+                if (container.scrollHeight - container.clientHeight <= container.scrollTop + 80) { // +57 is for hiding url bar
+                    if(!this.atBottom) this.atBottom=!this.atBottom
+                } else if(this.atBottom) this.atBottom=!this.atBottom
+            }, {capture: true, passive: true})
+        },
+
             DEBUG(){
-            console.log("debug bruh");
-            // console.log(this.butteryscroll);
-        
+                console.log("debug bruh")
             // document.getElementById("the_big_frame").style["filter"]= 'blur(35px)';        
             },
             
-        viewMyMsgNow(myMsg) {
-            this.conversation.push( myMsg );
-        },
-        bottomShift(height) {
-            const butt = document.querySelector("#_bottomH");
+        bottomShift(height) { // dynamic send box height
+            const butt = this.$refs.sndBxLev
             butt.style["min-height"] = height
         },
-        butt(){ this.atBottom=!this.atBottom },
-
         scroll2Bottom() {
             const container = this.$refs.scrollCtn
             if (container.scrollHeight-container.clientHeight> container.scrollTop + 90){
                 container.scrollTop = container.scrollHeight;
             }
             else {
-                const butter = setInterval(() => { container.scrollBy(0, 1) }, 1)// smooth scroll
+                const butter = setInterval(() => { container.scrollBy(0, 1) }, 1)
                 setTimeout(() => {
                     clearInterval(butter) // smooth scroll is tiring bruh
-                }, 300);
+                }, 300)
             }
         },
         jump2Present() {
+            this.fetchedData=this.fetchedData.slice(0, 35);
             this.reachedEnd = false;
-            this.conversation=this.conversation.slice(-30, );
-            this.scroll2Bottom();
+            this.scroll2Bottom()
         },
 
-        fetch(last_msg) {
-            this.loading4More = true
-            this.$axios.get('chat/history/?format=json&thread='+this.$route.params.id+'&offset='+last_msg,
-                this.$store.state.pheader)
-            .then(res => {
-                if (res.data.length < 20) this.reachedEnd = true
-                const container = this.$refs.scrollCtn
-                if (container.scrollTop == 0) {container.scrollTop = 100}
-                
-                this.conversation.unshift(...res.data.reverse());
-                this.loading4More = false
-            })
+        showAnyway(outboxMsg) {
+            this.fetchedData.unshift(outboxMsg)
         },
 
-        initRoom(){
-            const owo = this.threadInfo.meta_data
-            this.$store.commit('detailBanner/loadText', this.threadInfo.name ? this.threadInfo.name : "Chat cộng đồng");
-            switch (owo.room_type) {
-                case "group":
-                    const t = this.threadInfo.name
-                    if (!t) {
-                        t = "Nhóm chat gồm "+owo.data.member_count.toString()+" người"
-                    }
-                    this.$store.commit('detailBanner/loadText', t)
-                    break;
-                case "direct": 
-                    this.$store.commit('detailBanner/loadText', owo.data.alias);
-                    this.$store.commit('detailBanner/loadPic', {
-                        src: owo.data.profile_pic,
-                        style:'circle'
-                    })
-                    break;
-                default:
-                    break;
-            }
-            this.$nextTick(() => {
-                const bg = document.querySelector("#inChat .chat-bg")
-                if (this.threadInfo.bg_img) {
-                    bg.src = this.threadInfo.bg_img
-                } else if (!bg.style.background) {
-                    bg.style.background= `linear-gradient(${Math.floor(Math.random()*360) // random degree
-                    }deg, #ff0000, #0000ff)`
-                }
-            })
+        onMessageHandler() {
+            this.$connect(`${this.$store.state.wsBase}ws/chat/${this.$route.params.id}?token=${this.$store.state.auth.jwt}`)
+            this.$options.sockets.onmessage = (res) => {
+                const recived = JSON.parse(res.data)
 
-        }
-    },
-    created() {
-        const body = document.querySelector('body')
-        body.style['overscroll-behavior']= 'contain';
-
-        this.$connect(this.$store.state.wsBase+'ws/chat/'+this.$route.params.id+'/?token='+this.$store.state.jwtlogin.jwt)
-        // this.conversation.unshift(...this.threadInfo.last_few_msgs.reverse());
-        // delete this.threadInfo.last_few_msgs
-        if (this.conversation.length==0) this.fetch('')
-        // else this.fetch(this.conversation[0].id)
-        try {
-            this.initRoom()
-        } catch (error) {
-            console.log(error)
-        }
-        this.$axios.get('chat/room/?format=json&id='+this.$route.params.id, 
-            this.$store.state.pheader)
-            .then(res => {
-                this.fullyLoaded = true
-                this.$store.commit('chat/loadChat', res.data)
-                this.initRoom()
-            })
-        
-        this.$options.sockets.onmessage = (res) => {
-            const recived = JSON.parse(res.data)
-
-            if (recived.msg_data.msg_type == 9){ // typing indicator            
-                if (recived.user.id != this.$store.state.jwtlogin.my_profile.id) {
-                    const index = this.typing.findIndex(x => x.user.id ==recived.user.id);
-                    if (index == -1){
-                        this.typing.push({
-                            user: recived.user,
-                            selfDestruct: setTimeout((index) => {
-                                this.typing.splice(index, 1);
-                            }, 10000), 
-                        });
-                    } else {
-                        clearTimeout(this.typing[index].selfDestruct);
-                        this.typing[index].selfDestruct = setTimeout((index) => {
-                            this.typing.splice(index, 1);
-                        }, 10000);
-                    }
-                }
-            }
-
-            else {
-                if (recived.msg_data.author.id != this.$store.state.jwtlogin.my_profile.id){
-                    this.conversation.push( recived.msg_data );
-                    const index =this.typing.findIndex(x => x.user.id ==recived.msg_data.author.id)
-                    if (index != -1){ //remove "typing" status
-                        clearTimeout(this.typing[index].selfDestruct);
-                        this.typing.splice(index, 1);
+                if (recived.typing){ // typing signal            
+                    if (recived.user.username != this.$store.state.auth.my_profile.username) {
+                        const i = this.typing.findIndex(x => x.user.username==recived.user.username)
+                        if (i == -1){
+                            this.typing.push({
+                                user: recived.user,
+                                selfDestruct: setTimeout((i) => {
+                                    this.typing.splice(i, 1)
+                                }, 10000), 
+                            });
+                        } else {
+                            clearTimeout(this.typing[i].selfDestruct);
+                            this.typing[i].selfDestruct = setTimeout((i) => {
+                                this.typing.splice(i, 1)
+                            }, 10000);
+                        }
                     }
                 }
                 else {
-                    const index =this.conversation.findIndex(x => x.id==recived.f_pseudoId)
-                    const changeThis = this.conversation[index]
-                    
-                    changeThis.timestamp = recived.msg_data.timestamp;
-                    changeThis.realId = recived.msg_data.id; // fixes auto re-render
+                    //todo refector
+                    const msg = recived.msg_data
+                    if (msg.msg_type == 6) {
+                        this.$store.commit('chat/updateName', msg.content)
+                        this.$store.commit('detailBanner/loadText', msg.content)
+                        this.fetchedData.unshift(msg)
+                    } else if (msg.msg_type == 7) {
+                        this.$store.commit('chat/updateBgImg', msg.content)
+                        this.fetchedData.unshift(msg)
+                    } else if (msg.msg_type == 5) {
+                        this.fetchedData.unshift(msg)
+                    }
+                    else if (msg.author.username != this.$store.state.auth.my_profile.username) {
+                        // remove "typing" status
+                        const i =this.typing.findIndex(x => x.user.username==msg.author.username)
+                        if (i != -1) {
+                            clearTimeout(this.typing[i].selfDestruct)
+                            this.typing.splice(i, 1)
+                        }
+                        this.fetchedData.unshift(msg)
+                    } else { // update my message
+                        const index = this.fetchedData.findIndex(x => x.id==recived.f_pseudoId)
+                        if (index != -1) {
+                            const changeThis = this.fetchedData[index]
+                            changeThis.timestamp = msg.timestamp
+                            changeThis.serverId = msg.id // fix auto re-render
+                        }
+                    }
                 }
             }
         }
     },
-    mounted() {
-        // INFINITE SCROLL // Can't mixins due to distinct functionalities 
-        const container = this.$refs.scrollCtn
-        container.addEventListener('scroll', () => {
-            // console.log(evt);
-            if (container.scrollTop <= 400) {
-                if (!this.loading4More && !this.reachedEnd) {
-                    this.fetch(this.conversation[0].id);
-                }
-            }
-            if (container.scrollHeight - container.clientHeight <= container.scrollTop + 80) { // +57 is for hiding url bar
-                if(!this.atBottom) this.butt()
-            } else if(this.atBottom) this.butt()
-        }, {
-            capture: true,
-            passive: true})
-        // End of infinite scroll
+    created() {
+        document.querySelector('body').style['overscroll-behavior']='contain'
+
+        this.$axios.get(`chat/${this.$route.params.id}`, 
+            this.$store.state.authHeader)
+            .then(res => {
+                this.$store.commit('chat/loadChat', res.data)
+                this.fullyLoaded = true
+            })
+
+        this.onMessageHandler()
     },
     destroyed() {
         this.$disconnect()
+        if (this.threadInfo.roommate_info) {
+            this.$axios.patch(`chat/${this.threadInfo.id}/self-edit`, null,
+                this.$store.state.authHeader).then(res => {}) // update last seen
+        }
         this.$store.commit('chat/loadChat', null)
     },
 }
@@ -249,25 +248,27 @@ export default {
 
 <style>
 /* big frame at main css */
-#inChat .the_big_frame .chat-bg{
+#inChat .chat-bg {
     z-index: -999;
     height: 100%;
     width: 100%;
     position: fixed;
 }
 
-#_s2b_btn {
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+#chat__s2b-btn {
     border-radius: 100px 100px 50px 50px ;
-    position: fixed; bottom: 61px; left: 39%;
+    position: fixed; bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 4px 8px;
     background: #ffffffcc;
     font-size: 12px;
     color: rgba(72, 133, 237, 0.75);
     z-index: 19;
+    word-spacing: 0;
 }
 
-._thread_beginning {
+._thread-beginning {
     width: 100%;
     background: linear-gradient(rgb(255,255,255), rgba(0,0,0,0) );
     margin: -69px 0 0 0;
@@ -278,8 +279,9 @@ export default {
     text-shadow: -1px -1px 0 #444
 }
 
-._fetchin_indcat {
+._fetch-indcat {
     text-align: center;
     width: 100%;
+    transform: scale(0.7)
 }
 </style>

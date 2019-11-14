@@ -1,40 +1,39 @@
 <template>
-        <transition appear name="zoom_fade">
-    <div class="total_darkness">
-        <div style="width:100%;height:100%;position:fixed;top:0;z-index:-99" @click="inputted(false)"/>
-        <div class="ip_box">
-            <p class="diag_title">
-                {{ leDisplay.title }}
+<transition appear name="zoom_fade">
+    <div class="total_darkness" @click.self="inputted(false)">
+        <div id="diag-box" class="box-shadow-4">
+            <p class="diag__title">
+                {{ toDisplay.title }}
             </p>
-            <div class="diag_content">
-                {{ leDisplay.description }}
+            <div class="diag__content">
+                {{ toDisplay.description }}
             </div>
-<div class="diag_content" v-if="leDisplay.input_desc">
-    <div class="form__group">
-        <input v-model="user_input" id="naim" class="form__field" v-on:keyup.enter="inputted(user_input)" placeholder="_">
-        <label for="naim" class="form__label">{{ leDisplay.input_desc }}</label>
-    </div>
-</div>
 
-            <div v-if="leDisplay.alert" class="btn_list glow">
-                <button @click="inputted(false)">OK</button>
+            <div class="diag__content" v-if="toDisplay.input_desc">
+                <div class="form__group">
+                    <input  id="uip" v-model="user_input" class="form__field" v-on:keyup.enter="inputted(user_input)" placeholder="_">
+                    <label for="uip" class="form__label">{{ toDisplay.input_desc }}</label>
+                </div>
             </div>
-            <div v-else class="btn_list glow">
-                <button @click="inputted(user_input)"
+
+            <div v-if="toDisplay.alert" class="diag__btn-ls">
+                <button class="glow" @click="inputted(false)">OK</button>
+            </div>
+            <div v-else class="diag__btn-ls">
+                <button class="glow" @click="inputted(user_input)"
                 >OK</button>
-                <button @click="inputted(false)"
+                <button class="glow" @click="inputted(false)"
                 >CANCEL</button>
             </div>
-
         </div>
     </div>
-        </transition>
+</transition>
 </template>
 
 <script>
 export default {
     props: [
-        'leDisplay',
+        'toDisplay',
     ],
     data() {
         return {
@@ -49,35 +48,34 @@ export default {
         },
     },
     mounted() {
-        if (this.leDisplay.input_desc) { this.user_input="" }
+        if (this.toDisplay.input_desc) { this.user_input="" }
     },
 }
 </script>
 
 <style>
-.total_darkness .ip_box {
+.total_darkness #diag-box {
     z-index: 999;
     margin: auto;
     /* background: #ffffffdd; */
     background: linear-gradient(160deg, #fff 0, #ffffffee 50%, #fff 100%);
     border-radius: 15px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     width: 320px;
 }
 
-.ip_box .diag_title{
+#diag-box .diag__title{
     font-weight: bold;
     font-size: 18px;
     margin: 18px 18px 15px 18px;
 }
-.ip_box .diag_content{
+#diag-box .diag__content{
     margin: 0 18px;
 }
-.ip_box .btn_list{
+#diag-box .diag__btn-ls{
   direction: rtl;
     margin: 18px 9px 9px 18px;
 }
-.btn_list button{
+.diag__btn-ls button{
     font-weight: bold;
     font-size: 15px;
     padding: 12px;

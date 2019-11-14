@@ -1,16 +1,15 @@
 <template>
     <div>
         <Tabs
-            :class="['top-lev-tabs', $store.state.scrollinUp ? null: 'top-lev-contract']"
             :tabs="['CỘNG ĐỒNG', 'CÁ NHÂN']"
             :currentTab="currentTab"
             @switchTo="newTab"
         />
-
         <keep-alive>
             <HomeFeed v-if="currentTab==0" />
-            <MyChats v-if="currentTab==1" />
+            <MyChatList v-if="currentTab==1" />
         </keep-alive>
+        <!-- <button style="position:fixed;top:50%;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
     </div>
 </template>
 
@@ -18,15 +17,26 @@
 import { tabs } from '@/mixins/tabs'
 
 import HomeFeed from './post/HomeFeed'
-import MyChats from '@/components/chat/list/Mien'
+import MyChatList from '@/components/chat/list/MyChatList'
 
 export default {
     components: {
         HomeFeed,
-        MyChats,
+        MyChatList,
     },
     mixins: [
         tabs,
     ],
+    methods: {
+        DEBUG() {
+            this.$axios.post('posts/1/comments/create',
+            {text:"bruhhhh"}
+            , this.$store.state.authHeader)
+                .then(res => {
+                    console.log(res);
+                    
+                })
+        }
+    }
 }
 </script>

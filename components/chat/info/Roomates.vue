@@ -1,116 +1,101 @@
 <template>
-        <transition appear name="slide_down">
-    <div class="mate_containter">
-            <div class="_actions glow">
-                <div>Actions</div>
-                <button v-if="isAdmin" @click="toggleMemAdd()">Add members</button>
-                <button v-if="isAdmin">Promote Admin</button>
-                <button>Sort by:</button>
-                <button>Search</button>
+<transition appear name="slide_down">
+    <div class="rmate-ctnr" ref="feed">
+            <div class="rmate__actions">
+                <p>Options</p>
+                <button v-if="isAdmin" class="glow" @click="openAddDiag">Add members</button>
+                <button v-if="isAdmin" class="glow" @click="openAddDiag">Promote Admin</button>
+                <!-- <button class="glow">Sort by:</button> -->
+                <button class="glow" @click="">Order by:<br>Time</button>
             </div>
-            <div v-for="gr in peeps" :key="gr[0].identity.id" class="_peep_ctn glow">
-                <div v-for="mate in gr" :key="mate.identity.id" class="_chat_member">
-                        <transition name="fade_in">
-                    <img class="pfp_l" :src="mate.identity.profile_pic"></transition>
-                    <p>{{ mate.identity.alias }}</p>
-                </div>
+
+        <transition-group name="fade_in">
+            <div v-for="mate in fetchedData" :key="mate.username" class="_rmates push">
+                <img class="pfp" :src="mate.profile_pic">
+                <p>{{ mate.alias }}</p>
             </div>
-        <NewCh v-if="addingMem" :room_id="room_id" 
-            @close_diag="toggleMemAdd"/>
+        </transition-group>
+
+        <AddDiag v-if="$route.query.chat_add=='open'" :room_id="room_id" 
+            @added="refreshMates" style="height:calc(100% - 35px);top:45px"/>
     </div>
-        </transition>
+</transition>
 </template>
 
 <script>
-import NewCh from '../NewCh'
+import AddDiag from '../AddDiag'
+import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
     components: {
-        NewCh,
+        AddDiag,
     },
+    mixins: [feedingFrenzy],
     props: [
         'room_id',
         'isAdmin'
     ],
     data() {
         return {
-            peeps: [],
-            addingMem: false,
+            feedUrl: `chat/${this.room_id}/roommates/`,
         }
     },
-    computed: {
-    },
-    created() {
-        this.$axios.get('chat/roommates/?format=json&room_id='+this.room_id, 
-            this.$store.state.pheader )
-        .then(res => {
-            // for (let i = 0; i < 20; i++) { 
-                this.peeps.push(...res.data) 
-            // }
-            this.peeps = this.groupArr(this.peeps, 4)
-        })
-        
-    },
     methods: {
-        toggleMemAdd() {
-            this.addingMem = ! this.addingMem
+        openAddDiag() {
+            this.$router.push({query: {chat_add: 'open'}})
         },
-        groupArr(data, n) { //stolen https://stackoverflow.com/questions/38048497/group-array-values-in-group-of-3-objects-in-each-array-using-underscore-js
-            let group = [];
-            for (let i = 0, j = 0; i < data.length; i++) {
-                if (i >= n && i % n === 0) j++;
-                group[j] = group[j] || [];
-                group[j].push(data[i])
-            }
-            return group;
+        refreshMates() {
+            this.fetchedData = []
+            this.fetch()
         },
     }
 }
 </script>
 
-<style>
-.mate_containter{
-  scroll-snap-type: mandatory;
-  scroll-snap-points-x: repeat(300px);
-
+<style scoped>
+.rmate-ctnr, .rmate-ctnr span {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.rmate-ctnr{
     box-shadow: 
         inset 0px 11px 8px -10px #00000077,
         inset 0px -11px 8px -10px #00000077; 
     background: #00000019;
-    /* pointer-events: none; */
-    width: 100%;
     height: 390px;
-    overflow-y: hidden;
+    position: relative;
 }
-.mate_containter ._peep_ctn{ /* REMOVE/FIX THIS */
-    scroll-snap-align: start;
-    /* background: #00000019; */
-} .mate_containter .glow :active{
-    /* border-radius: 50px; */
+.rmate-ctnr span {
+    padding-top: 3px;
+    overflow: auto;
+    padding-left: 85px;
 }
 
-._actions{
+.rmate__actions{
+    background: #00000033;
     box-shadow: 0px 0px 10px #00000055;
-    width: 90px;
+    width: 70px;
+    position: absolute;
+    border-bottom-right-radius: 10px;
 }
-._actions div {
-    pointer-events: none;
+.rmate__actions p {
     text-align: center;
     font-size: 12px;
     color: #ffffffaa;
     font-weight: normal;
-    padding: 15px 20px;
+    padding: 15px 0;
 }
-._actions button{
+.rmate__actions button{
     color: #fff;
     text-shadow: 0px 0px 17px #333;
     font-weight: normal;
-
     width: 100%;
-    height: 75px;
+    padding: 12px 0;
 }
-.mate_containter ._chat_member{
+
+
+.rmate-ctnr ._rmates{
     color: #fff;
     text-shadow: 0px 0px 17px #333;
     height: 95px;
@@ -118,20 +103,16 @@ export default {
     display: flex;
     flex-direction: column;
 }
-
-._chat_member .pfp_l {
-    pointer-events: none;
-    border-radius: 100px;
+._rmates .pfp {
     width: 50px;
     height: 50px;
     margin: auto;
+    margin-bottom: 0;
 }
-._chat_member p {
-    pointer-events: none;
+._rmates p {
     margin: auto;
-    margin-top: 0;
+    margin-top: 3px;
     font-weight: bold;
-    text-align: center;
     font-size: 11px;
     overflow: hidden;
 }

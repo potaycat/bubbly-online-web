@@ -1,15 +1,13 @@
 <template>
     <nav :class="['banner', $store.state.scrollinUp ? null: 'top-lev-contract']">
         <div id="top-nav-bar">
-            <n-link to="">
-                <img class="pfp" :src="pfp" />
-            </n-link>
+            <!-- <button class="push" @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"> -->
+            <img class="top-nav__btn push pfp" :src="pfp"  @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"/>
+            <!-- </button> -->
             <p>{{ destiName }}</p>
-            <n-link to="/settings"><button
-                class="btn"
-                @click="bacc()">
+            <button class="top-nav__btn push" @click="$router.push('/settings')">
                 <i class="material-icons-round">settings</i>
-            </button></n-link>
+            </button>
         </div>
     </nav>
 </template>
@@ -18,11 +16,11 @@
 export default {
     computed: {
         destiName() {
-            switch (this.$store.state.top_level_destination) {
+            switch (this.$store.state.topLevelDestination) {
                 case 1:
                     return "Post Feed"
                 case 2:
-                    return "My Communities"
+                    return "Communities"
                 case 3:
                     return "Messaging"
                 case 4:
@@ -35,13 +33,10 @@ export default {
         },
 
         pfp() {
-            let pfp = this.$store.state.jwtlogin.my_profile
+            let pfp = this.$store.state.auth.my_profile
             if (pfp) return pfp.profile_pic
             return null
         }
-    },
-    created() {
-        this.$store.dispatch('jwtlogin/loadProfile')
     },
 }
 </script>
@@ -58,17 +53,18 @@ export default {
     height: 56px;
 }
 #top-nav-bar .pfp {
-    width: 33px;
     height: 33px;
-    margin: 13px 15px;
+    min-width: 33px;
+    max-width: 33px;
 }
-#top-nav-bar p {
+#top-nav-bar > p {
     margin: auto;
-    margin-left: 5px;
+    margin-left: 1px;
     font-weight: bold;
     font-size: 18px;
 }
-#top-nav-bar .btn {
-    margin: 15px 11px;
+#top-nav-bar .top-nav__btn {
+    margin: auto 15px;
+    color: rgb(72, 133, 237);
 }
 </style>

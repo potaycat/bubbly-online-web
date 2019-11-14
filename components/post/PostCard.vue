@@ -1,60 +1,76 @@
 <template>
-    <div class="the-post-itself card">
-        <!-- <div class="info" v-if="show_user">
-            <InCommunityInfo
-                :author = "author"
-                :community = "community"
-                :timestamp = "timestamp"
+    <div class="the-post card box-shadow-1">
+        
+        <section v-if="post.allocated_to" class="p__info">
+            <img class="cmnty-ico lift" :src="post.allocated_to.icon_img"
+                @click="$router.push(`/community/${post.allocated_to.id}`)"
             />
-        </div> -->
-        <nuxt-link class="post-info" :to="`/community/${post.allocated_to.id}`">
-            <img class="comu_icon glow" :src="post.allocated_to.icon_img"/>
-            <div class="p-info-text">
+            <div class="p-info__text">
                 <strong>{{ post.allocated_to.name }}</strong>
                 <div class="_smol">
-                    <span class="glow">
+                    <span v-if="post.author">
                         Posted by 
-                        <nuxt-link :to="'/user/' + post.content.author.username"
-                            :style="'color:#'+post.content.author.fave_color"
+                        <nuxt-link class="glow" :to="'/user/' + post.author.username"
+                            :style="'color:#'+post.author.fave_color"
                         >
-                            {{ post.content.author.alias }}
-                        </nuxt-link>
+                            {{ post.author.alias }}
+                        </nuxt-link> •
                     </span>
-                    <span>• {{ timeAgo(post.content.timestamp) }}</span>
+                    {{ post.timestamp | timeAgo }}
                 </div>
             </div>
-        </nuxt-link>
+        </section>
+        <section v-else-if="post.author">
+            <nuxt-link class="p-info__author-only" :to="'/user/' + post.author.username">
+                <img class="pfp lift" :src="post.author.profile_pic"/>
+                <div class="p-info__txt-ctn">
+                    <p class="p-info__alias glow" :style="'color:#'+post.author.fave_color">{{ post.author.alias }}</p>
+                    <div class="p-info__timestmp">{{ post.timestamp |timeAgo }}</div>
+                </div>
+            </nuxt-link>
+        </section>
 
-        <div class="post-content glow" @click="toPost(post)">
-            <h4 class="p-title" :style="'border-color:#'+post.allocated_to.theme_color">{{ post.title }}</h4>
-            <p class="p-preview-txt">{{ post.content.text }}</p>
-            <div class="p-images">
-                <img v-for="attachment in post.content.attachments"
-                    :key="attachment.ordering"
+
+        <div class="post__content glow" @click="toPost(post)">
+            <h4 class="p__title" :style="`border-color:#${allocated_to.theme_color}`">{{ post.title }}</h4>
+            <p class="p__prview-txt">{{ post.text }}</p>
+            <div class="p__imges">
+                <img v-for="attachment in post.attachments_preview.attchs"
+                    :key="attachment.order"
                     :src="attachment.content"
                 />
             </div>
         </div>
 
+
         <div class="_P_stuff">
-            <div class="_p_reactions">
+            <div v-if="post.reacts" class="_p__reactions">
                 <p>Reactions:</p>
-                <React v-for="react in post.content.react_count"
-                    :key="react.react"
-                    :reactId="react.react"
-                    :reactCount="react.count"
-                    :reactData="post.content.reacts"
+                <React
+                    :reacts="post.reacts"
+                    :community="allocated_to.id"
                 />
-                <AddReact size="_norm_addo" />
             </div>
-            <div class="_p_action glow">
-                <button>
-                 <!-- style="border-bottom-left-radius:10px"> -->
+            <div v-else class="_p__reactions glow" @click="">
+                <span>{{ post.total_reacts }} react{{post.total_reacts>1?"s":""}}</span>
+                <!-- <span class="glow" style="margin-left:auto">•••</span> -->
+            </div>
+
+            <div class="_p__actions">
+                <button v-if="post.my_react" class="_p__my-react glow">
+                    <img :src="getMyReact(post.my_react).img_ref">
+                    <p>aaaaaaaaaaaaaaaaaaaaaaa</p>
+                </button>
+                <button v-else class="glow">
+                    <i class="material-icons-outlined">insert_emoticon</i>
+                    <p>React</p>
+                </button>
+
+                <button class="glow">
                     <i class="material-icons-outlined">comment</i>
                     <p>Comment</p>
                 </button>
-                <button>
-                <!-- style="border-bottom-right-radius:10px"> -->
+                <button class="glow">
                     <i class="material-icons-outlined">share</i>
                     <p>Share</p>
                 </button>
@@ -65,118 +81,161 @@
 </template>
 
 <script>
-import React from './react/React'
-import AddReact from './react/AddReact'
-import { timeAgo } from '@/mixins/timeAgo'
+import React from './react'
 export default {
     components: {
         React,
-        AddReact,
     },
-    mixins: [
-        timeAgo,
-    ],
     props: [
         'post',
+        'community',
+        'user',
     ],
+    computed: {
+        allocated_to() {
+            return this.community ? this.community :
+                this.post.allocated_to
+        },
+        author() {
+            return this.user ? this.user :
+                this.post.author
+        }
+    },
     methods: {
         toPost(post) {
-            this.$store.commit('post/loadPost', post)
-            this.$router.push('/post/' + post.content_id)
+            this.$router.push('/post/' + post.id)
         },
+        getMyReact(reactId) {
+            return this.$store.state.reactIcons.icons[this.allocated_to.id][reactId]
+        }
     }
 }
 </script>
 
-<style scoped>
-.the-post-itself {
+<style>
+.the-post {
     /* border: 1px;
     border-style: solid;
     border-color: #ccc; */
-    margin-bottom: 10px;
+    margin-bottom: 7px;
     padding: 0 10px;
+    width: 100%;
+    position: relative;
 }
 
-.post-info {
-    margin: 10px 0;
+
+.p__info {
+    margin-top: 10px;
     display: inline-flex;
 }
-.post-info .comu_icon {
+.p__info .cmnty-ico {
     width: 28px;
     height: 28px;
 }
-.post-info .p-info-text{
+.p__info .p-info__text{
     word-spacing: 0;
     margin-left: 8px;
     font-size: 11px;
 }
-.post-info .p-info-text span {
+.p__info .p-info__text ._smol {
     font-size: 10px;
-    color: #777;
+    color: #666;
+    opacity: 0.75;
 }
 
-.post-content .p-title {
+
+.post__content .p__title {
     border: 0;
     border-left: 4px;
     border-style: solid;
     /* border-color: rgb(206, 115, 206); */
     padding: 0 6px;
-    margin: 0 0 6px -10px;
+    margin: 6px 0 6px -10px;
 }
-.p-preview-txt {
+.p__prview-txt {
     font-size: 14px;
-    /* white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: ;
-    max-height: 200px; */
 }
-.p-images { 
-    margin: 0 -10px;
+.p__imges { 
     width: auto;
-    margin-top: 5px;
+    margin: 0 -10px;
+    margin-top: 8px;
 }
-.p-images img {
+.p__imges img {
     width: 100%;
 }
 
-._p_reactions {    
-    padding: 10px 0;
+
+._p__reactions {    
+    padding: 6px 0;
     display: flex;
+    align-items: center;
     overflow: auto;
 }
-._p_reactions p {
-    pointer-events: none;
+._p__reactions p {
     font-size: 13px;
-    font-weight: bold;
+    /* font-weight: bold; */
     color: #bbb;
+    margin-right: 5px;
+}
+._p__reactions span {
+    font-size: 13px;
+    /* font-weight: bold; */
+    color: #555;
     margin: auto 0;
 }
 
-._p_action {
+
+._p__actions {
     display: flex;
     border: 0;
     border-top: 1px;
     border-style: solid;
     border-color: #eee;
 }
-._p_action button {
+._p__actions > button {
     display: flex;
-    color: #bbb;
+    color: #cecece;
     margin: auto;
-    padding: 8px;
-    font-weight: bold;
-    width: 50%;
+    padding: 7px;
+    width: 30%;
+    overflow: hidden;
 }
-._p_action p {
-    pointer-events: none;
+._p__actions > button > p {
     margin: auto;
     margin-left: 6px;
+    font-weight: 600;
 }
-._p_action i {
-    pointer-events: none;
+._p__actions > button > i {
     font-size: 19px;
     margin: auto;
     margin-right: 0;
+}
+
+._p__my-react > img {
+    margin: auto;
+    margin-right: 0;
+    height: 18px;
+    width: 18px;
+}
+._p__my-react > p {
+    color: rgb(72, 133, 237);
+}
+
+.p-info__author-only {
+    display: flex;
+    padding: 9px 0;
+}
+.p-info__author-only .pfp {
+    width: 32px;
+    height: 32px;
+    margin: auto 7px auto 0;
+}
+.p-info__author-only .p-info__alias {
+    font-size: 13px;
+    font-weight: bold;
+}
+.p-info__author-only .p-info__timestmp {
+    font-size: 10px;
+    color: #555;
 }
 </style>

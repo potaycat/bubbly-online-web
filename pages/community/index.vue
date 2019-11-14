@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ComuList />
+        <TopLevelList />
         <keep-alive>
             <router-view></router-view>
         </keep-alive>
@@ -8,13 +8,14 @@
 </template>
 
 <script>
-import ComuList from '@/components/community/ComuList'
+import TopLevelList from '@/components/community/TopLevelList'
 export default {
     components: {
-        ComuList,
+        TopLevelList,
     },
     created() {
         this.$store.commit('changeDestination', 2)
+        this.$store.dispatch("moderating/getCmntyIManage")
     },
 }
 </script>

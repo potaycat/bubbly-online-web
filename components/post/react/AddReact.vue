@@ -36,7 +36,7 @@ export default {
         toggle() {
             if (!this.addReact) {
                 this.$axios.get('react/list_icon?format=json&community='+this.community,
-                    this.$store.state.pheader)
+                    this.$store.state.authHeader)
                 .then(res => {
                     this.iconList = res.data
                 })
@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .react-container {
     display: inline;
 }

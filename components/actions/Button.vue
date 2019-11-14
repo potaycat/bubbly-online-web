@@ -1,14 +1,14 @@
 <template>
-    <!-- <button v-bind:class="{'fillMyButton':fill,  'myButton':!fill}">{{ text }}</button> -->
+    <!-- <button v-bind:class="{'fillMyButton':fill,  'my-button':!fill}">{{ text }}</button> -->
     <div
-        :class="['myButton lift', fill ? null : 'no-shadow']"
+        :class="['my-button box-shadow-2 lift', fill?null:'my-btn--no-shdw', lite?'my-btn--no-shdw':null ]"
         :style="`background: linear-gradient(65deg, #${color[0]} 0%, #${
             color[1]} 100%)`"
         @click="$emit('clicked')"
     >
         <div
-            :class="['btn-content', fill ? null : 'dont-fill']"
-            :style="`padding: ${size[0]} ${size[1]}`"
+            :class="['my-btn__content', fill?null:'my-btn--no-fill', lite?'my-btn--lite':null]"
+            :style="`padding: ${padding[0]} ${padding[1]}`"
         >
             {{ text }}
         </div>
@@ -20,41 +20,42 @@ export default {
     props: {
         text: { type: String },
         fill: { type: Boolean },
-        size: {
+        lite: { type: Boolean },
+        padding: {
             type: Array,
-            default: () => ['3px', '20px']
+            default:() => ['3px', '20px']
         },
         color: {
             type: Array,
-            default: () => ['2c3e50', 'fd746c']
+            default: ()=> ['2c3e50', 'fd746c']
         }
     }
 };
 </script>
 
 <style>
-.myButton {
-    -moz-border-radius: 100px;
-    -webkit-border-radius: 100px;
+.my-button {
     border-radius: 100px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     padding: 0.6pt;
     cursor: pointer;
 }
-.no-shadow {
+.my-btn--no-shdw {
     box-shadow: none;
 }
 
-.btn-content {
+.my-btn__content {
     transition: 0.2s;
     color: #fff;
     font-weight: bold;
     text-align: center;
     border-radius: 100px;
 }
-.dont-fill {
+.my-btn--no-fill {
     color: unset;
     mix-blend-mode: screen;
     background: #fff;
+}
+.my-btn--lite {
+    font-size: 14px;
 }
 </style>

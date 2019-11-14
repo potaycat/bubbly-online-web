@@ -1,40 +1,112 @@
 <template>
-    <transition name="fade" appear>
-        <div class="c-info card">
-            <img id="cover" :src="community.cover_img" />
-            <img class="comu_icon" :src="community.icon_img" />
-            <section class="c-info-container">
-                <div id="smol-info">Public • 1234 members</div>
-                <div id="name">
-                    {{ community.name }}
-                </div>
-                <div id="bio">{{ community.moto }}</div>
-                <div class="c-actions">
-                    <Button text="Join" :size="['5px', '0']" fil/>
-                </div>
-            </section>
-        </div>
-    </transition>
+    <div>
+        <transition name="fade" appear>
+            <div class="cmnty-info card box-shadow-3">
+                <img class="cmnty-inf__cover" :src="community.cover_img" />
+                <img class="cmnty-ico" :src="community.icon_img" />
+                <section class="cmnty-inf__txt-ctn">
+                    <div class="cmnty-inf__txt__smol">
+                        {{ community.visibility }} • 
+                        <span class="glow" style="color:gray;text-transform:none" @click="toCmntyMembers">
+                            <strong>{{community.total_members}}</strong> members
+                        </span>
+                    </div>
+                    <div class="cmnty-inf__name">
+                        {{ community.name }}
+                    </div>
+                    <div class="cmnty-inf__moto">{{ community.moto }}</div>
+                    <div v-if="community.membership_info&&community.membership_info.role=='banned'">You are banned from this community</div>
+                    <div v-else class="cmnty-inf__actions">
+                        <Button v-if="roleDisplay" @clicked="confirmLeave" :text="roleDisplay" :padding="['5px', '0']" fill/>
+                        <Button v-else @clicked="makeJoin" text="Join" :padding="['5px', '0']" />
+                    </div>
+                </section>
+            </div>
+        </transition>
+        <InputDialog v-if="openDiag"
+            :toDisplay="openDiag"
+            @clicked="onDiagClose"
+        />
+        <Dropdown v-if="moring" @pick="onDropDownPick"
+            :options="[
+                {value:'', name:'Let\'s'},
+                {value:'', name:'Get'},
+                {value:'report', name:'Report'},
+                {value:'copyUrl', name:'Bread OwO'},
+            ].filter(x=>x)"
+        />
+    </div>
 </template>
 
 <script>
-import Button from "@/components/actions/Button";
+import Button from "@/components/actions/Button"
+import { performJoin } from '@/mixins/performFollow'
+import Dropdown from '@/components/actions/Dropdown'
+
 export default {
     components: {
-        Button
+        Button,
+        Dropdown
     },
-    props: ["community"]
+    mixins: [performJoin],
+    props: ["community"],
+    computed: {
+        moring() {return this.$store.state.detailBanner.moring},
+        isBanned() {
+            if (this.community.membership_info) {
+                const role = this.community.membership_info.role
+                return role == 'administrator' ? 'Administering' :
+                    role == 'moderator' ? 'Moderating' :
+                    role == 'member' ? 'Joined' : ''
+            }
+            return null
+        },
+        roleDisplay() {
+            if (this.community.membership_info) {
+                const role = this.community.membership_info.role
+                return role == 'administrator' ? 'Administering' :
+                    role == 'moderator' ? 'Moderating' :
+                    role == 'member' ? 'Joined' : ''
+            }
+            return null
+        }
+    },
+    methods: {
+        toCmntyMembers() {
+            this.$store.commit('detailBanner/loadText', `Members of ${this.community.name}`)
+            this.$store.commit('detailBanner/loadPic', {
+                src: this.community.icon_img,
+                style:'square'
+            })
+            this.$router.push(`/community/${this.$route.params.id}/members`)
+        },
+        onJoinHandle(res) {
+            this.community.membership_info = res.data
+        },
+        onLeaveHandle() {
+            this.community.membership_info = null
+        },
+
+
+        onDropDownPick(value) {
+            this.$store.commit('detailBanner/openInfo', false)
+            switch (value) {
+                default:
+                    break
+            }
+        },
+    }
 };
 </script>
 
 <style scoped>
-.c-info {
+.cmnty-info {
     max-width: 950px;
     min-width: 300px;
     margin: 0 8px;
 }
 
-.c-info #cover {
+.cmnty-info .cmnty-inf__cover {
     border-radius: 15px 15px 0 0;
     /*box-shadow: inset 0 0 10px #000;*/
     /* top: 0; */
@@ -43,10 +115,10 @@ export default {
     height: 250px;
     z-index: -1;
 }
-.c-info-container {
+.cmnty-inf__txt-ctn {
     padding: 0 16px;
 }
-.c-info .comu_icon {
+.cmnty-info .cmnty-ico {
     border: 3px solid #fff;
     position: relative;
     left: 11px;
@@ -54,23 +126,25 @@ export default {
     width: 100px;
     height: 100px;
 }
-.c-info #smol-info {
+.cmnty-info .cmnty-inf__txt__smol {
+    text-transform: capitalize;
     color: gray;
     /* text-align: right; */
     margin: -27px 0 7px 105px;
     font-size: 14px;
 }
-.c-info #name {
+.cmnty-info .cmnty-inf__name {
     margin: 5px 0 2px;
     font-weight: bold;
     font-size: 23px;
 }
-.c-info #bio {
+.cmnty-info .cmnty-inf__moto {
     padding: 10px 0;
+    font-size: 14px;
     /* text-align: center; */
 }
 
-.c-actions {
+.cmnty-inf__actions {
     padding: 8px 0 20px;
     width: 100%;
 }

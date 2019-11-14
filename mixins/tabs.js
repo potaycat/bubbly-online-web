@@ -1,8 +1,6 @@
 import Tabs from '@/components/actions/Tabs'
 export const tabs = {
-    components: {
-        Tabs
-    },
+    components: {Tabs},
     data() {
         return {
             currentTab: 0

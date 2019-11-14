@@ -19,9 +19,6 @@ export default {
         return {
             isDirect: true,
         }
-    },
-    created() {
-        this.$store.dispatch('jwtlogin/loadProfile');
     }
 }
 </script>
