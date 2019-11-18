@@ -29,7 +29,6 @@ export default {
         return {
             input: "",
             signalable : true,
-            pseudoId: 0,
             contentType: 1,
         }
     },
@@ -61,21 +60,21 @@ export default {
 
         pushMsg() {
             if(this.msg_content) {
+                const present = new Date; const pseudoId = present.getTime()
                 this.$emit('outBoxing', {
                     author: this.$store.state.auth.my_profile,
-                    id: this.pseudoId,
+                    id: pseudoId,
                     msg_type: this.msg_content[0],
                     content: this.msg_content[1],
                     timestamp: "sndng",
                 })
                 this.$socket.sendObj({
-                    f_pseudoId: this.pseudoId,
+                    f_pseudoId: pseudoId,
                     f_msg_type: this.msg_content[0],
                     f_content: this.msg_content[1],
                 })
                 this.signalable = true
                 this.input = ""
-                this.pseudoId +=1
                 this.resetHeight()
             }
         },

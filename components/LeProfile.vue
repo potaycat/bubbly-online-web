@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 
 import ProfileInfo from './profile/ProfileInfo'
 import UserPosts from './profile/list/UserPosts'
@@ -36,7 +36,7 @@ export default {
         UserPosts,
         Memberships,
     },
-    mixins: [tabs],
+    mixins: [_comp_tabs],
     props: ['profile'],
     mounted() {
         const scroll = this.$refs.feed

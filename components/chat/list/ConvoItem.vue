@@ -28,7 +28,7 @@ export default {
             return this.isDirect ? dat.profile_pic :
                 this.room.bg_img ? this.room.bg_img :
                 this.isPublic ? dat.icon_img :
-                require('@/assets/grup_de.png')
+                require('@/assets/group.png')
         },
         dsplRoomTtle() {
             const dat = this.room.room_type_data
@@ -50,18 +50,20 @@ export default {
     padding: 10px 15px;
     word-wrap: break-word;
     display: flex;
+    align-items: center;
     width: 100%;
     border-radius: 10px;
     position: relative;
 }
 .thr .pfp {
+    align-self: flex-start;
     z-index: -2;
     height: 55px;
     min-width: 55px;
     max-width: 55px;
 }
 .thread-txt {
-    margin: auto 0 auto 15px;
+    margin-left: 15px;
     width: 100%;
 }
 .thread-txt .thr__top-txt{

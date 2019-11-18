@@ -1,7 +1,7 @@
 <template>
 <transition appear name="zoom_fade">
     <div class="total_darkness" @click.self="inputted(false)">
-        <div id="diag-box" class="box-shadow-4">
+        <div id="diag-box" class="shiny-white-bg box-shadow-4">
             <p class="diag__title">
                 {{ toDisplay.title }}
             </p>
@@ -56,9 +56,6 @@ export default {
 <style>
 .total_darkness #diag-box {
     z-index: 999;
-    margin: auto;
-    /* background: #ffffffdd; */
-    background: linear-gradient(160deg, #fff 0, #ffffffee 50%, #fff 100%);
     border-radius: 15px;
     width: 320px;
 }

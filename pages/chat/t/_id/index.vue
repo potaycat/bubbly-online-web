@@ -1,27 +1,13 @@
 <template>
     <div>
-        <nuxt-child keep-alive :keep-alive-props="{ exclude: ['modal'] }" />
-        <Chat
-            :isDirect='this.isDirect' />
-        <!-- <div v-else>Please stand by</div> -->
+        <ChatRoom />
     </div>
 </template>
 
 <script>
-import Chat from '@/components/chat/Chat'
+import ChatRoom from '@/components/chat/room/'
 export default {
     layout: 'immerse',
-    components: {
-        Chat,
-    },
-
-    data() {
-        return {
-            isDirect: true,
-        }
-    }
+    components: {ChatRoom},
 }
 </script>
-
-<style>
-</style>

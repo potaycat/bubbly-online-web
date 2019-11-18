@@ -1,16 +1,18 @@
 <template>
-<transition name="zoom_in_fade" appear>
-    <div id="drpdwn" class="total_darkness" @click.self="$emit('pick', null)">
-        <div class="drpdwn-ctnr box-shadow-2">
-            <option v-for="option in options"
-                :key="option.value"
-                class="drpdwn__option glow"
-                :value="option.value"
-                @click="$emit('pick', option.value)"
-            >
-                {{ option.name }}
-            </option>
-        </div>
+<transition name="fade">
+    <div class="total_lightness total_darkness" @click.self="$emit('pick', null)">
+        <transition name="zoom_in_fade" appear>
+            <div ref='drpdwn' class="drpdwn shiny-white-bg box-shadow-2">
+                <option v-for="option in options"
+                    :key="option.value"
+                    class="drpdwn__option glow"
+                    :value="option.value"
+                    @click="$emit('pick', option.value)"
+                >
+                    {{ option.name }}
+                </option>
+            </div>
+        </transition>
     </div>
 </transition>
 </template>
@@ -18,21 +20,21 @@
 <script>
 export default {
     props: [
-        'options',
-        // [{value, title}]
+        'options', // [{value, icon, title}]
+        'position', // {x: "_px", y: "_px"}
     ],
+    mounted() {
+        const drpdwn = this.$refs.drpdwn
+        const pos = this.position ? this.position : {}
+        drpdwn.style.top = `${pos.y ? pos.y : 20}px`
+        drpdwn.style.right = `${pos.x ? pos.x : 15}px`
+    }
 }
 </script>
 
 <style>
-#drpdwn {
-    background: none;
-    z-index: 999;
-}
-.drpdwn-ctnr {
-    margin: auto;
-    /* background: #ffffffdd; */
-    background: linear-gradient(160deg, #fff 0, #ffffffef 50%, #fff 100%);
+.drpdwn {
+    position: fixed;
     border-radius: 10px;
     overflow: hidden;
     user-select: none;

@@ -10,7 +10,7 @@
                 <!-- <PseudoPostCard /> -->
             <div style="min-height: 120px"/>
         </div>
-        <FAB @clicked="toggleMemAdd()"
+        <FAB @clicked="$router.push('/post/compose')"
             icon= "add"
             actionName= "Write a post"
         />
@@ -20,7 +20,7 @@
 <script>
 import { feedingFrenzy, scrlDirection } from '@/mixins/feedingFrenzy'
 
-import PostCard from './PostCard'
+import PostCard from './postCard/'
 
 import FAB from '@/components/actions/FAB'
 

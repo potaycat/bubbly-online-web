@@ -66,7 +66,7 @@ export default {
 }
 ._p ._p_info p {
     word-spacing: 0;
-    margin:auto;
+    margin: auto;
     margin-left: 3px;
     font-weight: bold;
     /* font-size: 15px; */

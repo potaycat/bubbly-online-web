@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 import { disableHamburger } from '@/mixins/commonLogicSeparation'
 
@@ -26,12 +26,15 @@ export default {
     components: {
         UserItem,
     },
-    mixins: [tabs, feedingFrenzy, disableHamburger],
+    mixins: [_comp_tabs, feedingFrenzy, disableHamburger],
     data() {
         return {
             currentTab: this.$route.query.get=="followers"?1:0,
         }
     },
+    // const: {
+        offsetProp: 'username',
+    // }
     computed: {
         feedUrl() {
             const usr = this.$route.params.username
@@ -42,10 +45,6 @@ export default {
                     return `accounts/${usr}/circles/`
             }
         },
-        // offset() {
-        //     const last = this.fetchedData[this.fetchedData.length-1]
-        //     return last ? last.username : ""
-        // },
     },
     watch: {
         currentTab() {

@@ -23,6 +23,9 @@ export default {
             feedUrl: `communities/${this.$route.params.id}/members/`,
         }
     },
+    // const: {
+        offsetProp: 'username',
+    // }
     created() {
         this.$store.commit('detailBanner/openInfo', null)
     },

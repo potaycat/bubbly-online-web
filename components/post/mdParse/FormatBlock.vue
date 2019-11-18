@@ -58,25 +58,33 @@ export default {
 </script>
 
 <style>
-.attch {
-    margin-bottom: -5px;
-}
-
 .b { font-weight: bold }
+.d { font-weight: bolder }
+
 .i { font-style: italic }
+.q { transform: skewX(15deg) }
+
 .u { text-decoration: underline }
 .s { text-decoration: line-through }
 .o { text-decoration: overline }
+
 .c { text-align: center }
 .e { text-align: end }
+
 .g { color: gray }
-.r { color: red }
+.r { color: crimson }
 .p { color: hotpink }
-.x { color: blue }
-.a { color: aqua }
+.x { color: dodgerBlue }
+.a { color: darkorange }
+.l { color: limegreen }
+
 .h { font-size: 27px }
+.z { font-size: 20px }
 .t { font-size: 11px }
+
 .n { font-family: "Comic Sans MS", cursive, sans-serif }
 .m { font-family: "Courier New", Courier, monospace }
-.v { background: lightgray; }
+
+.v { background: lightgray }
+.w { background: slategray }
 </style>

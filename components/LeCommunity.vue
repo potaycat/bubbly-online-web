@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 
 import CommunityInfo from './community/CommunityInfo'
 import CommunityPosts from './community/list/CommunityPosts'
@@ -30,8 +30,11 @@ export default {
         CommunityPosts,
         PublicChats,
     },
-    mixins: [tabs],
+    mixins: [_comp_tabs],
     props: ['community'],
+    created() {
+        this.$store.dispatch("reactIcons/getCmntyIcons", this.community.id)
+    },
     mounted() {
         const scroll = this.$refs.feed
         scroll.addEventListener('scroll', () => {

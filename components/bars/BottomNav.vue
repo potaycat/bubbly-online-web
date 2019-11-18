@@ -43,13 +43,14 @@ export default {
     position: fixed;
     bottom: 0;
     width: 100%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.15);
     height: 52px;
     display: flex;
-    box-shadow: 0 0 20px rgba(0,0,0,0.15);
+    align-items: center;
+    justify-content: space-around;
 }
 
-._bottomnav i {
-    margin: auto;
+._bottomnav > i {
     padding: 12px;
     font-size: 27px;
     border-radius: 20px;

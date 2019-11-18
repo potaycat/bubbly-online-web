@@ -1,12 +1,14 @@
 export const state = () => ({
-    icons: {
+    localIcons: JSON.parse(localStorage.getItem('lcl_ico')),
+    icons: 
+    {
         // EXAMPLE:
         // communityId: {
-        //     id: {name:'a', img_ref:'url', active: true},
+        //     id: {name:'a', img_src:'url', active: true},
         // },
         // communityId: {
-        //     id: {name:'b', img_ref:'url', active: false},
-        //     id: {name:'c', img_ref:'url', active: true}
+        //     id: {name:'b', img_src:'url', active: false},
+        //     id: {name:'c', img_src:'url', active: true}
         // },
     },
 })
@@ -14,11 +16,13 @@ export const state = () => ({
 export const mutations = {
     parseResIcons(state, payload) {
         // payload = {communityId, iconArray}
-        const cmnty = payload.cmntyId
-        state.icons[cmnty] = {}
-        payload.iconList.forEach((icon, index) => {
-            state.icons[cmnty][icon.id] = icon
-        })
+        state.icons[payload.cmntyId] = payload.iconList
+    },
+    toLocal(state) {
+        localStorage.setItem('lcl_ico', JSON.stringify({
+            ...state.localIcons,
+            ...state.icons,
+        }))
     }
 }
 
@@ -34,13 +38,14 @@ export const actions = {
                         iconList: cmnty.icons
                     })
                 } // for-of for-in forEach. what on earth javascript?
+                this.commit('reactIcons/toLocal')
             })
             // .catch((error) => {
             //     console.log(error)
             // })
     },
     getCmntyIcons({ rootState }, cmntyId) {
-        this.$axios.post(`communities/${cmntyId}/icons/`, {},
+        this.$axios.get(`communities/${cmntyId}/icons/`,
             rootState.authHeader
         )
             .then((res) => {
@@ -48,9 +53,21 @@ export const actions = {
                     cmntyId: cmntyId,
                     iconList: res.data
                 })
+                this.commit('reactIcons/toLocal')
             })
             .catch((error) => {
                 console.log(error)
             })
     },
+}
+
+export const getters = {
+    iconsByCmnty: (state) => (cmntyId) => {
+        const icons = state.localIcons[cmntyId]
+        return icons ? icons : []
+    },
+    iconById: (state, getters) => (cmntyId, icon_id) => {
+        return getters.iconsByCmnty(cmntyId)
+            .find(react => react.id == icon_id)
+    }
 }

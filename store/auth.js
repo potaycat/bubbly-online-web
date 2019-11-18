@@ -2,7 +2,6 @@ import jwt_decode from 'jwt-decode'
 
 export const state = () => ({
     jwt: localStorage.getItem('t'),
-    stored_profile: localStorage.getItem('p'),
     my_profile: JSON.parse(localStorage.getItem('p')),
 })
 

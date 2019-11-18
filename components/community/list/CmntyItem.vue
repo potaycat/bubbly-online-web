@@ -1,6 +1,6 @@
 <template>
 <transition name="fade_in" appear>
-    <div class="mbrshp-block bg lift"
+    <div class="mbrshp-block lift"
         :style="`background-image:url(${community.cover_img})`"
         @click="goToCommunity"
     >
@@ -46,23 +46,24 @@ export default {
     box-shadow: inset 0px -120px 50px -40px #000000aa;
     /* background: linear-gradient(rgba(0,0,0, 0.5),rgba(0,0,0, 0.5)),; */
     display: flex;
+    align-items: center;
     padding: 0 15px;
     min-height: 100px;
     width: 100%;
+    background-position: center; 
+    background-size: cover;
 }
 
 .mbrshp-block .cmnty-ico {
     width: 45px;
     height: 45px;
-
-    margin: auto 0;
 }
 
 .mbrshp-block .mbrshp__cmnty-txt {
     color: #fff;
     display: flex;
     flex-direction: column;
-    margin: auto auto auto 10px;
+    margin-left: 12px;
 }
 .mbrshp__cmnty-txt .mbrshp__cmnty-name {
     /* font-weight: bold; */
@@ -76,7 +77,7 @@ export default {
 }
 
 .mbrshp__role {
-    margin: auto 0;
+    margin-left: auto;
     padding: 3px 9px;
     border-radius: 100px;
     font-weight: bold;

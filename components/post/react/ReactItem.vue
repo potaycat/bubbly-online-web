@@ -1,22 +1,34 @@
 <template>
-    <div :class="'lift push _react '+size" style="display:inline-flex">
-        <img v-if="!react.react" src="@/assets/thumb_up.png">
-        <img v-else :src="imgSrc">
+    <div :class="['push glow _react ', size, isMine?'mine box-shadow-1':null]">
+        <img v-if="imgSrc" :src="imgSrc">
+        <p v-else>👍</p>
         <div> {{ react.count }} </div>
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex"
 export default {
     props: [
-        'community',
+        'communityId',
         'react',
         'size',
+        'isMine',
     ],
     computed: {
+        ...mapGetters({
+            iconById: 'reactIcons/iconById',
+        }),
         imgSrc() {
-            return this.react.react__img_ref ? this.react.react__img_ref :
-                this.$store.state.reactIcons.icons[this.community][this.react.react].img_ref
+            return this.react.img_src ? this.react.img_src : this.reactIcon.img_src
+        },
+        reactIcon() {            
+            try {
+                return this.iconById(this.communityId, this.react.icon_id)
+            } catch (error) {
+                console.log("React not found!")
+                return {}
+            }
         },
     },
 }
@@ -24,58 +36,57 @@ export default {
 
 <style>
 ._react {
-    display: flex;
+    display: inline-flex;
+    align-items: center;
     font-size: 12px;
-    background: #f0f0f0;
+    background: #eee;
     border-radius: 5px;
-    padding: 2px;
-    margin: 0 5px;
+    padding: 2px 4px;
+    margin-right: 4px;
 }
+
+._react.mine {
+    background: rgba(72, 132, 237, 0.219);
+}
+._react.mine > div {
+    color: rgb(72, 133, 237);
+}
+
 ._react > img {
-    width: 21px;
-    height: 21px;
-    margin: auto 2px;
+    width: 20px;
+    height: 20px;
+    margin: 0 2.5px;
 }
-._react div {
-    color: #aaa;
+._react > div {
+    color: #555;
     font-weight: bold;
-    margin: auto 3px;
+    margin: 0 3px;
 }
 
 ._react.react-icon--big {
-    margin: 5px 3px;
-    padding: 3px;
+    margin: 5px 0;
+    padding: 3px 6px;
     border-radius: 6px;
+    margin-right: 6px;
 }
 ._react.react-icon--big > img {
-    width: 26px;
-    height: 26px;
+    width: 25px;
+    height: 25px;
 }
 ._react.react-icon--big > div {
-    font-size: 14px;
-    color: #777;
+    font-size: 15px;
 }
 
-._rea_smol {
-    margin: 2px;
+._react.react-icon--smol {
+    margin: 2px 0;
+    margin-right: 4px;
 }
-._rea_smol img {
+._react.react-icon--smol > img {
     height: 18px;
     width: 18px;
 }
-._rea_smol div {
+._react.react-icon--smol > div {
     font-size: 10px;
-}
-
-
-
-.my_react {
-    box-shadow: 0 4px 8px #bbb;
-    background: #f1f1f1;
-    /* border: 1px solid #888; */
-}
-.my_react div {
-    color: rgb(72, 133, 237);
 }
 
 </style>

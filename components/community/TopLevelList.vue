@@ -7,7 +7,7 @@
         />
         <div style="min-height: 120px"/>
     </div>
-    <FAB @clicked="newCmnty"
+    <FAB @clicked="$router.push('/community/create')"
         icon= "add_circle_outline"
         actionName= "Create your community"
     />

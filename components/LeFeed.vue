@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 
 import HomeFeed from './post/HomeFeed'
 import MyChatList from '@/components/chat/list/MyChatList'
@@ -25,7 +25,7 @@ export default {
         MyChatList,
     },
     mixins: [
-        tabs,
+        _comp_tabs,
     ],
     methods: {
         DEBUG() {

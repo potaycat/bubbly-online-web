@@ -43,7 +43,7 @@ export default {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$router.go()
+                    this.fetchedData = []
                 })
         },
     }

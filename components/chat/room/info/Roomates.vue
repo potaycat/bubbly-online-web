@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import AddDiag from '../AddDiag'
+import AddDiag from '../../AddDiag'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
     components: {
@@ -115,5 +115,16 @@ export default {
     font-weight: bold;
     font-size: 11px;
     overflow: hidden;
+}
+
+
+.slide_down-enter-active,
+.slide_down-leave-active {
+    transition: .4s;
+}
+.slide_down-enter,
+.slide_down-leave-to {
+    margin-bottom: -390px;
+    opacity: 0;
 }
 </style>

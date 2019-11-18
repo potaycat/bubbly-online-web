@@ -1,10 +1,10 @@
 // <InputDialog v-if="openDiag"
-//     :toDisplay = "openDiag"
+//     :toDisplay="openDiag"
 //     @clicked="onDiagClose"
 // />
 
 import InputDialog from '@/components/actions/InputDialog'
-export const inputDiag = {
+export const _comp_inputDiag = {
     components: {InputDialog},
     data() {
         return {

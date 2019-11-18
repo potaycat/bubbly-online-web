@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 
 import MyChatList from './MyChatList'
 import FindChats from './ExploreChats'
@@ -24,7 +24,7 @@ export default {
         FindChats,
     },
     mixins: [
-        tabs
+        _comp_tabs
     ],
 }
 </script>

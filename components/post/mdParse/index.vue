@@ -25,9 +25,7 @@ export default {
         'text',
         'attachments'
     ],
-    components: {
-        FormatBlock
-    },
+    components: {FormatBlock},
     data() {
         return {
             usedAttchs: []
@@ -50,16 +48,19 @@ export default {
 </script>
 
 <style>
-.content-block div *{
+.content-block > div > *{
     margin-bottom: 6px;
     width: 100%;
 }
+.content-block .attch {
+    margin-bottom: -5px;
+}
+
 
 .unused-attchs {
     margin: 15px -15px 0 -15px;
-
 }
-.unused-attchs *{
+.unused-attchs > *{
     width: 100%;
 }
 </style>

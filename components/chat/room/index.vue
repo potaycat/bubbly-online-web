@@ -82,20 +82,14 @@ export default {
                 switch (owo.room_type) {
                     case 'direct':
                         return [
-                            {
-                                src: owo.room_type_data.profile_pic,
-                                style: 'circle'
-                            },
+                            {src: owo.room_type_data.profile_pic, style: 'circle'},
                             t ? t : owo.room_type_data.alias
                         ]
                     case 'group':
                         return [null, t ? t : `Nhóm chat gồm ${owo.room_type_data.member_count.toString()} người`]
                     case 'public':
                         return [
-                            {
-                                src: owo.room_type_data.bg_img,
-                                style: 'square'
-                            },
+                            {src: owo.room_type_data.bg_img, style: 'square'},
                             t ? t : "Chat cộng đồng"
                         ]
                 }
@@ -247,12 +241,27 @@ export default {
 </script>
 
 <style>
-/* big frame at main css */
 #inChat .chat-bg {
     z-index: -999;
     height: 100%;
     width: 100%;
     position: fixed;
+}
+
+._thread-beginning {
+    width: 100%;
+    background: linear-gradient(rgb(255,255,255), rgba(0,0,0,0) );
+    margin: -69px 0 0 0;
+    padding: 80px 0 20px 0;
+    text-align: center;
+    /* font-weight: bold; */
+    color: #eee;
+    text-shadow: -1px -1px 0 #444
+}
+._fetch-indcat {
+    text-align: center;
+    width: 100%;
+    transform: scale(0.7)
 }
 
 #chat__s2b-btn {
@@ -267,21 +276,12 @@ export default {
     z-index: 19;
     word-spacing: 0;
 }
-
-._thread-beginning {
-    width: 100%;
-    background: linear-gradient(rgb(255,255,255), rgba(0,0,0,0) );
-    margin: -69px 0 0 0;
-    padding: 80px 0 20px 0;
-    text-align: center;
-    /* font-weight: bold; */
-    color: #eee;
-    text-shadow: -1px -1px 0 #444
+.just_slide_up-enter-active,
+.just_slide_up-leave-active {
+    transition: .3s;
 }
-
-._fetch-indcat {
-    text-align: center;
-    width: 100%;
-    transform: scale(0.7)
+.just_slide_up-enter,
+.just_slide_up-leave-to { /* .fade-leave-active below version 2.1.8 */
+    margin-bottom: -35px;
 }
 </style>

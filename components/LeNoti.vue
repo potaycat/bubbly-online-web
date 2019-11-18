@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 
 import AllNoti from './notification/AllNoti'
 
@@ -19,6 +19,17 @@ export default {
     components: {
         AllNoti,
     },
-    mixins: [tabs],
+    mixins: [_comp_tabs],
 }
 </script>
+
+<style>
+.noti__no-new {
+    font-size: 20px;
+    font-weight: bold;
+    color: #666;
+    width: 100%;
+    text-align: center;
+    margin-top: 50px;
+}
+</style>

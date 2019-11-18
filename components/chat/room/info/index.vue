@@ -15,7 +15,7 @@
 
         <div class="_set_info" v-else-if="type=='group'">
             <img v-if="threadInfo.bg_img" class="pfp" :src="threadInfo.bg_img">
-            <img v-else class="pfp" style="filter: invert(1)" src="~assets/grup_de.png">
+            <img v-else class="pfp" style="filter: invert(1)" src="~assets/group.png">
             <div id="_alias">{{ title }}</div>
             <Roomates v-if="more_members" :room_id="threadInfo.id"
                 :isAdmin="isAdmin"/>

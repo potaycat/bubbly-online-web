@@ -24,6 +24,6 @@ export const actions = {
 
 export const getters = {
     isMod: (state) => (id) => {
-      return state.communities.find(cmnty => cmnty.community == id)
+        return state.communities.find(cmnty => cmnty.community == id)
     }
 }

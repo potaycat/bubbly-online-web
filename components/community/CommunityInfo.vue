@@ -29,7 +29,7 @@
         />
         <Dropdown v-if="moring" @pick="onDropDownPick"
             :options="[
-                {value:'', name:'Let\'s'},
+                {value:'l', name:'Let\'s'},
                 {value:'', name:'Get'},
                 {value:'report', name:'Report'},
                 {value:'copyUrl', name:'Bread OwO'},

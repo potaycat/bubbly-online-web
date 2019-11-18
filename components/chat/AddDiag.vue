@@ -1,7 +1,7 @@
 <template>
 <transition appear name="zoom_fade">
     <div class="total_darkness">
-        <div id="add-container" class="box-shadow-4">
+        <div id="add-container" class="box-shadow-4 shiny-white-bg">
             <div class="add__btn-ctnr">
                 <button class="add__btn" @click="$router.back()">Cancel</button>
                 <button class="add__btn" style="margin-left:auto" @click="hahayes()">
@@ -62,10 +62,10 @@
 </template>
 
 <script>
-import { tabs } from '@/mixins/tabs'
+import { _comp_tabs } from '@/mixins/_comp_tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
-    mixins: [tabs, feedingFrenzy],
+    mixins: [_comp_tabs, feedingFrenzy],
     props: ['room_id'],
     data() {
         return {
@@ -77,6 +77,9 @@ export default {
             feedUrl: `accounts/${this.$store.state.auth.my_profile.username}/circles/?minimal=1&`,
         }
     },
+    // const: {
+        offsetProp: 'username',
+    // }
     watch: {
         currentTab(get_flwer) {
             const usr = this.$store.state.auth.my_profile.username
@@ -141,8 +144,6 @@ export default {
 <style>
 #add-container {
     z-index: 999;
-    margin: auto;
-    background: linear-gradient(160deg, #fff 0, #ffffffee 50%, #fff 100%);
     border-radius: 20px;
     width: 95%;
     height: 95%;
@@ -208,6 +209,7 @@ export default {
 ._peep-list .peep-ls__item{
     /* border-radius: 10px; */
     display: flex;
+    align-items: center;
     padding: 5px 20px;
 }
 .peep-ls__item .pfp {
@@ -215,7 +217,7 @@ export default {
     width: 40px;
 }
 .peep-ls__item p {
-    margin: auto;
+    margin: 0 auto;
     margin-left: 20px;
     font-weight: bold;
     font-size: 14px;
@@ -225,7 +227,7 @@ export default {
     border-radius: 100px;
     width: 20px;
     height: 20px;
-    margin: 10px;
+    margin-right: 10px;
     border: 2px solid #00000077;
 }
 ._peep-list #checked {

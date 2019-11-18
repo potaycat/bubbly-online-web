@@ -74,9 +74,6 @@ export default {
     top: 56px;
     width: 100%;
     padding-top: 1px !important;
-    background: linear-gradient(180deg,
-        rgba(255,255,255,0.88) 50%,
-        #ffffff00 100%);
 }
 
 
@@ -85,7 +82,6 @@ export default {
     transition: .5s;
     position: fixed;
     top: 56px;
-    background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%);
 }
 .top-lev-contract {
     margin-top: -56px;
@@ -94,8 +90,11 @@ export default {
 #tabs-round{
     display: flex;
     padding: 10px 30px;
-    z-index: 9999;
+    z-index: 99;
     width: 100%;
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.9) 50%,
+        rgba(0, 0, 0, 0) 100%);
 }
 #tabs-round button{
     margin: auto;

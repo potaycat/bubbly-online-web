@@ -10,7 +10,7 @@
 
 <script>
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
-import PostCard from '@/components/post/PostCard'
+import PostCard from '@/components/post/postCard/'
 
 export default {
     components: {

@@ -1,5 +1,5 @@
 import Tabs from '@/components/actions/Tabs'
-export const tabs = {
+export const _comp_tabs = {
     components: {Tabs},
     data() {
         return {

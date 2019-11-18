@@ -42,9 +42,6 @@ a {
 
 
 
-
-
-
 *,
 *:before,
 *:after {
@@ -56,22 +53,20 @@ a {
 
 
 
-
-
 /****************
 ** TRANSITIONS **
 ****************/
 
-/* EFFECT TRANSITION */
+/* CLICK ANIMATIONS */
+.glow, .lift, .push, .nopaque {
+    cursor: pointer;
+}
+
 .nopaque:active {
     opacity: 0.8;
     transition: .1s;
 }.nopaque:not(:active) {
     transition: .3s;
-}
-
-.glow, .lift, .push {
-    cursor: pointer;
 }
 
 .glow:active {
@@ -95,9 +90,7 @@ a {
 }.push:not(:active) {
     transition: .3s;
 }
-/* END OF EFFECT TRANSITION */
-
-
+/* END OF CLICK ANIMATIONS */
 
 
 
@@ -123,6 +116,7 @@ a {
     transform: scale(1.12);
     opacity: 0;
 }
+
 .zoom_in_fade-enter-active,
 .zoom_in_fade-leave-active {
     transition: opacity .2s, transform .15s;
@@ -133,28 +127,19 @@ a {
     opacity: 0;
 }
 
-.just_slide_up-enter-active,
-.just_slide_up-leave-active {
-    transition: .3s;
+
+.bounce_in-enter-active {
+    animation: bounce-in .6s;
 }
-.just_slide_up-enter,
-.just_slide_up-leave-to { /* .fade-leave-active below version 2.1.8 */
-    margin-bottom: -35px;
+.bounce_in-leave-active {
+    display: none;
 }
-
-.slide_down-enter-active,
-.slide_down-leave-active {
-    transition: .4s;
+@keyframes bounce-in {
+    0% { transform: scale(1) }
+    50% { transform: scale(1.4) }
+    94% { transform: scale(0.94) }
+    99% { transform: scale(1) }
 }
-.slide_down-enter,
-.slide_down-leave-to {
-    margin-bottom: -390px;
-    opacity: 0;
-}
-
-
-
-
 
 
 /* PAGE TRANSITION */
@@ -164,39 +149,11 @@ a {
 .page-enter {
     opacity: 0
 }
-
-.bounce-enter-active {
-    animation: bounce-in .8s;
-}
-.bounce-leave-active {
-    animation: bounce-out .5s;
-}
-@keyframes bounce-in {
-    0% { transform: scale(0) }
-    50% { transform: scale(1.5) }
-    100% { transform: scale(1) }
-}
-@keyframes bounce-out {
-    0% { transform: scale(1) }
-    50% { transform: scale(1.5) }
-    100% { transform: scale(0) }
-}
-
-.slide-left-enter,
-.slide-right-leave-active {
-    opacity: 0;
-    transform: translate(30px, 0);
-}
-.slide-left-leave-active,
-.slide-right-enter {
-    opacity: 0;
-    transform: translate(-30px, 0);
-}
 /* END OF PAGE TRANSITION */
 
+  /**********************/
+ /* END OF TRANSITIONS */
 /**********************/
-/* END OF TRANSITION */
-/********************/
 
 
 
@@ -206,30 +163,6 @@ a {
 /*******************/
 /* UNIVERSAL STYLE */
 /*******************/
-.reset {
-    all: unset
-}
-
-
-.total_darkness {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: #00000088;
-    z-index: 9999999;
-    display: flex;
-}
-
-
-.banner {
-    position: fixed;
-    z-index: 9;
-    top: 0;
-    width: 100%;
-    height: 56px;
-}
 
 .pfp {
     -webkit-border-radius: 100px;
@@ -242,18 +175,7 @@ a {
     border-radius: 25%;
 }
 
-.bg {
-    background-position: center; 
-    background-size: cover;
-}
 
-.cards-wrapper {
-    padding: 0 6px;
-}
-.card {
-    background-color: #fff;
-    border-radius: 12px;
-}
 
 .box-shadow-1 {
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
@@ -273,44 +195,64 @@ a {
 
 
 
-.noti__no-new {
-    font-size: 20px;
-    font-weight: bold;
-    color: #666;
-    width: 100%;
-    text-align: center;
-    margin-top: 50px;
+.shiny-white-bg {
+    background: linear-gradient(160deg, #fff 0, #ffffffee 50%, #fff 100%);
 }
-/***************************/
-/* END OF UNIVERSAL STYLE */
-/*************************/
+
+
+.cards-wrapper {
+    padding: 0 6px;
+}
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+}
 
 
 
+.app-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9;
+    width: 100%;
+    height: 56px;
+}
 
 
 
+.total_darkness {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #00000088;
+    z-index: 9999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.total_darkness.total_lightness {
+    background: none;
+    z-index: 999;
+}
 
 
-  /* ************* */
- /* DAT BIG FRAME */
-/* ************* */
+
 .the_big_frame {
     height: 100%;
     width: 100%;
-    position: absolute; top: 0; left: 0;
+    position: absolute; top: 0;
     display: flex;
-    /* transition: background-image 1s ease-in-out; */
 }
 
 .la_content {
     width: 100%;
-    /* position: absolute; top: 0; */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     overflow: auto;
 }
-  /* ******************** */
- /* END OF DAT BIG FRAME */
-/* ******************** */
+
+/* END OF UNIVERSAL STYLE */

@@ -1,6 +1,6 @@
-import { inputDiag } from '@/mixins/inputDiag'
+import { _comp_inputDiag } from '@/mixins/_comp_inputDiag'
 export const performFollow = {
-    mixins: [inputDiag],
+    mixins: [_comp_inputDiag],
     methods: {
         confirmUnfollow() {
             this.openDiag = {
@@ -38,7 +38,7 @@ export const performFollow = {
     },
 }
 export const performBlock = {
-    mixins: [inputDiag],
+    mixins: [_comp_inputDiag],
     methods: {
         confirmBlock() {
             this.openDiag = {
@@ -76,7 +76,7 @@ export const performBlock = {
     },
 }
 export const performJoin = {
-    mixins: [inputDiag],
+    mixins: [_comp_inputDiag],
     methods: {
         makeJoin() {
             if (this.community.visibility == 'public') {

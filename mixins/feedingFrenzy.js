@@ -10,11 +10,12 @@ export const feedingFrenzy = {
     },
     // this.$options.nonReactiveData {
         // cache: 'st_feed',
+        offsetProp: 'id',
     // }
     computed: {
         offset() {
             const last = this.fetchedData[this.fetchedData.length-1]
-            return last ? last.id : ""
+            return last ? last[this.$options.offsetProp] : ""
         },
         urlConstruct() {
             const u = this.feedUrl
@@ -38,16 +39,11 @@ export const feedingFrenzy = {
             // }
         },
         fetch() {
-            console.log("fetching for more");
-            
             this.loading4More = true
             this.$axios.get(this.urlConstruct,
                 this.$store.state.authHeader)
                     .then(res => {
                         if (res.data.length == 0) this.reachedEnd = true
-                        this.fetchedData.push(...res.data)
-                        this.fetchedData.push(...res.data)
-                        this.fetchedData.push(...res.data)
                         this.fetchedData.push(...res.data)
                         this.loading4More = false
                     })

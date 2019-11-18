@@ -1,9 +1,9 @@
 <template>
 <transition appear name="fade_in">
     <div id="post-full-view" class="the_big_frame">
-            <div class="la_content" ref="feed">
+        <div class="la_content" ref="feed">
 
-            <h3 ref="title" class="pf-title" v-if="post.title">{{ post.title }}</h3>
+            <h3 ref="title" class="pf-title">{{ post.title }}</h3>
 
             <n-link class="pf-author" :to="'/user/' + post.author.username">
                 <img class="pfp lift" :src="post.author.profile_pic"/>
@@ -17,16 +17,25 @@
 
             <nuxt-link :to="`/community/${post.allocated_to.id}`" class="pf__where glow">
                 <img class="cmnty-ico" :src=" post.allocated_to.icon_img">
-                <p>Bài viết được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
+                <p>Được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
             </nuxt-link>
 
-            <section class="pf-stuff">
-                <p class="pf__react-label">Reactions ({{post.total_reacts}})<span class="glow">View detail</span></p> 
+            <section >
+                <p class="pf__react-label glow">Reactions ({{post.total_reacts}})</p> 
                 <div class="pf-reactions">
                     <React
-                        :reacts="post.reacts"
-                        :community="post.allocated_to.id"
+                        :reacts="reactionsLsSorted"
+                        :myReact="post.my_react"
+                        :communityId="post.allocated_to.id"
                         size= "react-icon--big"
+                        @toggleAdd="launchAddBox"
+                        @quickReact="performReact"
+                        @deleteReact="deleteReaction"
+                    />
+                    <ReactAdd v-if="reacting"
+                        :position="reacting"
+                        :community="post.allocated_to"
+                        @performReact="performReact"
                     />
                 </div>
             </section>
@@ -38,34 +47,27 @@
             />
         </div>
         <Dropdown v-if="moring" @pick="onDropDownPick"
-            :options="[
-                isSelf ? {value:'edit', name:'Edit'} : null,
-                isSelf ? {value:'delete', name:'Delete post'} : null,
-                isMod(post.allocated_to.id) ? {value:'mod_delete', name:'[Mod] Remove post'} : null,
-            ].filter(x=>x)"
+            :options="hamburgerOptions"
         />
     </div>
 </transition>
 </template>
 
 <script>
-import BubblyMarkdownParse from '../mdParse'
-import React from '../react'
-
-import Commenting from './Commenting'
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
-
-import Dropdown from '@/components/actions/Dropdown'
 import { mapGetters } from "vuex"
+import BubblyMarkdownParse from '../mdParse'
+import { _comp_reactAdd } from '@/mixins/_comp_reactAdd'
+import Dropdown from '@/components/actions/Dropdown'
 
+import Commenting from './commenting/'
+import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
     components: {
         BubblyMarkdownParse,
-        React,
-        Commenting,
         Dropdown,
+        Commenting,
     },
-    mixins: [feedingFrenzy],
+    mixins: [feedingFrenzy, _comp_reactAdd],
     props: ['post'],
     data() {
         return {
@@ -77,15 +79,32 @@ export default {
             isMod: 'moderating/isMod',
             moring: 'detailBanner/hmbrgrLaunchd',
         }),
-        isSelf() {
-            return this.post.author.username == this.$store.state.auth.my_profile.username
-        },
+        profile() {return this.post.author}, // to work with performFollow mixin
         bannerText() {
             if (this.post.title) {
                 return this.post.title
             }
             return "Bài đăng của "+ this.post.author.alias
         },
+        hamburgerOptions() {
+            const vbName = this.profile.alias
+            return [
+                ...this.post.author.username==this.$store.state.auth.my_profile.username ? [
+                    {value:'edit', name:'Edit'},
+                    {value:'delete', name:'Delete post'},
+                ] : [
+                    this.post.author.you_follow ? {value:'unfollow', name:`Unfollow ${vbName}`} :
+                        {value:'follow', name:`Follow ${vbName}`},
+                    this.post.author.you_block ? {value:'unblock', name:`Unblock ${vbName}`} :
+                        {value:'block', name:`Block ${vbName}`},
+                    this.isMod(this.post.allocated_to.id) ? {value:'mod_delete', name:'[Mod] Remove comment'} :
+                        {value:'flag', name:'Report'},
+                ],
+                ...[
+                    {value:'copyLink', name:'Copy post URL'},
+                ]
+            ]
+        }
     },
     mounted() {
         const tt = this.$refs.title
@@ -108,6 +127,8 @@ export default {
                     break
             }
         },
+
+        
     },
 }
 </script>
@@ -118,16 +139,14 @@ export default {
 }
 
 .pf-title {
-    padding: 10px 0;
+    padding: 0 41px;
+    padding-bottom: 10px;
     width: 100%;
-    border: 0;
-    border-bottom: 1px;
-    border-style: solid;
-    border-color: #eee;
+    border-bottom: solid 1px #eee;
 }
 
 .pf-author {
-    margin: 20px 0 10px;
+    margin: 15px 0 10px;
     display: flex;
 }
 .pf-author .pfp {
@@ -136,49 +155,37 @@ export default {
 }
 .pf-author .pf-text-info {
     margin-left: 8px;
-    font-size: 15px;
+    font-size: 14px;
 }
 .pf-author .pf-timestamp {
-    font-size: 11px;
+    font-size: 10px;
     margin: 2px 0 5px;
     color: #aaa;
 }
 
 .pf__where {
     display: flex;
+    align-items: center;
     margin: 20px 0 20px;
 }
 .pf__where .cmnty-ico {
-    height: 28px;
-    width: 28px;
-    margin: auto 10px auto 0;
+    height: 26px;
+    width: 26px;
 }
 .pf__where > p {
-    margin: auto;
+    margin-left: 10px;
     font-size: 11px;
-    color: #888;
+    color: #bfbfbf;
 }
 
-.pf-stuff {
-    width: 100%;
-}
 .pf-stuff .pf__react-label {
     color: #444;
     /* font-weight: 500; */
-    display: flex;
-}
-.pf-stuff .pf__react-label span {
-    font-weight: normal;
-    margin: auto 0 auto auto;
-    color: #999;
-    font-size: 14px;
 }
 
 .pf-reactions {
-    /* border: */
-    
     padding: 10px 0;
-    /* max-height: 120px; */
+    max-height: 120px;
     overflow: auto;
 }
 </style>
