@@ -9,11 +9,11 @@
                     <p v-else-if="profile.you_block">This person blocked you</p>
                     <div v-else-if="isSelf" id="prfl-inf__cmd">
                         <Button class="prfl-inf__cmd__btn" style="width:auto"
-                            text="Edit Profile" @clicked="" :padding="['5px', '20px']"/>
+                            text="Edit Profile" @clicked="$router.push('/user/profile-settings')" :padding="['5px', '20px']"/>
                     </div>
                     <div v-else id="prfl-inf__cmd">
                         <Button class="prfl-inf__cmd__btn"
-                            text="Chat" @clicked="confirmToChat" :padding="['5px', '0']" />
+                            text="Chat" @clicked="confirmToPrivate" :padding="['5px', '0']" />
                         <Button v-if="profile.you_follow" class="prfl-inf__cmd__btn"
                             text="Following" @clicked="confirmUnfollow" :padding="['5px', '0']" fill/>
                         <Button v-else class="prfl-inf__cmd__btn"
@@ -47,9 +47,10 @@
             :options="[
                 profile.you_block ? {value:'unblock', name:'Unblock'} :
                     {value:'block', name:'Block'},
-                {value:'', name:'Let\'s'},
-                {value:'', name:'Get'},
-                {value:'report', name:'This'},
+                {value:'report', name:'Report'},
+                {value:'a', name:'Let\'s'},
+                {value:'b', name:'Get'},
+                {value:'c', name:'This'},
                 {value:'copyUrl', name:'Bread OwO'},
             ].filter(x=>x)"
         />
@@ -57,19 +58,19 @@
 </template>
 
 <script>
-import Button from '@/components/actions/Button'
-import Dropdown from '@/components/actions/Dropdown'
-import { performFollow, performBlock } from '@/mixins/performFollow'
+import Button from '@/components/misc/Button'
+import Dropdown from '@/components/misc/Dropdown'
+import { performFollow, performBlock, performToPrivate } from '@/mixins/performFollow'
 
 export default {
     components: {
         Button,
         Dropdown
     },
-    mixins: [performFollow, performBlock],
+    mixins: [performFollow, performBlock, performToPrivate],
     props: ['profile'],
     computed: {
-        moring() {return this.$store.state.detailBanner.moring},
+        moring() {return this.$store.state.appBar.moring},
         isSelf() {
             return this.profile.username == this.$store.state.auth.my_profile.username
         }
@@ -87,7 +88,7 @@ export default {
         onUnblockHandle() {this.$emit('unblocked')},
 
         onDropDownPick(value) {
-            this.$store.commit('detailBanner/openInfo', false)
+            this.$store.commit('appBar/burgerState', false)
             switch (value) {
                 case 'block':
                     this.confirmBlock()
@@ -101,8 +102,8 @@ export default {
         },
 
         toDetailBanner() {
-            this.$store.commit('detailBanner/loadText', this.profile.alias)
-            this.$store.commit('detailBanner/loadPic', {
+            this.$store.commit('appBar/loadText', this.profile.alias)
+            this.$store.commit('appBar/loadPic', {
                 src: this.profile.profile_pic,
                 style:'circle'
             })
@@ -114,25 +115,6 @@ export default {
         viewFollowers() {
             this.toDetailBanner()
             this.$router.push(`/user/${this.profile.username}/circles?get=followers`)
-        },
-
-
-        confirmToChat() {
-            this.openDiag = {
-                title: `Chat with ${this.profile.alias}?`,
-                description: 'This will create a new private room if there are not any yet'
-            }
-            this.diagHndlFun = this.performToChat
-        },
-        performToChat() {
-            this.$axios.post(
-                `chat/__new_or_direct/add`,
-                {participants: [{identity: this.profile.id}]},
-                this.$store.state.authHeader
-            )
-                .then(res => {
-                    this.$router.push('/chat/t/'+res.data.id)
-                })
         },
     },
 }
@@ -202,7 +184,7 @@ export default {
     display: flex;
     color: #666;
 }
-.prfl-info .loc i {
+.prfl-info .loc > i {
     font-size: 16px;
     margin: auto 5px auto 0;
 }
@@ -210,11 +192,11 @@ export default {
 .prfl-inf__follows {
     padding: 5px 0;
 }
-.prfl-inf__follows >span {
+.prfl-inf__follows > span {
     color:#999;
     font-size: 15px;
 }
-.prfl-inf__follows >span:nth-child(2) {
+.prfl-inf__follows > span:nth-child(2) {
     margin-left: 12px;
 }
 .prfl-inf__follows >span >strong {

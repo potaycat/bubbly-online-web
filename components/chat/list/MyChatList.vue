@@ -1,13 +1,12 @@
 <template>
-    <div id="mienCLs">
+    <div id="myRoomLs">
         <div class="the_big_frame">
-            <div class="la_content" ref="feed">
-                <div style="min-height:105px;width:100%"/>
+            <div class="common_ls_cntainr --top-lev-app-bar --with-tabs" ref="feed">
                 <ConvoItem v-for="room in fetchedData"
                     :key="room.id"
                     :room="room"
                 />
-                <div style="min-height: 120px"/>
+                <Spinner v-if="loading4More" />
             </div>
             
             <FAB @clicked="openAddDiag"
@@ -20,15 +19,15 @@
 </template>
 
 <script>
-import { feedingFrenzy, scrlDirection } from '@/mixins/feedingFrenzy'
-import FAB from '@/components/actions/FAB'
+import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
+import FAB from '@/components/misc/FAB'
 import AddDiag from '../AddDiag'
 import ConvoItem from './ConvoItem'
 
 export default {
     components: {FAB, AddDiag, ConvoItem},
     mixins: [
-        feedingFrenzy,
+        feedingFrenzy, maintainScrllPos,
         scrlDirection,
     ],
     data() {

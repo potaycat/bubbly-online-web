@@ -1,0 +1,32 @@
+.glow, .lift, .push, .nopaque {
+    cursor: pointer;
+}
+
+.nopaque:active {
+    transition: .1s !important;
+    opacity: 0.8;
+}.nopaque:not(:active) {
+    transition: .3s;
+}
+
+.glow:active {
+    transition: .15s !important;
+    background: rgba(0, 0, 0, 0.15);
+}.glow:not(:active) {
+    transition: .5s;
+}
+
+.lift:active {
+    transition: .2s !important;
+    box-shadow: 0 5px 15px #555 !important;
+    opacity: 0.7;
+}.lift:not(:active) {
+    transition: .5s;
+}
+
+.push:active {
+    transition: .1s !important;
+    transform: scale(0.9)
+}.push:not(:active) {
+    transition: .3s;
+}

@@ -2,7 +2,8 @@
 
 export const state = () => ({
     wsBase: 'ws://localhost:8000/',
-    authHeader: localStorage.getItem('t')? {headers: {Authorization: "JWT "+localStorage.getItem('t')}} :null,
+    authHeader: localStorage.getItem('t') ?
+        {headers: {Authorization: "JWT "+localStorage.getItem('t')}} : null,
 
     topLevelDestination: 1,
     scrollinUp: true,

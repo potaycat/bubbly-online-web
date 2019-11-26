@@ -3,7 +3,7 @@
 //     @clicked="onDiagClose"
 // />
 
-import InputDialog from '@/components/actions/InputDialog'
+import InputDialog from '@/components/misc/InputDialog'
 export const _comp_inputDiag = {
     components: {InputDialog},
     data() {

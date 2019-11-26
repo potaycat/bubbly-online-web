@@ -5,10 +5,10 @@
             class="content-block"
             :block="b"
             :attachments="attachments"
-            @attchGotten="attchGotten"
+            @attachmentGot="usedAttchs.push($event)"
         />
         <div v-for="attachment in unusedAttchs"
-            :key="attachment.order"
+            :key="`atch_${attachment.order}`"
             class="unused-attchs"
         >
             <img v-if="attachment.type==2"
@@ -36,14 +36,9 @@ export default {
             return this.text.split(/\r?\n/)
         },
         unusedAttchs() {
-            return this.attachments.filter((d, i) => this.usedAttchs.indexOf(i) == -1)
+            return this.attachments.filter(obj => !this.usedAttchs.includes(obj.order))
         }
     },
-    methods: {
-        attchGotten(index) {
-            this.usedAttchs.push(index)
-        }
-    }
 }
 </script>
 
@@ -56,11 +51,7 @@ export default {
     margin-bottom: -5px;
 }
 
-
-.unused-attchs {
-    margin: 15px -15px 0 -15px;
-}
-.unused-attchs > *{
+.unused-attchs > img{
     width: 100%;
 }
 </style>

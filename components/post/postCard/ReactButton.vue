@@ -1,23 +1,24 @@
 <template>
     <button oncontextmenu="return false" v-if="myReact" class="_p__my-react push"
-        @mouseenter="onMouseDown"
-        @mouseleave="longEnough=false"
-        @mouseup="deleteReact"
-        @touchstart.prevent="onMouseDown"
-        @touchend.self="deleteReact"
+        @mouseenter="onDown"
+        @mouseleave="notLongEnough"
+        @click="deleteReact"
+
+        @touchstart="onDown"
+        @touchmove="notLongEnough"
     >
         <transition name="bounce_in" appear>
             <img :src="myReactIcon.img_src">
-            <!-- <div>💗</div> -->
         </transition>
         <p>{{ myReactIcon.name }}</p>
     </button>
     <button oncontextmenu="return false" v-else class="push"
-        @mouseenter="onMouseDown"
-        @mouseleave="longEnough=false"
-        @mouseup="quickReact"
-        @touchstart.prevent="onMouseDown"
-        @touchend.self="quickReact"
+        @mouseenter="onDown"
+        @mouseleave="notLongEnough"
+        @click="quickReact"
+
+        @touchstart="onDown"
+        @touchmove="notLongEnough"
     >
         <i class="material-icons-outlined">insert_emoticon</i>
         <p>Like</p>
@@ -30,17 +31,19 @@ import { mapGetters } from "vuex"
 export default {
     props: ['myReact', 'communityId'],
     // this.$options.nonReactiveData {
-        mousePos: null,
         longEnough: true,
     // }
     computed: {
         ...mapGetters({
-            iconsByCmnty: 'reactIcons/iconsByCmnty',
             iconById: 'reactIcons/iconById',
         }),
         myReactIcon() {
             try {
-                return this.iconById(this.communityId, this.myReact)
+                const mine = this.iconById(this.communityId, this.myReact)
+                return mine || {
+                    img_src: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/223/grinning-face_1f600.png",
+                    name: "Reacted"
+                }
             } catch (error) {
                 console.log("My React not found!")
                 return {}
@@ -48,25 +51,27 @@ export default {
         },
     },
     methods: {
-        onMouseDown(evt) {
-            if (evt.type=='touchstart') this.$options.mousePos = evt.touches[0]
-            else this.$options.mousePos = evt
-
+        onDown(evt) {
+            if (evt.type=='touchstart') this.setLaunchAdd(evt.touches[0])
+            else this.setLaunchAdd(evt)
+        },
+        setLaunchAdd(evt) {
             this.$options.longEnough = true
             setTimeout(() => {
                 if (this.$options.longEnough) {
-                    this.$emit('toggleAdd', this.$options.mousePos)
+                    this.$emit('toggleAdd', evt)
                 }
             }, 500)
         },
         quickReact() {
-            this.$options.longEnough = false
+            this.notLongEnough()
             this.$emit('quickReact')
         },
         deleteReact() {
-            this.$options.longEnough = false
+            this.notLongEnough()
             this.$emit('deleteReact')
-        }
+        },
+        notLongEnough() {this.$options.longEnough = false}
     }
 }
 </script>

@@ -1,4 +1,4 @@
-import Tabs from '@/components/actions/Tabs'
+import Tabs from '@/components/misc/Tabs'
 export const _comp_tabs = {
     components: {Tabs},
     data() {

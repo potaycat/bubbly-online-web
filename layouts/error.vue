@@ -14,12 +14,9 @@
 
 <script>
 export default {
-    layout: 'immerse',
     props: ["error"]
 };
 </script>
 
 <style scoped>
-.container {
-}
 </style>

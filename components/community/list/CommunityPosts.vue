@@ -5,18 +5,23 @@
             :post ="post"
             :community="community"
         />
+        <Spinner v-if="loading4More" />
+        <!-- <FAB @clicked="$router.push(`/post/compose?cmnty=${community.id}`)"
+            icon= "post_add"
+            actionName="Post to community"
+            style="bottom:20px"
+        /> -->
     </div>
 </template>
 
 <script>
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
 import PostCard from '@/components/post/postCard/'
+import FAB from '@/components/misc/FAB'
 
 export default {
-    components: {
-        PostCard,
-    },
-    mixins: [feedingFrenzy],
+    components: {PostCard, FAB},
+    mixins: [feedingFrenzy, maintainScrllPos, scrlDirection],
     props: ['community'],
     data() {
         return {

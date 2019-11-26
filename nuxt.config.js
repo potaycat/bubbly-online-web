@@ -8,7 +8,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    title: "Bubbly",
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable= no' },
@@ -27,7 +27,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#0bd692' },
+  loading: { color: '#fff' },
 
   /*
   ** Global CSS
@@ -58,7 +58,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: 'http://localhost:8000', //'http://localhost:8000'
+    baseURL: 'http://localhost:8000',
     // credentials: false
   },
 
@@ -74,13 +74,5 @@ module.exports = {
     }
   },
   
-  router: {
-    // scrollBehavior (to, from, savedPosition) {
-    //   if (savedPosition) {
-    //     return savedPosition
-    //   } else {
-    //     return { x: 0, y: 0 }
-    //   }
-    // }
-  }
+  router: {}
 }

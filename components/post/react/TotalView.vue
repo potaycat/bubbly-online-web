@@ -31,10 +31,13 @@ export default {
             iconsByCmnty: 'reactIcons/iconsByCmnty',
         }),
         iconPreviewLs() {
-            let icoArr = this.iconsByCmnty(this.communityId).slice()
+            let icoArr = this.iconsByCmnty(this.communityId) || []
             const len = icoArr.length
             if (len < 6) {
-                icoArr.push(...this.$options.defaultList.slice(0, 6-len))
+                icoArr = [
+                    ...icoArr,
+                    ...this.$options.defaultList.slice(0, 6-len)
+                ]
             }
             return this.shuffle(icoArr).slice(0, 6)
         }

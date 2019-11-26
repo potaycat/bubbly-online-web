@@ -8,14 +8,14 @@
 </template>
 
 <script>
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
 import PostCard from '@/components/post/postCard/'
 
 export default {
     components: {
         PostCard,
     },
-    mixins: [feedingFrenzy],
+    mixins: [feedingFrenzy, maintainScrllPos],
     props: ['profile'],
     data() {
         return {

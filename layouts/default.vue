@@ -1,29 +1,18 @@
 <template>
-    <div class="default-template">
-        <TopBarMain />
-
-        <Nuxt />
-
-        <BottomNav />
+    <div>
+        <Nuxt keep-alive />
+        <TopLvlNavigator />
     </div>
 </template>
 
 <script>
-import TopBarMain from "@/components/bars/TopMain";
-import BottomNav from "@/components/bars/BottomNav";
-
+import TopLvlNavigator from "@/components/layout/bars/TopLvlNavigator"
 export default {
     components: {
-        TopBarMain,
-        BottomNav
+        TopLvlNavigator
     }
-};
+}
 </script>
 
-
 <style>
-.default-template {
-    /* background-color: #ECEFF1; */
-    overscroll-behavior: contain; /* auto refresh no! */
-}
 </style>

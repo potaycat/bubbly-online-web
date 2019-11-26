@@ -26,15 +26,15 @@ export const _comp_reactAdd = {
         this.reactionLs = this.post.reactions
     },
     mounted() {
-        document.querySelector(".la_content").addEventListener('scroll',()=>{
+        document.querySelector(".common_ls_cntainr").addEventListener('scroll',()=>{
              this.reacting = null
         })
     },
     methods: {
         launchAddBox(posEvt) {
             this.reacting = {
-                x: posEvt.clientX-10,
-                y: window.innerHeight-posEvt.clientY+30
+                x: posEvt.clientX-25,
+                y: window.innerHeight-posEvt.clientY+20
             }
         },
         performReact(iconId) {

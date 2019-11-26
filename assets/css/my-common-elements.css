@@ -1,0 +1,29 @@
+
+.pfp {
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    border-radius: 100px;
+}
+.cmnty-ico {
+    -webkit-border-radius: 25%;
+    -moz-border-radius: 25%;
+    border-radius: 25%;
+}
+
+
+.cards-wrapper {
+    padding-right: 6px !important;
+    padding-left: 6px !important;
+}
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+}
+
+.app-bar {
+    position: fixed;
+    top: 0;
+    z-index: 9;
+    width: 100%;
+    height: 56px;
+}

@@ -17,7 +17,7 @@
                     <div class="cmnty-inf__moto">{{ community.moto }}</div>
                     <div v-if="community.membership_info&&community.membership_info.role=='banned'">You are banned from this community</div>
                     <div v-else class="cmnty-inf__actions">
-                        <Button v-if="roleDisplay" @clicked="confirmLeave" :text="roleDisplay" :padding="['5px', '0']" fill/>
+                        <Button v-if="roleDisplay" @clicked="onRoleButtonClick" :text="roleDisplay" :padding="['5px', '0']" fill/>
                         <Button v-else @clicked="makeJoin" text="Join" :padding="['5px', '0']" />
                     </div>
                 </section>
@@ -39,9 +39,9 @@
 </template>
 
 <script>
-import Button from "@/components/actions/Button"
+import Button from "@/components/misc/Button"
 import { performJoin } from '@/mixins/performFollow'
-import Dropdown from '@/components/actions/Dropdown'
+import Dropdown from '@/components/misc/Dropdown'
 
 export default {
     components: {
@@ -51,30 +51,33 @@ export default {
     mixins: [performJoin],
     props: ["community"],
     computed: {
-        moring() {return this.$store.state.detailBanner.moring},
+        moring() {return this.$store.state.appBar.moring},
         isBanned() {
-            if (this.community.membership_info) {
-                const role = this.community.membership_info.role
-                return role == 'administrator' ? 'Administering' :
-                    role == 'moderator' ? 'Moderating' :
-                    role == 'member' ? 'Joined' : ''
-            }
             return null
         },
+        isModerator() {return this.community.membership_info.role=='moderator'},
+        isAdministrator() {return this.community.membership_info.role=='administrator'},
+        isMember() {return this.community.membership_info.role=='member'},
         roleDisplay() {
             if (this.community.membership_info) {
-                const role = this.community.membership_info.role
-                return role == 'administrator' ? 'Administering' :
-                    role == 'moderator' ? 'Moderating' :
-                    role == 'member' ? 'Joined' : ''
+                return this.isAdministrator ? 'Administering' :
+                    this.isModerator ? 'Moderating' :
+                    this.isMember ? 'Joined' : ''
             }
             return null
         }
     },
     methods: {
+        onRoleButtonClick() {
+            if (this.isMember) {
+                this.confirmLeave()
+            } else if (this.isModerator || this.isAdministrator) {
+                this.$router.push(`/community/${this.$route.params.id}/manage`)
+            }
+        },
         toCmntyMembers() {
-            this.$store.commit('detailBanner/loadText', `Members of ${this.community.name}`)
-            this.$store.commit('detailBanner/loadPic', {
+            this.$store.commit('appBar/loadText', `Members of ${this.community.name}`)
+            this.$store.commit('appBar/loadPic', {
                 src: this.community.icon_img,
                 style:'square'
             })
@@ -89,7 +92,7 @@ export default {
 
 
         onDropDownPick(value) {
-            this.$store.commit('detailBanner/openInfo', false)
+            this.$store.commit('appBar/burgerState', false)
             switch (value) {
                 default:
                     break
@@ -99,7 +102,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .cmnty-info {
     max-width: 950px;
     min-width: 300px;

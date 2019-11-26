@@ -1,15 +1,14 @@
 <template>
     <div>
-        
+        <TopLvlDestination />
     </div>
 </template>
 
 <script>
+import TopLvlDestination from '@/components/layout/TopLvlDestination'
 export default {
-    components: {
-        
-    },
-    created() {
+    components: {TopLvlDestination,},
+    activated() {
         this.$store.commit('changeDestination', 5)
     },
 }

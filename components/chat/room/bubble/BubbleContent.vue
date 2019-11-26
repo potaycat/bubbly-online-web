@@ -14,6 +14,7 @@
         </div>
 
         <p v-else-if="msg_type==8" class="m-ct__txt _m-ct__chat-chng">Made the chat room</p>
+        <p v-else-if="msg_type==9" class="m-ct__txt _m-ct__chat-chng"><strong>{{content}}</strong> left the chat room</p>
         <p v-else-if="msg_type==5" class="m-ct__txt _m-ct__chat-chng">
             Added {{content==1?"someone":`${content} people`}} to the chat</p>
         <p v-else-if="msg_type==6" class="m-ct__txt _m-ct__chat-chng">Changed chat name to <strong>{{ content }}</strong></p>

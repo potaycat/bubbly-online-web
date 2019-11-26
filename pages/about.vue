@@ -1,3 +1,3 @@
 <template>
-    <h1>The about page</h1>
+    <h1>This is a social network</h1>
 </template>

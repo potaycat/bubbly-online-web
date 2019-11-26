@@ -1,14 +1,15 @@
 <template>
     <div>
+        <ActivityView />
         <LeCommunity :community="community"/>
     </div>
 </template>
 
 <script>
-import LeCommunity from '@/components/LeCommunity'
+import ActivityView from '@/components/layout/ActivityView'
+import LeCommunity from '@/components/community/'
 export default {
-    layout: "immerse",
-    components: {LeCommunity},
+    components: {ActivityView, LeCommunity},
     head() {
         return {
             title: `${this.community.name} | Bubbly`,
@@ -22,9 +23,5 @@ export default {
             // posts: communityPostsRes
         }
     },
-    created() {
-        this.$store.commit('detailBanner/loadText', null)
-        this.$store.commit('detailBanner/loadPic', {})
-    }
 };
 </script>

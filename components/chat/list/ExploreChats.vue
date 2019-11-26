@@ -1,11 +1,10 @@
 <template>
-    <div class="the_big_frame"><div class="la_content" ref="feed">
-        <div style="min-height:105px"/>
+    <div class="the_big_frame"><div class="common_ls_cntainr --top-lev-app-bar --with-tabs" ref="feed">
         <div v-for="roomCluster in fetchedData"
-            class="_p"
+            class="xplr-chat__cmnty"
             :key="roomCluster.id"
         >
-            <nuxt-link :to="`/community/${roomCluster.id}`" class="_p_info glow">
+            <nuxt-link :to="`/community/${roomCluster.id}`" class="xplr-chat__cmnty-inf glow">
                 <img class="cmnty-ico" :src="roomCluster.icon_img">
                 <p>{{ roomCluster.name }}</p>
                 <i class="material-icons-round">arrow_forward</i>
@@ -15,25 +14,25 @@
                 class="pblc-chats box-shadow-2 bg lift"
                 @click="toChat(room)"
                 :key="room.id"
-                :style="`background:url(${room.bg_img ? room.bg_img : roomCluster.cover_img}) center`"
+                :style="`background:url(${room.bg_img || roomCluster.cover_img}) center`"
             >
                 <div class="pblc-chats__txt">
-                    <div class="name">{{ room.name ? room.name : "Phòng chat cộng đồng" }}</div>
+                    <div class="name">{{ room.name || "Phòng chat cộng đồng" }}</div>
                     <span>{{ room.last_msg.timestamp | tiemstamp }}</span>
                 </div>
                 <p class="pblc-chats__last">{{ room.last_msg | lastMsgDspl }}</p>
             </div>
         </div>
-        <div style="min-height: 69px"/>
+        <Spinner v-if="loading4More" />
     </div></div>
 </template>
 
 <script>
-import { feedingFrenzy, scrlDirection } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
 import { chatLs } from '@/mixins/chatLs'
 
 export default {
-    mixins: [feedingFrenzy, chatLs, scrlDirection],
+    mixins: [feedingFrenzy, maintainScrllPos, chatLs, scrlDirection],
     data() {
         return {
             feedUrl: 'chat/explore/',
@@ -43,33 +42,32 @@ export default {
 </script>
 
 <style>
-._p {
+.xplr-chat__cmnty {
     width: 100%;
     word-wrap: break-word;
 }
 
-._p_info .material-icons-round {
-    margin: 9px 6px 0 0;
-    font-size: 19px;
-    color: #777;
-}
-
-._p ._p_info {
+.xplr-chat__cmnty-inf {
     display: flex;
     padding: 5px;
 }
-._p ._p_info .cmnty-ico {
+.xplr-chat__cmnty-inf .cmnty-ico {
     height: 35px;
     width: 35px;
     
     margin: 0 10px;
 }
-._p ._p_info p {
+.xplr-chat__cmnty-inf > p {
     word-spacing: 0;
     margin: auto;
     margin-left: 3px;
     font-weight: bold;
     /* font-size: 15px; */
+}
+.xplr-chat__cmnty-inf .material-icons-round {
+    margin: 9px 6px 0 0;
+    font-size: 19px;
+    color: #777;
 }
 
 .pblc-chats {

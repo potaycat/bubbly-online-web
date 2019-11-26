@@ -1,5 +1,6 @@
 <template>
     <div>
+        <ActivityView />
         <PostFullView v-if="post"
             :post="post"
         />
@@ -7,12 +8,10 @@
 </template>
 
 <script>
-import PostFullView from '@/components/post/full/PostFullView'
+import ActivityView from '@/components/layout/ActivityView'
+import PostFullView from '@/components/post/fullView/'
 export default {
-    layout: 'immerse',
-    components: {
-        PostFullView,
-    },
+    components: {ActivityView, PostFullView},
     asyncData ({ $axios, params }) {
 
     },
@@ -22,9 +21,6 @@ export default {
         }
     },
     created() {
-        this.$store.commit('detailBanner/loadText', null)
-        this.$store.commit('detailBanner/loadPic', {})
-        
         this.$axios.get(`posts/${this.$route.params.slug}`, 
             this.$store.state.authHeader)
             .then(res => {

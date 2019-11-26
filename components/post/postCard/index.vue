@@ -76,8 +76,9 @@
         </div>
         <ReactAdd v-if="reacting"
             :position="reacting"
-            :community="allocated_to"
+            :communityId="allocated_to.id"
             @performReact="performReact"
+            quickLeave=1
         />
 
     </div>
@@ -96,12 +97,10 @@ export default {
     props: ['post', 'community', 'user'],
     computed: {
         allocated_to() {
-            return this.community ? this.community :
-                this.post.allocated_to
+            return this.community || this.post.allocated_to
         },
         author() {
-            return this.user ? this.user :
-                this.post.author
+            return this.user || this.post.author
         },
     },
     methods: {

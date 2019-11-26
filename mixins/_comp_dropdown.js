@@ -9,7 +9,7 @@
 // />
 //
 
-import Dropdown from '@/components/actions/Dropdown'
+import Dropdown from '@/components/misc/Dropdown'
 export const _comp_dropdown = {
     components: {Dropdown},
     data() {

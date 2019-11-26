@@ -54,7 +54,7 @@ export default {
             return (match && !/\s/.test(url) && match[1].length==11) ? match[1] : false
         },
         scroll2Bottom() {
-            const container = document.querySelector(".la_content")
+            const container = document.querySelector(".common_ls_cntainr")
             container.scrollTop = container.scrollHeight
         },
 

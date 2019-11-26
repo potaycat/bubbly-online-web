@@ -1,12 +1,16 @@
 <template>
-    <LeNoti />
+    <div>
+        <TopLvlDestination />
+        <LeNoti />
+    </div>
 </template>
 
 <script>
-import LeNoti from '@/components/LeNoti'
+import TopLvlDestination from '@/components/layout/TopLvlDestination'
+import LeNoti from '@/components/notification/'
 export default {
-    components: {LeNoti},
-    created() {
+    components: {TopLvlDestination, LeNoti},
+    activated() {
         this.$store.commit('changeDestination', 4)
     },
 }

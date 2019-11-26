@@ -4,19 +4,18 @@
             :key="community.id"
             :community="community"
         />
-        <div style="min-height:50px"/>
     </div>
 </template>
 
 <script>
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
 import CmntyItem from '@/components/community/list/CmntyItem'
 
 export default {
     components: {
         CmntyItem,
     },
-    mixins: [feedingFrenzy],
+    mixins: [feedingFrenzy, maintainScrllPos],
     props: ['profile'],
     data() {
         return {

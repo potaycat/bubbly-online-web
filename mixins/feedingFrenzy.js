@@ -1,4 +1,4 @@
-import Spinner from '@/components/things/Spinner'
+import Spinner from '@/components/misc/Spinner'
 export const feedingFrenzy = {
     components: {Spinner},
     data() {
@@ -9,19 +9,18 @@ export const feedingFrenzy = {
         }
     },
     // this.$options.nonReactiveData {
-        // cache: 'st_feed',
         offsetProp: 'id',
     // }
     computed: {
         offset() {
-            const last = this.fetchedData[this.fetchedData.length-1]
+            const last = this.fetchedData[this.fetchedData.length - 1]
             return last ? last[this.$options.offsetProp] : ""
         },
         urlConstruct() {
             const u = this.feedUrl
-            return `${u.slice(-1)=="&"?u:u+"?"}offset=${this.offset}`
+            return `${u.slice(-1) == "&" ? u : u + "?"}offset=${this.offset}`
         },
-        scrollCtnr() {return this.$refs.feed},
+        scrollCtnr() { return this.$refs.feed },
     },
 
     created() {
@@ -42,48 +41,81 @@ export const feedingFrenzy = {
             this.loading4More = true
             this.$axios.get(this.urlConstruct,
                 this.$store.state.authHeader)
-                    .then(res => {
-                        if (res.data.length == 0) this.reachedEnd = true
-                        this.fetchedData.push(...res.data)
-                        this.loading4More = false
-                    })
+                .then(res => {
+                    if (res.data.length == 0) this.reachedEnd = true
+                    this.fetchedData.push(...res.data)
+                    this.loading4More = false
+                })
+        },
+        fetchNRefresh() {
+            this.loading4More = true
+            this.$axios.get(this.feedUrl,
+                this.$store.state.authHeader)
+                .then(res => {
+                    this.fetchedData = res.data
+                    this.loading4More = false
+                })
         },
         scrllActive() {
-            const container = this.scrollCtnr
-            container.scrollTop = this.lastScrollPosition
-            container.addEventListener('scroll', () => {
+            const scrllable = this.scrollCtnr
+            scrllable.scrollTop = this.lastScrollPosition
+            scrllable.addEventListener('scroll', () => {
                 // Infinite scroll. 200px till bottom of page
-                if (container.scrollTop + container.clientHeight > container.scrollHeight - 200) {
+                if (scrllable.scrollTop + scrllable.clientHeight > scrllable.scrollHeight - 200) {
                     if (!this.loading4More && !this.reachedEnd) {
                         this.fetch()
                     }
                 }
-            }, {capture: true, passive: true})
+            }, { capture: false, passive: true })
         }
     },
 }
 
 export const scrlDirection = {
     // this.$options.nonReactiveData {
-        prevScrTp: 0,
+    prevScrTp: 0,
     // }
     computed: {
         scrolling_up() {
             return this.$store.state.scrollinUp
         },
+        scrollCtnr() { return this.$refs.feed },
     },
+    activated() { if (!this.scrolling_up) this.$store.commit('toggleScrDir') },
     mounted() {
-        if (!this.scrolling_up) this.$store.commit('toggleScrDir')
-        const container = this.$refs.feed
-        container.scrollTop = this.lastScrollPosition
-        container.addEventListener('scroll', () => {
-            if (container.scrollTop > this.$options.prevScrTp) {
+        const scrllable = this.scrollCtnr
+        scrllable.scrollTop = this.lastScrollPosition
+        scrllable.addEventListener('scroll', () => {
+            if (scrllable.scrollTop > this.$options.prevScrTp) {
                 if (this.scrolling_up) this.$store.commit('toggleScrDir')
             } else if (!this.scrolling_up) this.$store.commit('toggleScrDir')
-            this.$options.prevScrTp = container.scrollTop
+            this.$options.prevScrTp = scrllable.scrollTop
         }, {
-            capture: true,
+            capture: false,
             passive: true
         })
     },
+}
+
+
+export const maintainScrllPos = {
+    // https://github.com/vuejs/vue-router/issues/1187
+    data: () => ({
+        scroll_positions: {},
+    }),
+    mounted() {
+        this.$router.afterEach((to, from) => {
+            this.scroll_positions[from.name] = this.scrollCtnr.scrollTop;
+
+            let scroll = 0;
+            if (this.scroll_positions.hasOwnProperty(to.name)) {
+                scroll = this.scroll_positions[to.name];
+            }
+            this.$nextTick(() => {
+                setTimeout(() => { // TODO fix
+                    this.scrollCtnr.scrollTop = scroll
+                }, 100)
+            })
+        });
+    }
 }

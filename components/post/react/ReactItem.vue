@@ -1,7 +1,6 @@
 <template>
     <div :class="['push glow _react ', size, isMine?'mine box-shadow-1':null]">
-        <img v-if="imgSrc" :src="imgSrc">
-        <p v-else>👍</p>
+        <img :src="imgSrc">
         <div> {{ react.count }} </div>
     </div>
 </template>
@@ -20,15 +19,10 @@ export default {
             iconById: 'reactIcons/iconById',
         }),
         imgSrc() {
-            return this.react.img_src ? this.react.img_src : this.reactIcon.img_src
+            return this.react.img_src || this.reactIcon.img_src
         },
         reactIcon() {            
-            try {
-                return this.iconById(this.communityId, this.react.icon_id)
-            } catch (error) {
-                console.log("React not found!")
-                return {}
-            }
+            return this.iconById(this.communityId, this.react.icon_id) || {}
         },
     },
 }
@@ -70,8 +64,8 @@ export default {
     margin-right: 6px;
 }
 ._react.react-icon--big > img {
-    width: 25px;
-    height: 25px;
+    width: 24px;
+    height: 24px;
 }
 ._react.react-icon--big > div {
     font-size: 15px;
@@ -80,13 +74,15 @@ export default {
 ._react.react-icon--smol {
     margin: 2px 0;
     margin-right: 4px;
+    padding: 1.75px 2px;
 }
 ._react.react-icon--smol > img {
-    height: 18px;
-    width: 18px;
+    height: 16px;
+    width: 16px;
 }
 ._react.react-icon--smol > div {
     font-size: 10px;
+    margin-left: 2px;
 }
 
 </style>

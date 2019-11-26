@@ -1,0 +1,63 @@
+.fade-enter-active,
+.fade-leave-active,
+.fade_in-enter-active {
+    transition: opacity .3s !important;
+}
+.fade-enter,
+.fade-leave-to,
+.fade_in-enter {
+    opacity: 0;
+}
+
+
+
+.zoom_fade-enter-active,
+.zoom_fade-leave-active {
+    transition: opacity .25s, transform .2s !important;
+}.zoom_fade-enter,
+.zoom_fade-leave-to {
+    transform: scale(1.12);
+    opacity: 0;
+}
+
+.zoom_in_fade-enter-active {
+    transition: opacity .25s, transform .2s !important;
+}.zoom_in_fade-enter {
+    transform: scale(0.9);
+    opacity: 0;
+}
+.zoom_in_fade-leave-active {
+    transition: .3s !important;
+}
+.zoom_in_fade-leave-to {
+    opacity: 0;
+}
+
+
+
+.bounce_in-enter-active {
+    animation: bounce-in .6s;
+}
+.bounce_in-leave-active {
+    display: none;
+}
+@keyframes bounce-in {
+    0% { transform: scale(1) }
+    50% { transform: scale(1.4) }
+    94% { transform: scale(0.94) }
+    99% { transform: scale(1) }
+}
+
+
+
+.zoom_from_click-enter {
+    opacity: 0 ;
+}
+.zoom_from_click-enter-active {
+    transition: transform 300ms, opacity 200ms ;
+    transition-timing-function: ease ;
+}
+.zoom_from_click-enter-to {
+    opacity: 1.0 ;
+    transform: translateX( 0px ) translateY( 0px ) ;
+}

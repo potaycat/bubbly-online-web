@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div v-if="!isAttch">
+        <div v-if="!attchId">
             <p :class="textFormatting">{{ text }}</p>
         </div>
-        <div class="attch" v-else-if="attachment.type==2">
+        <div class="md-parse__attch" v-else-if="attachment.type==2">
             <img :src="attachment.content"/>
         </div>
     </div>
@@ -17,15 +17,20 @@ export default {
         'attachments'
     ],
     computed: {
-        isAttch() {
+        attchId() {
             let b = this.block
             if (b.slice(-1)=="]" && b.toLowerCase().indexOf("[attachment_")==0) {
-                const no = Number( b.slice(12,-1) )
-                if (no && no<=this.attachments.length) {
-                    return no
+                const attchId = Number( b.slice(12,-1) )
+                if (attchId && attchId<=this.attachments.length) {
+                    return attchId
                 }
             }
-            return null
+            return null // *dynamic typing intensifies*
+        },
+        attachment() {
+            if (this.attchId) {
+                return this.attachments.find(x => x.order == this.attchId)
+            } return null
         },
         textFormatting() {
             const open = this.block.indexOf("[")
@@ -46,14 +51,12 @@ export default {
             }
             return this.block
         },
-        attachment() {
-            const i = this.attachments.findIndex(x => x.order == this.isAttch)
-            if (i != -1) {
-                this.$emit('attchGotten', i)
-                return this.attachments[i]
-            }
-        }
     },
+    created() {
+        if (this.attachment) {
+            this.$emit('attachmentGot', this.attchId)
+        }
+    }
 }
 </script>
 
@@ -62,7 +65,7 @@ export default {
 .d { font-weight: bolder }
 
 .i { font-style: italic }
-.q { transform: skewX(15deg) }
+/* .q { transform: skewX(15deg) } */
 
 .u { text-decoration: underline }
 .s { text-decoration: line-through }

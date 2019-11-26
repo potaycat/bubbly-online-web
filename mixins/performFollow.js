@@ -109,3 +109,25 @@ export const performJoin = {
         onLeaveHandle() {console.log("Blocked")},
     },
 }
+export const performToPrivate = {
+    mixins: [_comp_inputDiag],
+    methods: {
+        confirmToPrivate() {
+            this.openDiag = {
+                title: `Chat with ${this.profile.alias}?`,
+                description: 'This will create a new private room if there are not any yet'
+            }
+            this.diagHndlFun = this.performToPrivate
+        },
+        performToPrivate() {
+            this.$axios.post(
+                `chat/__new_or_direct/add`,
+                {participants: [{identity: this.profile.username}]},
+                this.$store.state.authHeader
+            )
+                .then(res => {
+                    this.$router.push('/chat/t/'+res.data.id)
+                })
+        },
+    },
+}

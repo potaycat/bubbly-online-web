@@ -1,5 +1,5 @@
 <template>
-    <div class="the_big_frame"><div class="la_content" ref="feed">
+    <div class="the_big_frame"><div class="common_ls_cntainr" ref="feed">
         <Tabs
             lockable=1
             locked=1
@@ -7,7 +7,7 @@
             :currentTab="currentTab"
             @switchTo="newTab"
         />
-        <div style="min-height:30px"/>
+        <div style="min-height:25px"/>
         <UserItem v-for="profile in fetchedData"
             :key="profile.username"
             :profile="profile"
@@ -53,8 +53,7 @@ export default {
             // } else {
             //     this.$router.push({query: {get: 'followings'}})
             // }
-            this.fetchedData = []
-            this.fetch()
+            this.fetchNRefresh()
         },
     },
 }

@@ -26,14 +26,14 @@ export default {
         dsplPicSrc() {
             const dat = this.room.room_type_data
             return this.isDirect ? dat.profile_pic :
-                this.room.bg_img ? this.room.bg_img :
+                this.room.bg_img ||
                 this.isPublic ? dat.icon_img :
                 require('@/assets/group.png')
         },
         dsplRoomTtle() {
             const dat = this.room.room_type_data
             return this.isDirect ? dat.alias :
-                this.room.name ? this.room.name :
+                this.room.name ||
                 this.isGroup ? "Nhóm " + dat.member_count + " người" :
                 "Chat cộng đồng " + dat.name
         },

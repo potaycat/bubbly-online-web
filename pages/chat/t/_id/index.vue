@@ -7,7 +7,7 @@
 <script>
 import ChatRoom from '@/components/chat/room/'
 export default {
-    layout: 'immerse',
+    layout: 'lethalActivity',
     components: {ChatRoom},
 }
 </script>

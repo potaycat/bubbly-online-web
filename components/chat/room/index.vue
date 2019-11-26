@@ -1,40 +1,43 @@
 <template>
     <div id="inChat">
-        <div class="the_big_frame" v-bind:style="[moring ? {'filter':'blur(15px)'} :null]">
+        <div class="the_big_frame" :style="[moring ? {'filter':'blur(15px)'} :null]">
             <transition appear name="fade_in">
                 <img class="chat-bg"
                     :style="'background:'+roomBackground"
                 />
             </transition>
-            <div ref="scrollCtn" class="la_content">
-                <div style="min-height: 65px"/>
-
+            <div ref="scrollCtn" class="common_ls_cntainr --dtail-app-bar">
                 <transition name="fade">
                     <div v-if="reachedEnd" class="_thread-beginning">
                         👋 Welcome to the beginning<br>of this conversation </div>
                 </transition>
-
-                <div v-if="loading4More" class="_fetch-indcat"><Spinner/>
-                </div>
+                <Spinner v-if="loading4More" color="#fff" />
+                
                 <Bubble v-for="(message, index) in conversation"
                     :key="message.id"
                     :message="message"
                     :prev="conversation[index-1]"
+                    @peak="popItUp"
                 />
                 <PeepTyping :peeps="typing"/>
                 
-                <div ref="sndBxLev" style="transition:.2s"/><div style="min-height: 44px;"/>
-                
-                <transition name="just_slide_up" >
-                    <button v-if="!atBottom" id="chat__s2b-btn box-shadow-2" class="nopaque" @click="jump2Present()">Jump to present</button>
-                </transition>
-                <SendBox
-                    @outBoxing="showAnyway"
-                    @barHeight="bottomShift"
-                />
+                <div ref="sndBxLev" style="transition:.2s"/>
             </div>
+            <transition name="just_slide_up" >
+                <button v-if="!atBottom" class="chat__s2b-btn box-shadow-2 nopaque" @click="jump2Present()">Jump to present</button>
+            </transition>
+            <SendBox
+                @outBoxing="showAnyway"
+                @barHeight="bottomShift"
+            />
         </div>
-        <ChatInfo v-if="moring && fullyLoaded" :threadInfo="threadInfo" :title="roomTitle[1]"/>
+        <div v-if="fullyLoaded">
+            <ChatInfo v-if="moring" :threadInfo="threadInfo" :title="roomTitle[1]" />
+            <ProfilePeak v-if="threadInfo.room_type!='direct'&&peakingAt" @close="onClose" 
+                :profile="peakingAt" :touchPos="touchPos"
+                :threadInfo="threadInfo"
+            />
+        </div>
         <!-- <button style="position:fixed;top:50%;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
     </div>
 </template>
@@ -43,8 +46,9 @@
 import SendBox from './SendBox'
 import Bubble from './bubble'
 import PeepTyping from './PeepTyping'
-import ChatInfo from './info'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import ChatInfo from './info'
+import { _comp_profilePeak } from '@/mixins/_comp_profilePeak'
 
 export default {
     components: {
@@ -53,19 +57,22 @@ export default {
         PeepTyping,
         ChatInfo,
     },
-    mixins: [feedingFrenzy],
+    mixins: [feedingFrenzy, _comp_profilePeak],
     data() {
         return {
             feedUrl: `chat/${this.$route.params.id}/history/`,
             typing: [],
             atBottom: true,
-            fullyLoaded: false
+            fullyLoaded: false,
         }
     },
+    // consts: {
+        safeMsgTypes: [5, 9],
+    //}
     computed: {
         conversation() {return this.fetchedData.slice().reverse()},
         threadInfo() {return this.$store.state.chat.currentChat},
-        moring() {return this.$store.state.detailBanner.moring},
+        moring() {return this.$store.state.appBar.moring},
         roomBackground() {
             if (this.threadInfo) {
                 if (this.threadInfo.bg_img) {
@@ -83,14 +90,14 @@ export default {
                     case 'direct':
                         return [
                             {src: owo.room_type_data.profile_pic, style: 'circle'},
-                            t ? t : owo.room_type_data.alias
+                            t || owo.room_type_data.alias
                         ]
                     case 'group':
-                        return [null, t ? t : `Nhóm chat gồm ${owo.room_type_data.member_count.toString()} người`]
+                        return [null, t || `Nhóm chat gồm ${owo.room_type_data.member_count.toString()} người`]
                     case 'public':
                         return [
                             {src: owo.room_type_data.bg_img, style: 'square'},
-                            t ? t : "Chat cộng đồng"
+                            t || "Chat cộng đồng"
                         ]
                 }
             }
@@ -105,8 +112,8 @@ export default {
         roomTitle: {
             immediate: true,
             handler(newVal) {
-                if (newVal[0]) this.$store.commit('detailBanner/loadPic', newVal[0])
-                this.$store.commit('detailBanner/loadText', newVal[1])
+                if (newVal[0]) this.$store.commit('appBar/loadPic', newVal[0])
+                this.$store.commit('appBar/loadText', newVal[1])
             },
         },
     },
@@ -189,12 +196,12 @@ export default {
                     const msg = recived.msg_data
                     if (msg.msg_type == 6) {
                         this.$store.commit('chat/updateName', msg.content)
-                        this.$store.commit('detailBanner/loadText', msg.content)
+                        this.$store.commit('appBar/loadText', msg.content)
                         this.fetchedData.unshift(msg)
                     } else if (msg.msg_type == 7) {
                         this.$store.commit('chat/updateBgImg', msg.content)
                         this.fetchedData.unshift(msg)
-                    } else if (msg.msg_type == 5) {
+                    } else if (this.$options.safeMsgTypes.includes(msg.msg_type)) {
                         this.fetchedData.unshift(msg)
                     }
                     else if (msg.author.username != this.$store.state.auth.my_profile.username) {
@@ -218,8 +225,6 @@ export default {
         }
     },
     created() {
-        document.querySelector('body').style['overscroll-behavior']='contain'
-
         this.$axios.get(`chat/${this.$route.params.id}`, 
             this.$store.state.authHeader)
             .then(res => {
@@ -229,10 +234,13 @@ export default {
 
         this.onMessageHandler()
     },
+    mounted() {
+        this.scroll2Bottom()
+    },
     destroyed() {
         this.$disconnect()
         if (this.threadInfo.roommate_info) {
-            this.$axios.patch(`chat/${this.threadInfo.id}/self-edit`, null,
+            this.$axios.put(`chat/${this.threadInfo.id}/self-edit`, null,
                 this.$store.state.authHeader).then(res => {}) // update last seen
         }
         this.$store.commit('chat/loadChat', null)
@@ -241,6 +249,9 @@ export default {
 </script>
 
 <style>
+#inChat .common_ls_cntainr {
+    padding-bottom: 44px;
+}
 #inChat .chat-bg {
     z-index: -999;
     height: 100%;
@@ -258,13 +269,8 @@ export default {
     color: #eee;
     text-shadow: -1px -1px 0 #444
 }
-._fetch-indcat {
-    text-align: center;
-    width: 100%;
-    transform: scale(0.7)
-}
 
-#chat__s2b-btn {
+.chat__s2b-btn {
     border-radius: 100px 100px 50px 50px ;
     position: fixed; bottom: 60px;
     left: 50%;

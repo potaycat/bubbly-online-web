@@ -1,56 +1,53 @@
 <template>
 <transition appear name="zoom_fade">
-    <div id="_c_info" class="the_big_frame"><div class="la_content">
-        <div style="min-height: 90px"/>
-            <transition name="fade">
-        <div v-if="loading" class="_lding">
-            <Spinner style="margin:auto"/>
-        </div>
-            </transition>
+    <div id="chat-info" class="the_big_frame">
+        <div class="common_ls_cntainr">
 
-        <div class="_set_info" v-if="type=='direct'">
-            <img class="pfp" :src="threadInfo.room_type_data.profile_pic">
-            <div id="_alias">{{ title }}</div>
-        </div>
-
-        <div class="_set_info" v-else-if="type=='group'">
-            <img v-if="threadInfo.bg_img" class="pfp" :src="threadInfo.bg_img">
-            <img v-else class="pfp" style="filter: invert(1)" src="~assets/group.png">
-            <div id="_alias">{{ title }}</div>
-            <Roomates v-if="more_members" :room_id="threadInfo.id"
-                :isAdmin="isAdmin"/>
-        </div>
-        
-        <div class="_set_info" v-else-if="type=='public'">
-            <div id="_alias">{{ title }}</div>
-            <!-- cmnty name, room dscrption -->
-        </div>
-
-
-        <div v-for="cmdGroup in visibleCmd" class="_chat-cmd-list" :key="cmdGroup[0].icon+'_'">
-            <div v-for="cmd in cmdGroup"
-                :key="cmd.icon"
-                class="_chat-cmd glow"
-                :style="cmd.style"
-                @click="cmd.action()"
-            >
-                <i class="material-icons-round">{{ cmd.icon }}</i>
-                <p>{{ cmd.lable }}</p>
-                <i class="material-icons-round">{{ cmd.scndIcon }}</i>
+            <div class="_set_info" v-if="type=='direct'">
+                <img class="pfp" :src="threadInfo.room_type_data.profile_pic">
+                <div id="_alias">{{ title }}</div>
             </div>
+            <div class="_set_info" v-else-if="type=='group'">
+                <img v-if="threadInfo.bg_img" class="pfp" :src="threadInfo.bg_img">
+                <img v-else class="pfp" style="filter: invert(1)" src="~assets/group.png">
+                <div id="_alias">{{ title }}</div>
+                <Roomates v-if="more_members" :threadInfo="threadInfo"
+                    :isAdmin="isAdmin"/>
+            </div>
+            <div class="_set_info" v-else-if="type=='public'">
+                <div id="_alias">{{ title }}</div>
+                <!-- cmnty name, room dscrption -->
+            </div>
+
+            <div v-for="cmdGroup in visibleCmd" class="_chat-cmd-list" :key="cmdGroup[0].icon+'_'">
+                <div v-for="cmd in cmdGroup"
+                    :key="cmd.icon"
+                    class="_chat-cmd glow"
+                    :style="cmd.style"
+                    @click="cmd.action()"
+                >
+                    <i class="material-icons-round">{{ cmd.icon }}</i>
+                    <p>{{ cmd.lable }}</p>
+                    <i class="material-icons-round">{{ cmd.scndIcon }}</i>
+                </div>
+            </div>
+
         </div>
-
-
         <InputDialog v-if="openDiag"
             :toDisplay = "openDiag"
             @clicked="onDiagClose"
         />
-    </div></div>
+        <transition name="fade">
+            <div v-if="loading" class="total_darkness">
+                <Spinner color="#fff" />
+            </div>
+        </transition>
+    </div>
 </transition>
 </template>
 
 <script>
-import Spinner from '@/components/things/Spinner'
+import Spinner from '@/components/misc/Spinner'
 import Roomates from './Roomates'
 import { performBlock } from '@/mixins/performFollow'
 
@@ -222,13 +219,13 @@ export default {
         },
     },
     destroyed() {
-        this.$store.commit('detailBanner/openInfo', false)
+        this.$store.commit('appBar/burgerState', false)
     }
 }
 </script>
 
 <style scoped>
-#_c_info{
+#chat-info{
     width: 100%;
     min-height: 100vh;
     background: #1d99ff77;
@@ -237,21 +234,15 @@ export default {
     flex-direction: column;
     align-items: center;
 }
-#_c_info ._lding{
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: #00000033;
-    text-align: center;
-    display: flex;
-    /* z-index: 99; */
+#chat-info .common_ls_cntainr{
+    padding-top: 90px;
 }
-#_c_info ._set_info #_alias, #_c_info ._chat-cmd-list ._chat-cmd{
+#chat-info ._set_info #_alias, #chat-info ._chat-cmd-list ._chat-cmd{
     color: #fff;
     text-shadow: 0px 0px 17px #333;
 }
 
-#_c_info ._set_info{
+#chat-info ._set_info{
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -266,7 +257,7 @@ export default {
     width: 40px;
     margin: 4px 12px;
 }
-#_c_info #_alias {
+#chat-info #_alias {
     font-size: 22px;
     margin: 10px 20px 25px 20px;
     font-weight: bold;
@@ -274,7 +265,7 @@ export default {
     word-break: break-all;
 }
 
-#_c_info ._chat-cmd-list {
+#chat-info ._chat-cmd-list {
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;

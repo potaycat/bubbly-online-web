@@ -1,11 +1,13 @@
 <template>
-    
+    <div>
+        <ActivityView />
+    </div>
 </template>
 
 <script>
+import ActivityView from '@/components/layout/ActivityView'
 export default {
-    layout: 'immerse',
-
+    components: {ActivityView}
 }
 </script>
 

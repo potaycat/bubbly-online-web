@@ -1,17 +1,15 @@
 <template>
     <div>
-        <nuxt-child keep-alive :keep-alive-props="{ exclude: ['modal'] }" />
+        <ActivityView />
         <LeProfile :profile="profile"/>
     </div>
 </template>
 
 <script>
-import LeProfile from '@/components/LeProfile'
+import ActivityView from '@/components/layout/ActivityView'
+import LeProfile from '@/components/profile/'
 export default {
-    layout: "immerse",
-    components: {
-        LeProfile,
-    },
+    components: {ActivityView, LeProfile},
     async asyncData ({ $axios, params, store }) {
         const profileRes = await $axios.$get(`/accounts/${params.username}`, store.state.authHeader)
         // let membershipsRes = await $axios.$get(`/memberships/of_member?format=json&user=${profileRes.id}`)
@@ -20,9 +18,8 @@ export default {
             // membershipsRes,
         }
     },
-    created() {
-        this.$store.commit('detailBanner/loadText', null)
-        this.$store.commit('detailBanner/loadPic', {})
+    created() {        
+        this.$store.commit('appBar/reset')
     },
 }
 </script>

@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Button from '@/components/actions/Button'
+import Button from '@/components/misc/Button'
 import { performFollow } from '@/mixins/performFollow'
 
 export default {

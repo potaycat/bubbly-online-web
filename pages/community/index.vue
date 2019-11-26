@@ -1,19 +1,16 @@
 <template>
     <div>
-        <TopLevelList />
-        <keep-alive>
-            <router-view></router-view>
-        </keep-alive>
+        <TopLvlDestination />
+        <TopLvlList />
     </div>
 </template>
 
 <script>
-import TopLevelList from '@/components/community/TopLevelList'
+import TopLvlDestination from '@/components/layout/TopLvlDestination'
+import TopLvlList from '@/components/community/TopLvlList'
 export default {
-    components: {
-        TopLevelList,
-    },
-    created() {
+    components: {TopLvlDestination, TopLvlList},
+    activated() {
         this.$store.commit('changeDestination', 2)
         this.$store.dispatch("moderating/getCmntyIManage")
     },

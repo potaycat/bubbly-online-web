@@ -33,8 +33,6 @@ export default {
     },
     methods: {
         goToCommunity(){
-            // this.$store.commit('detailBanner/loadText', this.getRoomTitle(room)); // TODO fix
-            // this.$store.commit('chat/loadChat', room)
             this.$router.push(`/community/${this.community.id}`)
         },
     },

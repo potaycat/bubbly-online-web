@@ -5,7 +5,7 @@
             <div class="add__btn-ctnr">
                 <button class="add__btn" @click="$router.back()">Cancel</button>
                 <button class="add__btn" style="margin-left:auto" @click="hahayes()">
-                    <div v-if="room_id">Add</div>
+                    <div v-if="roomId">Add</div>
                     <div v-else>Enter room</div>
                 </button>
             </div>
@@ -55,6 +55,7 @@
                         <div :id="[isChosen(person.username) ? 'checked' :null]" class="checkbox"/>
                     </div>
                 </transition-group>
+                <Spinner v-if="loading4More" />
             </div></div>
         </div>
     </div>
@@ -66,7 +67,7 @@ import { _comp_tabs } from '@/mixins/_comp_tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
     mixins: [_comp_tabs, feedingFrenzy],
-    props: ['room_id'],
+    props: ['roomId'],
     data() {
         return {
             srch: "",
@@ -90,8 +91,7 @@ export default {
                 this.searcgphrase = "Search my followings"
                 this.feedUrl = `accounts/${usr}/circles/?minimal=1&`
             }
-            this.fetchedData = []
-            this.fetch()
+            this.fetchNRefresh()
         },
     },
     methods: {
@@ -122,17 +122,16 @@ export default {
                     })
                 }
                 this.$axios.post(
-                    `chat/${this.room_id?this.room_id:'__new_or_direct'}/add`,
+                    `chat/${this.roomId || '__new_or_direct'}/add`,
                     {participants: parti},
                     this.$store.state.authHeader
                 )
                     .then(res => {
-                        if (this.room_id) {
+                        if (this.roomId) {
                             this.$router.back()
                             this.$emit('added')
                         } else {
-                            // this.$router.back() // TODO not working
-                            this.$router.push(`/chat/t/${res.data.id}`)
+                            this.$router.replace(`/chat/t/${res.data.id}`)
                         }
                     })
             }

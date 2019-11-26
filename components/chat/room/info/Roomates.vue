@@ -2,41 +2,47 @@
 <transition appear name="slide_down">
     <div class="rmate-ctnr" ref="feed">
             <div class="rmate__actions">
-                <p>Options</p>
-                <button v-if="isAdmin" class="glow" @click="openAddDiag">Add members</button>
-                <button v-if="isAdmin" class="glow" @click="openAddDiag">Promote Admin</button>
+                <p class="rmate__actions__lable">Options</p>
+                <button v-if="isAdmin" class="rmate__actions__btn glow" @click="openAddDiag">Add members</button>
                 <!-- <button class="glow">Sort by:</button> -->
-                <button class="glow" @click="">Order by:<br>Time</button>
+                <button class="rmate__actions__btn glow" @click="">Order by:<br>Time</button>
             </div>
 
         <transition-group name="fade_in">
-            <div v-for="mate in fetchedData" :key="mate.username" class="_rmates push">
+            <div v-for="mate in fetchedData" :key="mate.username" class="rmate-item push"
+                @click="popItUp({pos: $event, profile: mate})">
                 <img class="pfp" :src="mate.profile_pic">
-                <p>{{ mate.alias }}</p>
+                <p class="rmate-item__alias">{{ mate.alias }}</p>
+                <div v-if="mate.is_admin" class="rmate__is-admin box-shadow-1">🛡</div>
             </div>
         </transition-group>
 
-        <AddDiag v-if="$route.query.chat_add=='open'" :room_id="room_id" 
+        <AddDiag v-if="$route.query.chat_add=='open'" :roomId="threadInfo.id" 
             @added="refreshMates" style="height:calc(100% - 35px);top:45px"/>
+        <ProfilePeak v-if="peakingAt" @close="refreshMates();onClose()" 
+            :profile="peakingAt" :touchPos="touchPos"
+            :threadInfo="threadInfo"
+        />
     </div>
 </transition>
 </template>
 
 <script>
 import AddDiag from '../../AddDiag'
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
+import { _comp_profilePeak } from '@/mixins/_comp_profilePeak'
 export default {
     components: {
         AddDiag,
     },
-    mixins: [feedingFrenzy],
+    mixins: [feedingFrenzy, maintainScrllPos, _comp_profilePeak],
     props: [
-        'room_id',
+        'threadInfo',
         'isAdmin'
     ],
     data() {
         return {
-            feedUrl: `chat/${this.room_id}/roommates/`,
+            feedUrl: `chat/${this.threadInfo.id}/roommates/`,
         }
     },
     methods: {
@@ -79,14 +85,14 @@ export default {
     position: absolute;
     border-bottom-right-radius: 10px;
 }
-.rmate__actions p {
+.rmate__actions .rmate__actions__lable {
     text-align: center;
     font-size: 12px;
     color: #ffffffaa;
     font-weight: normal;
     padding: 15px 0;
 }
-.rmate__actions button{
+.rmate__actions .rmate__actions__btn{
     color: #fff;
     text-shadow: 0px 0px 17px #333;
     font-weight: normal;
@@ -95,27 +101,39 @@ export default {
 }
 
 
-.rmate-ctnr ._rmates{
+.rmate-ctnr .rmate-item{
     color: #fff;
     text-shadow: 0px 0px 17px #333;
     height: 95px;
     width: 95px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
-._rmates .pfp {
+.rmate-item .pfp {
     width: 50px;
     height: 50px;
     margin: auto;
     margin-bottom: 0;
 }
-._rmates p {
+.rmate-item .rmate-item__alias {
     margin: auto;
     margin-top: 3px;
     font-weight: bold;
     font-size: 11px;
     overflow: hidden;
 }
+.rmate__is-admin {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 1px 6px;
+    border-radius: 100px;
+    font-weight: bold;
+    font-size: 10px;
+    background: slateblue;
+}
+
 
 
 .slide_down-enter-active,

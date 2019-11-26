@@ -6,7 +6,7 @@
             <p v-else>Me • {{ message.timestamp | tiemstamp }}</p>
         </div>
         <div v-else-if="!consecutive" class="_budd__info-ctn">
-            <img class="pfp push" :src="message.author.profile_pic">
+            <img class="pfp push" :src="message.author.profile_pic" @click="$emit('peak',{pos:$event, profile:message.author})">
             <div class="_budd__alias">{{ message.author.alias }}</div>
             <span class='msg__timestmp'>{{ message.timestamp | tiemstamp }}</span>
         </div>
@@ -83,6 +83,7 @@ export default {
 
 ._msg-ctnr .msg__content{
     margin-left: 40px;
+    cursor: auto;
 }
 
 

@@ -1,18 +1,16 @@
 <template>
     <div>
-        
-        <nuxt-child keep-alive :keep-alive-props="{ exclude: ['modal'] }" />
+        <TopLvlDestination />
         <ConvoList />
     </div>
 </template>
 
 <script>
 import ConvoList from '@/components/chat/list'
+import TopLvlDestination from '@/components/layout/TopLvlDestination'
 export default {
-    components: {
-        ConvoList,
-    },
-    created() {
+    components: {ConvoList, TopLvlDestination},
+    activated() {
         this.$store.commit('changeDestination', 3)
     },
 }

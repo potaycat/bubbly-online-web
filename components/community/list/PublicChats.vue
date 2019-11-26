@@ -4,20 +4,21 @@
             class="c-p-room box-shadow-2 bg lift"
             @click="toChat(room)"
             :key="room.id"
-            :style="`background:url(${room.bg_img ? room.bg_img : community.cover_img}) center`"
+            :style="`background:url(${room.bg_img || community.cover_img}) center`"
         >
             <div class="text-info">
-                <div class="name">{{ room.name ? room.name : "Phòng chat cộng đồng" }}</div>
+                <div class="name">{{ room.name || "Phòng chat cộng đồng" }}</div>
                 <span>{{ room.last_msg.timestamp | tiemstamp}}</span>
             </div>
             <p class="last"><strong>{{ room.description }}</strong></p>
             <p class="last">{{ room.last_msg | lastMsgDspl }}</p>
         </div>
+        <Spinner v-if="loading4More" />
     </div>
 </template>
 
 <script>
-import { feedingFrenzy } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
 import { chatLs } from '@/mixins/chatLs'
 
 export default {
@@ -25,7 +26,7 @@ export default {
         'community',
     ],
     mixins: [
-        feedingFrenzy,
+        feedingFrenzy, maintainScrllPos,
         chatLs,
     ],
     data() {
