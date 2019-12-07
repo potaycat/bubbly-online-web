@@ -19,11 +19,13 @@
             </div>
         </div>
         
-        <Button v-if="profile.you_follow" class="usr-blck__btn"
-            text="Following" @clicked="confirmUnfollow" :padding="['2px', '10px']" fill lite/>
-        <Button v-else class="usr-blck__btn"
-            text="Follow" @clicked="makeFollow" :padding="['2px', '10px']" lite/>
-        <InputDialog v-if="openDiag" :toDisplay="openDiag" @clicked="onDiagClose" />
+        <div v-if="!disableFollowBtn && profile.username!=$store.state.auth.my_profile.username">
+            <Button v-if="profile.you_follow" class="usr-blck__btn"
+                text="Following" @clicked="confirmUnfollow" :padding="['2px', '10px']" fill lite/>
+            <Button v-else class="usr-blck__btn"
+                text="Follow" @clicked="makeFollow" :padding="['2px', '10px']" lite/>
+        </div>
+        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </transition>
 </template>
@@ -35,7 +37,7 @@ import { performFollow } from '@/mixins/performFollow'
 export default {
     components: {Button},
     mixins: [performFollow],
-    props: ['profile'],
+    props: ['profile', 'disableFollowBtn'],
     computed: {
         role() {
             const role = this.profile.role

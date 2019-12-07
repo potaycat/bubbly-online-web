@@ -2,7 +2,7 @@
     <div class="the-post card box-shadow-1">
         
         <section v-if="post.allocated_to" class="p__info">
-            <img class="cmnty-ico lift" :src="post.allocated_to.icon_img"
+            <img class="cmnty_ico lift" :src="post.allocated_to.icon_img"
                 @click="$router.push(`/community/${post.allocated_to.id}`)"
             />
             <div class="p-info__text">
@@ -42,7 +42,7 @@
         </div>
 
 
-        <React v-if="reactionLs" class="_p__reactions"
+        <React v-if="post.reactions" class="_p__reactions"
             :reacts="reactionsLsSorted"
             :myReact="post.my_react"
             :communityId="allocated_to.id"
@@ -63,13 +63,13 @@
                 :communityId="allocated_to.id"
                 @quickReact="performReact(1)"
                 @deleteReact="deleteReaction"
-                @toggleAdd="launchAddBox($event)"
+                @toggleAdd="launchAddBox"
             />
             <button class="glow" @click="toPost">
                 <i class="material-icons-outlined">comment</i>
                 <p>Comment</p>
             </button>
-            <button class="glow">
+            <button class="glow" @click="popItUp($event);sharing=true">
                 <i class="material-icons-outlined">share</i>
                 <p>Share</p>
             </button>
@@ -80,20 +80,21 @@
             @performReact="performReact"
             quickLeave=1
         />
-
+        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id"/>
     </div>
 </template>
 
 <script>
 import ReactTotal from '../react/TotalView'
 import ReactButton from './ReactButton'
-import { _comp_reactAdd } from '@/mixins/_comp_reactAdd'
+import { reactAdd } from '@/mixins/cmpnentsCtrl/reactAdd'
+import { sharePost } from '@/mixins/cmpnentsCtrl/sharePost'
 export default {
     components: {
         ReactTotal,
         ReactButton,
     },
-    mixins: [_comp_reactAdd],
+    mixins: [reactAdd, sharePost],
     props: ['post', 'community', 'user'],
     computed: {
         allocated_to() {
@@ -105,6 +106,11 @@ export default {
     },
     methods: {
         toPost() {
+            this.$store.commit('postx/loadPost', {
+                ...this.post,
+                allocated_to: this.allocated_to,
+                author: this.author,
+            })
             this.$router.push(`/post/${this.post.id}`)
         },
         toAuthor() {
@@ -115,7 +121,7 @@ export default {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.reactionLs = res.data.reactions
+                    this.$set(this.post, 'reactions', res.data.reactions)
                 })
         }
     }
@@ -138,7 +144,7 @@ export default {
     margin-top: 10px;
     display: inline-flex;
 }
-.p__info .cmnty-ico {
+.p__info .cmnty_ico {
     width: 28px;
     height: 28px;
 }
@@ -159,6 +165,8 @@ export default {
     /* border-color: rgb(206, 115, 206); */
     padding: 0 6px;
     margin: 6px 0 6px -10px;
+    max-height: 200vh;
+    overflow: hidden;
 }
 .p__prview-txt {
     font-size: 14px;
@@ -181,7 +189,7 @@ export default {
 ._p__reactions {
     display: flex;
     align-items: center;
-    height: 38px;
+    height: 37px;
 }
 ._p__reactions > p {
     font-size: 12px;

@@ -4,7 +4,7 @@
         :style="`background-image:url(${community.cover_img})`"
         @click="goToCommunity"
     >
-        <img class="cmnty-ico" :src="community.icon_img"/>
+        <img class="cmnty_ico" :src="community.icon_img"/>
         <div class="mbrshp__cmnty-txt">
             <p class="mbrshp__cmnty-name">{{ community.name }}</p>
             <div class="mbrshp__reput">
@@ -52,7 +52,7 @@ export default {
     background-size: cover;
 }
 
-.mbrshp-block .cmnty-ico {
+.mbrshp-block .cmnty_ico {
     width: 45px;
     height: 45px;
 }

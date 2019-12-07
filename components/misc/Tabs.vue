@@ -1,6 +1,6 @@
 <template>
 <transition name="fade" appear>
-    <div v-if="lockable" class="lockable-tab-ctnr" ref="tabCtnr">
+    <div v-if="lockable||locked" class="lockable-tab-ctnr" ref="tabCtnr">
         <div id="tabs-round"
             :class="lockTabs ? 'locked-tabs': 'unlocked-tabs'"
         >
@@ -15,7 +15,7 @@
     </div>
 
     <div v-else id="tabs-round" 
-        :class="fixed?null:['top-lev-tabs', $store.state.scrollinUp?null:'top-lev-contract']"
+        :class="contractless?null:['top-lev-tabs', $store.state.scrollinUp?null:'top-lev-contract']"
     >
         <!-- PASTE -->
         <button v-for="(tab, index) in tabs"
@@ -35,7 +35,7 @@ export default {
         'currentTab',
         'lockable',
         'locked',
-        'fixed'
+        'contractless'
     ],
     data() {
         return {
@@ -67,9 +67,12 @@ export default {
     margin-top: 10px;
     width: 100%;
 }
+.lockable-tab-ctnr .unlocked-tabs {
+    position: relative;
+}
 .locked-tabs {
     transition: .2s;
-    position: fixed;
+    position: absolute;
     /* margin-left: -8px; */
     top: 56px;
     width: 100%;
@@ -86,7 +89,7 @@ export default {
 
 .top-lev-tabs {
     transition: .5s;
-    position: fixed;
+    position: absolute;
     top: 56px;
 }
 .top-lev-contract {
@@ -94,14 +97,16 @@ export default {
 }
 
 
-#tabs-round{
+#tabs-round {
+    left: 0;
+    right: 0;
     display: flex;
     padding: 10px 30px;
     z-index: 99;
-    width: 100%;
     background: linear-gradient(180deg,
         rgba(255, 255, 255, 0.9) 50%,
         rgba(0, 0, 0, 0) 100%);
+    overflow: auto;
 }
 #tabs-round button{
     margin: auto;
@@ -110,8 +115,9 @@ export default {
     width: 999px;
     font-weight: bold;
     font-size: 11px;
-    background: #ffffff00;
+    background: #00000000;
     color: #00000055;
+    white-space: nowrap;
 }
 #tabs-round #focusing {
     background: #ddd;

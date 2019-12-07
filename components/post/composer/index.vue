@@ -3,30 +3,33 @@
         <AppBarCustomBtn
             :customCmds="[
                 {action: 'togglePreview', icon: 'remove_red_eye'},
-                {action: 'post', icon: 'send'},
+                {action: 'done', icon: 'send'},
             ]"
             @togglePreview="previewing=true"
-            @post="post"
+            @done="done"
         />
-        
-        <div class="extra-content-bar box-shadow-3 shiny-white-bg">
-            <label class="pstedit__file-input bttm-bar__btn glow">
-                <i class="material-icons-round">add_photo_alternate</i>
-                <input type="file" multiple @change="onFileChange" ref="file_input" style="display:none">
-            </label>
+        <CmntyPicker v-if="!editMode&&!isComment" :pinboard="isPinboard"/>
+        <div v-if="!editMode">
+            <input v-if="!(isComment||isPinboard)"
+                class="pstedit__title"
+                v-model="title"
+                placeholder="Title"
+            />
+            <section class="extra-content-bar box-shadow-3 shiny-white-bg">
+                <label class="pstedit__file-input bttm-bar__btn glow">
+                    <i class="material-icons-round">add_photo_alternate</i>
+                    <input type="file" multiple @change="onFileChange" ref="file_input" style="display:none">
+                </label>
+            </section>
         </div>
 
-        <input class="pstedit__title"
-            v-model="title"
-            placeholder="Title"
-        />
-        <textarea class="pstedit__body"
+        <textarea :class="['pstedit__body', editMode?'pstedit__body--editMd':null]"
             v-model="body"
-            placeholder="Body"
+            placeholder="Text body"
         />
 
         <transition-group name="zoom_in_fade">
-            <div v-for="attch in previews" :key="attch.name"
+            <div v-for="(attch, index) in previews" :key="attch.name"
                 class="attch-prvw__itm"
             >
                 <div class="attch-prvw__x box-shadow-1 push" @click="previews.splice(index, 1)">x</div>
@@ -41,6 +44,7 @@
                 <p class="clck-anywhr">Click anywhere to close preview</p>
             </div>
         </transition>
+        <div v-if="uploading" class="total_darkness"><Spinner color="#fff" /></div>
     </div>
 </template>
 
@@ -48,21 +52,26 @@
 import { textareaAutoResize } from '@/mixins/commonLogicSeparation'
 import BubblyMarkdownParse from '../mdParse'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
+import CmntyPicker from './CmntyPicker'
+import { editMode } from './editMode'
+import { comment, pinboard } from './typed'
+import Spinner from '@/components/misc/Spinner'
 export default {
     components: {
         BubblyMarkdownParse,
         AppBarCustomBtn,
+        CmntyPicker,
+        Spinner,
     },
-    mixins: [textareaAutoResize],
-    props: ['community'],
-    data() {return {
+    mixins: [editMode, comment,pinboard],
+    data:() => ({
         title: "",
         body: "",
-        previews: [],
 
+        previews: [],
         uploading: false,
-        previewing: false
-    }},
+        previewing: false,
+    }),
     computed: {
         attachmentsList() {
             let arr = []
@@ -76,8 +85,20 @@ export default {
             return arr
         },
     },
+    watch: {
+        uploading(now, bef) {
+            if (now==false && bef==true) {
+                Object.assign(this.$data, this.$options.data.apply(this)) // reset data()
+            }
+        },
+    },
     activated() {
-        // this.$store.commit('appBar/loadText', "Compose a post")
+        if (!this.$store.state.appBar.text) {
+            this.$store.commit('appBar/loadText', "Write a post")
+        }
+        const init = this.$route.query.init; if (init) {
+            this.body = init
+        }
     },
     methods: {
         onFileChange(evt) {
@@ -97,9 +118,15 @@ export default {
                 window.scrollTo(0, document.body.scrollHeight)
             })
         },
-        post() {
-            this.uploading = true
 
+        done() {
+            this.uploading = true
+            if (this.editMode) this.performPatch()
+            else if (this.isComment) this.performComment()
+            else if (this.isPinboard) this.performPinToBoard()
+            else this.performPost()
+        },
+        performPost() {
             const attachmentsList = [
                 {
                     type: 2,
@@ -129,19 +156,19 @@ export default {
             ]
 
             const data = {
-                attachments: attachmentsList,
+                // attachments: attachmentsList,
                 text: this.body,
                 title: this.title
             }
+            Object.keys(data).forEach((key)=> !data[key] &&delete data[key])
             this.$axios.post(
-                `communities/${this.community.id}/posts/create`, data,
+                `communities/${this.$route.query.to}/posts/create`, data,
                 this.$store.state.authHeader
             )
                 .then(res => {
                     this.uploading = false
                     this.$router.push(`/post/${res.data.id}`)
                 })
-            
         }
     }
 }
@@ -158,16 +185,19 @@ export default {
     padding: 10px;
     border: none;
     outline: none;
+    border-bottom: solid 1px #ddd;
 }
 .pstedit__title {
-    border-bottom: solid 1px #eee;
+    width: 100%;
     font-weight: bold;
     /* font-size: 18px; */
 }
 .pstedit__body {
     resize: none;
-    overflow-y: hidden;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 250px);
+}
+.pstedit__body--editMd {
+    height: calc(100vh - 130px);
 }
 
 .attch-prvw__itm {
@@ -219,10 +249,10 @@ export default {
 
 .post-editor-ctnr .extra-content-bar {
     position: fixed;
-    bottom: 0;
+    height: 40px;
+    top: calc(100vh - 40px);
     z-index: 9;
     width: 100%;
-    height: 40px;
     display: flex;
 }
 .bttm-bar__btn {

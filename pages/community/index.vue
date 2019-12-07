@@ -12,7 +12,6 @@ export default {
     components: {TopLvlDestination, TopLvlList},
     activated() {
         this.$store.commit('changeDestination', 2)
-        this.$store.dispatch("moderating/getCmntyIManage")
     },
 }
 </script>

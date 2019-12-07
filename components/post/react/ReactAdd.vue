@@ -1,7 +1,7 @@
 <template>
 <transition name="fade">
     <!-- TODO refactor -->
-    <div :class="['total_darkness react-add ',quickLeave&&!$options.isMobile?'react-add--leave':null]"
+    <div :class="['total_darkness', 'no-bg', quickLeave&&!$options.isMobile?'react-add--leave':null]"
         oncontextmenu="return false"
         @mousedown.self="$emit('performReact', null)"
         @touchstart.self="$emit('performReact', null)"
@@ -9,12 +9,13 @@
             <transition name="zoom_in_fade" appear>
         <div class="react-add-ctnr shiny-white-bg box-shadow-4" ref="drpdwn"
             @mouseleave="quickLeave?$emit('performReact', null):null">
-            <div v-for="icon in icons" :key="icon.id" class="add__ico-item" oncontextmenu="return false"
-                @click="$emit('performReact', icon.id)"
+            <div v-for="emote in emotes" :key="emote.id" class="add__emo-item" oncontextmenu="return false"
+                @click="$emit('performReact', emote.id)"
             >
-                <img :src="icon.img_src">
+                <img :src="emote.img_src">
             </div>
-            <Spinner v-if="!icons" color="#888" style="margin:6px" />
+            <h3 class="empty-fetchedLs" v-if="!emotes.length">No Emotes</h3>
+            <Spinner v-if="!emotes" color="#888" style="margin:6px" />
         </div>
             </transition>
     </div>
@@ -36,15 +37,15 @@ export default {
     // }
     computed: {
         ...mapGetters({
-            iconsByCmnty: 'reactIcons/iconsByCmnty',
+            emotesByCmnty: 'reactionx/emotesByCmnty',
         }),
-        icons() {
-            return this.iconsByCmnty(this.communityId)
+        emotes() {
+            return this.emotesByCmnty(this.communityId)
         }
     },
     created() {
-        if (!this.icons) {
-            this.$store.dispatch("reactIcons/getCmntyIcons", this.communityId)
+        if (!this.emotes) {
+            this.$store.dispatch("reactionx/getCmntyEmotes", this.communityId)
         }
     },
     mounted() {
@@ -59,9 +60,9 @@ export default {
 </script>
 
 <style>
-.react-add {
-    background: none;
-}.react-add--leave {pointer-events: none}
+.react-add--leave {
+    pointer-events: none
+}
 .react-add-ctnr {
     pointer-events: auto;
     display: flex;
@@ -75,16 +76,16 @@ export default {
     border-radius: 15px;
 }
 
-.add__ico-item, .add__ico-item > img {
+.add__emo-item, .add__emo-item > img {
     height: 30px;
     width: 30px;
 }
-.add__ico-item {
+.add__emo-item {
     transition: .2s;
     margin: 4px;
     cursor: pointer;
 }
-.add__ico-item:hover {
+.add__emo-item:hover {
     transform: scale(1.6)
 }
 </style>

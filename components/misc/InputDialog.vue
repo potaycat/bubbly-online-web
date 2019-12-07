@@ -43,7 +43,7 @@ export default {
     methods: {
         inputted(val) {
             if (val!=="") {
-                this.$emit('clicked', val)
+                this.$parent.onDiagClose(val)
             }
         },
     },
@@ -58,6 +58,7 @@ export default {
     z-index: 999;
     border-radius: 15px;
     width: 320px;
+    background: rgba(255, 255, 255, 0.9);
 }
 
 #diag-box .diag__title{

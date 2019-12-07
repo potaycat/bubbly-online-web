@@ -34,6 +34,7 @@ export default {
 .lds-ring, .lds-ring div {
     width: 25px;
     height: 25px;
+    align-self: center;
 }
 .lds-ring {
     display: inline-block;

@@ -1,15 +1,15 @@
 <template>
 <transition name="fade">
-    <div class="total_darkness" style="background:none" @click.self="$emit('pick', null)">
+    <div class="total_darkness no-bg" @click.self="close">
         <transition name="zoom_in_fade" appear>
             <div ref='drpdwn' class="drpdwn shiny-white-bg box-shadow-2">
                 <option v-for="option in options"
-                    :key="option.value"
+                    :key="option.action"
                     class="drpdwn__option glow"
-                    :value="option.value"
-                    @click="$emit('pick', option.value)"
+                    :value="option.action"
+                    @click="close();$parent[option.action]()"
                 >
-                    {{ option.name }}
+                    {{ option.label }}
                     <!-- TODO refactor like AppBarCustomCmd -->
                 </option>
             </div>
@@ -21,14 +21,19 @@
 <script>
 export default {
     props: [
-        'options', // [{value, icon, title}]
+        'options', // [{action, icon, title}]
         'position', // {x: "_px", y: "_px"}
     ],
     mounted() {
         const drpdwn = this.$refs.drpdwn
         const pos = this.position || {}
         drpdwn.style.top = `${pos.y || 20}px`
-        drpdwn.style.right = `${pos.x || 15}px`
+        drpdwn.style.right = `${pos.x ? document.body.clientWidth-pos.x : document.body.clientWidth/3-110}px`
+    },
+    methods: {
+        close() {
+            this.$parent.onDropDownPick()
+        },
     }
 }
 </script>

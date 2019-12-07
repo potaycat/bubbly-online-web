@@ -21,62 +21,71 @@
                 <React
                     :reacts="reactionsLsSorted"
                     :myReact="comment.my_react"
-                    :communityId="community.id"
+                    :communityId="communityId"
                     size= "react-icon--smol"
                     @toggleAdd="launchAddBox"
                     @quickReact="performReact"
                     @deleteReact="deleteReaction"
+                    @reply="$emit('reply');$router.push(`/comment/${comment.id}`)"
                 />
             </div>
+            <div v-if="comment.reply_count" class="cmt__replies-count glow" @click="$router.push(`/comment/${comment.id}`)">
+                {{comment.reply_count}} replies <span>></span>
+            </div>
         </div>
-        <Dropdown v-if="touchPos" @pick="onDropDownPick"
-            :position="{y:touchPos.y, x:18}"
+        <ReactAdd v-if="reacting"
+            :position="reacting"
+            :communityId="communityId"
+            @performReact="performReact"
+        />
+        <Dropdown v-if="touchPos"
+            :position="{y:touchPos.y, x:touchPos.x}"
             :options="[
-                ...comment.author.username==$store.state.auth.my_profile.username ? [
-                    {value:'edit', name:'Edit'},
-                    {value:'delete', name:'Delete comment'}
-                ] : [
-                    isMod(community.id) ? {value:'mod_delete', name:'[Mod] Remove comment'} :
-                        {value:'flag', name:'Report'}
-                ],
                 ...[
-                    //{value:'copyLink', name:'Copy post URL'}, Vue bug?
+                    {action:'goToReactions', label:'View reactions'},
+                    {action:'copyLink', label:'Copy comment URL'},
+                ],
+                ...comment.author.username==$store.state.auth.my_profile.username ? [
+                    {action:'goToEdit', label:'Edit'},
+                    {action:'confirm_delete', label:'Delete'}
+                ] : [
+                    isMod(communityId) ? {action:'mod_delete', label:'[Mod] Remove comment'} :
+                        {action:'confirm_report', label:'Report'}
                 ]
             ]"
         />
-        <ReactAdd v-if="reacting"
-            :position="reacting"
-            :communityId="community.id"
-            @performReact="performReact"
-        />
+        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </template>
 
 <script>
-import { _comp_reactAdd } from '@/mixins/_comp_reactAdd'
-import { _comp_dropdown } from '@/mixins/_comp_dropdown'
+import { reactAdd } from '@/mixins/cmpnentsCtrl/reactAdd'
+import { dropdown } from '@/mixins/cmpnentsCtrl/dropdown'
+import { performEdit } from '@/mixins/performEdit'
 import { mapGetters } from "vuex"
 
 export default {
-    mixins: [_comp_reactAdd, _comp_dropdown],
-    props: ['comment', 'community'],
+    mixins: [reactAdd, dropdown, performEdit],
+    props: ['comment', 'communityId'],
     computed: {
         ...mapGetters({
-            isMod: 'moderating/isMod',
+            isMod: 'communityx/isMod',
         }),
         isSelf() {
             return this.comment.author.username == this.$store.state.auth.my_profile.username
         },
-        post() {return this.comment} // to work with _comp_reactAdd mixin
+        post() { return this.comment } // to work with 'reactAdd'
+    },
+    created() {
+        this.post.allocated_to = {id: this.communityId} // to work with 'performEdit'
     },
     methods: {
-        onDropDownPick(value) {
-            this.touchPos = null
-            switch (value) {
-                default:
-                    break
-            }
+        goToReactions() {
+            this.$router.push(`/post/${this.comment.id}/reactions?comment=1`)
         },
+        copyLink() {
+            navigator.clipboard.writeText(`${window.location.origin}/comment/${this.comment.id}`)
+        }
     }
 }
 </script>
@@ -99,10 +108,12 @@ export default {
 }
 .cmt-info .cmt-inf__author-name {
     font-weight: bold;
+    font-size: 12px;
 }
 .cmt-info .cmt-inf__timestmp {
     color: #aaa;
-    font-size: 12px;
+    font-size: 10px;
+    margin: auto 0 1px;
 }
 .cmt-info .material-icons-round{
     color: rgba(72, 133, 237, .9);
@@ -111,11 +122,26 @@ export default {
 }
 
 .cmt-content p {
-    margin-bottom: 5px;
+    margin: 2px 0 6px;
 }
 .cmt__attch {
     width: 100%;
     border-radius: 20px;
     margin: 2px 0;
+}
+
+.cmt__reply-btn {
+    /* display: inline; */
+}
+.cmt__replies-count {
+    background: #eee;
+    padding: 2px 10px;
+    transform: translateY(5px);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.cmt__replies-count >span {
+    float: right;
 }
 </style>

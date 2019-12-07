@@ -24,21 +24,22 @@
         
         <section class="prfl-edit__fields-wrapper">
             <div class="form__group" v-for="field in $options.editableFields" :key="field.label">
-                <input id="uip" v-model="form[field.vmodel]" class="form__field" placeholder="_">
-                <label for="uip" class="form__label">{{ field.label }}</label>
+                <input :id="field.vmodel" v-model="formData[field.vmodel]" class="form__field" placeholder="_">
+                <label :for="field.vmodel" class="form__label">{{ field.label }}</label>
             </div>
         </section>
-        <div style="min-height:500px"></div>
     </div>
 </template>
 
 <script>
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
+import { appBarTitle } from '@/mixins/appBarStuff'
 export default {
     components: {AppBarCustomBtn},
+    mixins: [appBarTitle],
     data() {
         return {
-            form: {
+            formData: {
                 alias: this.$store.state.auth.my_profile.alias,
                 fave_color: this.$store.state.auth.my_profile.fave_color,
                 bio: this.$store.state.auth.my_profile.bio,
@@ -46,6 +47,7 @@ export default {
             },
             pfpInput: null,
             coverInput: null,
+            appBarDisplayTitle: "Profile edit"
         }
     },
     //consts {
@@ -78,11 +80,13 @@ export default {
         
         finised() {
             const data = {
-                alias: this.form.alias,
-                fave_color: this.form.fave_color,
-                bio: this.form.bio,
-                location: this.form.location,
+                alias: this.formData.alias,
+                fave_color: this.formData.fave_color,
+                bio: this.formData.bio,
+                location: this.formData.location,
             }
+            // Object.keys(data).forEach((key) => !data[key] && delete data[key])
+
             this.$axios.patch(`accounts/${this.profile.username}`,
                 data,
                 this.$store.state.authHeader
@@ -92,9 +96,6 @@ export default {
                 })
         }
     },
-    activated() {
-        this.$store.commit('appBar/loadText', "Profile edit")
-    }
 }
 </script>
 

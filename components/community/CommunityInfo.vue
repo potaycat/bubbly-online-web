@@ -3,7 +3,7 @@
         <transition name="fade" appear>
             <div class="cmnty-info card box-shadow-3">
                 <img class="cmnty-inf__cover" :src="community.cover_img" />
-                <img class="cmnty-ico" :src="community.icon_img" />
+                <img class="cmnty_ico" :src="community.icon_img" />
                 <section class="cmnty-inf__txt-ctn">
                     <div class="cmnty-inf__txt__smol">
                         {{ community.visibility }} • 
@@ -23,16 +23,12 @@
                 </section>
             </div>
         </transition>
-        <InputDialog v-if="openDiag"
-            :toDisplay="openDiag"
-            @clicked="onDiagClose"
-        />
-        <Dropdown v-if="moring" @pick="onDropDownPick"
+        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
+        <Dropdown v-if="moring"
             :options="[
-                {value:'l', name:'Let\'s'},
-                {value:'', name:'Get'},
-                {value:'report', name:'Report'},
-                {value:'copyUrl', name:'Bread OwO'},
+                {action:'copyUrl', label:'Copy Community URL'},
+                {action:'confirm_report', label:'Report Community'},
+                {action:'uwu', label:'OwO'},
             ].filter(x=>x)"
         />
     </div>
@@ -68,6 +64,9 @@ export default {
         }
     },
     methods: {
+        onDropDownPick() {
+            this.$store.commit('appBar/burgerState', false)
+        },
         onRoleButtonClick() {
             if (this.isMember) {
                 this.confirmLeave()
@@ -76,7 +75,7 @@ export default {
             }
         },
         toCmntyMembers() {
-            this.$store.commit('appBar/loadText', `Members of ${this.community.name}`)
+            this.$store.commit('appBar/loadText', `Members of ${this.community.name}`)  // TODO mixin
             this.$store.commit('appBar/loadPic', {
                 src: this.community.icon_img,
                 style:'square'
@@ -90,14 +89,16 @@ export default {
             this.community.membership_info = null
         },
 
-
-        onDropDownPick(value) {
-            this.$store.commit('appBar/burgerState', false)
-            switch (value) {
-                default:
-                    break
+        confirm_report() {
+            this.openDiag = {
+                alert: true,
+                title: "If you believe this Community has violated Bubbly's ToS, follow these steps to report",
+                description: "Copy the Community's URL and send it to support@email.com.\nThank you for keeping Bubbly safe"
             }
         },
+        copyUrl() {
+            navigator.clipboard.writeText(`${window.location.origin}/community/${this.community.id}`)
+        }
     }
 };
 </script>
@@ -121,7 +122,7 @@ export default {
 .cmnty-inf__txt-ctn {
     padding: 0 16px;
 }
-.cmnty-info .cmnty-ico {
+.cmnty-info .cmnty_ico {
     border: 3px solid #fff;
     position: relative;
     left: 11px;

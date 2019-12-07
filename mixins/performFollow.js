@@ -1,6 +1,6 @@
-import { _comp_inputDiag } from '@/mixins/_comp_inputDiag'
+import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 export const performFollow = {
-    mixins: [_comp_inputDiag],
+    mixins: [inputDiag],
     methods: {
         confirmUnfollow() {
             this.openDiag = {
@@ -35,10 +35,14 @@ export const performFollow = {
             console.log(e)
             console.log("Follow failed!")
         },
+
+        make_userCopyUrl() {
+            
+        }
     },
 }
 export const performBlock = {
-    mixins: [_comp_inputDiag],
+    mixins: [inputDiag],
     methods: {
         confirmBlock() {
             this.openDiag = {
@@ -75,22 +79,37 @@ export const performBlock = {
         onUnblockHandle() {console.log("Unlocked")},
     },
 }
+
+
+
 export const performJoin = {
-    mixins: [_comp_inputDiag],
+    mixins: [inputDiag],
     methods: {
         makeJoin() {
             if (this.community.visibility == 'public') {
-                this.$axios.post(`communities/${this.community.id}/members/_self`, null,
+                this.$axios.post(`communities/${this.community.id}/members/__self`, null,
                     this.$store.state.authHeader
                 )
                     .then(res => {
                         this.onJoinHandle(res)
                     })
+            } else {
+                this.confirmJoinWithCode()
             }
         },
         onJoinHandle() {console.log("Joined")},
 
-
+        confirmJoinWithCode() {
+            this.openDiag = {
+                title: `${this.community.name} requires a code to join`,
+                description: "You should go ask someone for the code",
+                input_desc: "Invite Code"
+            }
+            this.diagHndlFun = this.performJoinWithCode
+        },
+        performJoinWithCode(value) {
+            this.$router.push(`/community/${this.$route.params.id}/join/${value}`)
+        },
         confirmLeave() {
             this.openDiag = {
                 title: `Leave ${this.community.name}?`,
@@ -99,7 +118,7 @@ export const performJoin = {
             this.diagHndlFun = this.performLeave
         },
         performLeave() {
-            this.$axios.delete(`communities/${this.community.id}/members/_self`,
+            this.$axios.delete(`communities/${this.community.id}/members/__self`,
                 this.$store.state.authHeader
             )
                 .then(res => {
@@ -110,7 +129,7 @@ export const performJoin = {
     },
 }
 export const performToPrivate = {
-    mixins: [_comp_inputDiag],
+    mixins: [inputDiag],
     methods: {
         confirmToPrivate() {
             this.openDiag = {
@@ -128,6 +147,14 @@ export const performToPrivate = {
                 .then(res => {
                     this.$router.push('/chat/t/'+res.data.id)
                 })
+        },
+
+        confirm_userReport() {
+            this.openDiag = {
+                alert: true,
+                title: "Please follow the steps to report",
+                description: "Copy the offender's profile URL and send it to one of your moderators.\nThank you for keeping the community safe"
+            }
         },
     },
 }

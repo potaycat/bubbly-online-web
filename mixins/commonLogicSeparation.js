@@ -1,12 +1,3 @@
-export const disableHamburger = {
-    activated() {
-        this.$store.commit('appBar/burgerState', null)
-    },
-    deactivated() {
-        this.$store.commit('appBar/burgerState', false)
-    }
-}
-
 export const textareaAutoResize = {
     mounted() {
         const txA = document.getElementsByTagName('textarea');
@@ -17,6 +8,14 @@ export const textareaAutoResize = {
         function OnInput() {
             this.style.height = 'auto';
             this.style.height = (this.scrollHeight) + 'px';
+        }
+    }
+}
+
+export const loggedInRedirect = {
+    beforeCreate() {
+        if (this.$store.state.auth.my_profile) {
+            this.$router.push('/home')
         }
     }
 }

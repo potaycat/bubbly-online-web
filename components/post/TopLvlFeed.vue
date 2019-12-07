@@ -1,6 +1,5 @@
 <template>
     <div>
-        <TopLvlDestination />
         <Tabs
             :tabs="['CỘNG ĐỒNG', 'CÁ NHÂN']"
             :currentTab="currentTab"
@@ -20,19 +19,17 @@
 </template>
 
 <script>
-import { _comp_tabs } from '@/mixins/_comp_tabs'
+import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import FAB from '@/components/misc/FAB'
-import TopLvlDestination from '@/components/layout/TopLvlDestination'
 import JoinedCmntyFeed from './JoinedCmntyFeed'
 
 export default {
     components: {
         FAB,
-        TopLvlDestination,
         JoinedCmntyFeed,
     },
     mixins: [
-        _comp_tabs,
+        tabs,
     ],
     methods: {
         DEBUG() {

@@ -1,6 +1,6 @@
 <template>
     <div :class="['push glow _react ', size, isMine?'mine box-shadow-1':null]">
-        <img :src="imgSrc">
+        <img :src="react.img_src||emote.img_src">
         <div> {{ react.count }} </div>
     </div>
 </template>
@@ -16,13 +16,16 @@ export default {
     ],
     computed: {
         ...mapGetters({
-            iconById: 'reactIcons/iconById',
+            emoteById: 'reactionx/emoteById',
         }),
-        imgSrc() {
-            return this.react.img_src || this.reactIcon.img_src
-        },
-        reactIcon() {            
-            return this.iconById(this.communityId, this.react.icon_id) || {}
+        emote() {            
+            const emote = this.emoteById(this.communityId, this.react.icon_id)
+            if (emote) {
+                return emote
+            } else {
+                this.$emit('emote404')
+                return {}
+            }
         },
     },
 }

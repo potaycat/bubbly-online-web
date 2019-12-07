@@ -1,6 +1,6 @@
 <template>
     <div class="thr glow"
-        @click="$router.push(`/chat/t/${room.id}`);$store.commit('chat/loadChat', room)">
+        @click="$router.push(`/chat/t/${room.id}`);$store.commit('chatx/loadChat', room)">
         <img class="pfp" :src="dsplPicSrc">
         <div v-if="isUnread" class="thr__dot"></div>
         <div class="thread-txt">
@@ -26,16 +26,16 @@ export default {
         dsplPicSrc() {
             const dat = this.room.room_type_data
             return this.isDirect ? dat.profile_pic :
-                this.room.bg_img ||
-                this.isPublic ? dat.icon_img :
+                this.room.bg_img ? this.room.bg_img :
+                this.isPublic ? dat.community.icon_img :
                 require('@/assets/group.png')
         },
         dsplRoomTtle() {
             const dat = this.room.room_type_data
             return this.isDirect ? dat.alias :
-                this.room.name ||
-                this.isGroup ? "Nhóm " + dat.member_count + " người" :
-                "Chat cộng đồng " + dat.name
+                this.room.name ? this.room.name :
+                this.isGroup ? "Nhóm " + dat.roommate_count + " người" :
+                dat.community.name + ` #${dat.order}`
         },
         isUnread() {
             return new Date(this.room.roommate_info.last_seen) < new Date(this.room.last_msg.timestamp)
@@ -101,7 +101,8 @@ export default {
 
 .thr__dot {
   position: absolute;
-  left: 57px;
+  top: 10px;
+  left: 58px;
   height: 15px;
   width: 15px;
   border-radius: 50%;

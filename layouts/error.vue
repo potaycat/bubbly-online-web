@@ -4,11 +4,17 @@
             Page not found
         </h1>
         <h1 v-else>
-            An error occurred
+            Something failed to work
         </h1>
-        <NuxtLink to="/" style="color:#0000ff">
-            click to go home
-        </NuxtLink>
+        <p>Sorry for the inconvenience</p>
+        <div>
+            <NuxtLink to="/auth/login" style="color:#0000ff">
+                Login
+            </NuxtLink>
+            <NuxtLink to="/" style="margin-left:10px;color:#0000ff">
+                Home
+            </NuxtLink>
+        </div>
     </div>
 </template>
 
@@ -19,4 +25,11 @@ export default {
 </script>
 
 <style scoped>
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
 </style>

@@ -1,19 +1,25 @@
 <template>
     <div>
+        <ActivityView />
+        <Create />
     </div>
 </template>
 
 <script>
+import ActivityView from '@/components/layout/ActivityView'
+import Create from '@/components/community/create/'
 export default {
-
+    head:() => ({
+        title: "Create a Bubbly Community",
+    }),
     components: {
+        ActivityView,
+        Create,
     },
-    head() {
-        return {
-            title: "Create a Bubbly Community",
+    beforeCreate() {
+        if (this.$route.query.step) {
+            this.$router.replace('create')
         }
-    },
-    created() {
     }
 }
 </script>

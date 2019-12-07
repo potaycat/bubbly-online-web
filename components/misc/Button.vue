@@ -2,7 +2,7 @@
     <!-- <button v-bind:class="{'fillMyButton':fill,  'my-button':!fill}">{{ text }}</button> -->
     <div
         :class="['my-button box-shadow-2 lift', fill?null:'my-btn--no-shdw', lite?'my-btn--no-shdw':null ]"
-        :style="`background: linear-gradient(65deg, #${color[0]} 0%, #${
+        :style="`background: linear-gradient(65deg, ${color[0]} 0%, ${
             color[1]} 100%)`"
         @click="$emit('clicked')"
     >
@@ -27,7 +27,7 @@ export default {
         },
         color: {
             type: Array,
-            default: ()=> ['2c3e50', 'fd746c']
+            default: ()=> ['rgb(238,152,30)', 'rgb(238,85,164)']
         }
     }
 };

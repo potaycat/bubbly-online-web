@@ -1,23 +1,30 @@
 <template>
-    <div style="width:100%;padding:0 8px">
+    <div class="common_ls_wrapper" style="padding:0 8px">
         <div class="cmnty-ancmnt" v-for="anoucemnt in fetchedData"
             :key="anoucemnt.id"
         >
             <BubblyMarkdownParse :text="anoucemnt.text" :attachments="anoucemnt.attachments" />
         </div>
+        <h3 class="empty-fetchedLs" v-if="empty">No pinned posts</h3>
         <Spinner v-if="loading4More" />
+        <FAB @clicked="$router.push(`/post/compose?to=${community.id}&type=pinboard`)"
+            v-if="community.membership_info && 
+                ['moderator','administrator'].includes(community.membership_info.role)"
+            icon= "post_add"
+            actionName= "Add to pinboard"
+            style="top:calc(100vh - 80px)"
+        />
     </div>
 </template>
 
 <script>
-import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, refreshFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
 import BubblyMarkdownParse from '@/components/post/mdParse/'
+import FAB from '@/components/misc/FAB'
 
 export default {
-    components: {
-        BubblyMarkdownParse,
-    },
-    mixins: [feedingFrenzy, maintainScrllPos],
+    components: {BubblyMarkdownParse, FAB},
+    mixins: [feedingFrenzy, refreshFrenzy, maintainScrllPos],
     props: ['community'],
     data() {
         return {

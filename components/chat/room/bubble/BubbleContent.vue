@@ -9,8 +9,8 @@
             </iframe>
         </div>
 
-        <div v-else-if="msg_type==2" :style="[{'display':'flex', }]">
-            <img class="m-ct__img" :src="content">
+        <div v-else-if="[2, 11].includes(msg_type)" :class="['msg-ct--img-ctn', msg_type==11?'--emote-ctn':null]">
+            <img :src="content">
         </div>
 
         <p v-else-if="msg_type==8" class="m-ct__txt _m-ct__chat-chng">Made the chat room</p>
@@ -52,15 +52,16 @@ export default {
     /* word-break: break-all; */
     word-wrap: break-word;
     padding: 6px 11px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
 } 
 ._ct-is-me .m-ct__txt { /*my bubble*/
-    background: rgba(72, 133, 237, 0.95);
+    background: rgba(72, 133, 237, 0.98);
     color: #fff;
 }
 
 ._m-ct__chat-chng {
-    background: hsla(0, 0%, 69%, 0.719) !important;
+    background: hsla(0, 0%, 69%, 0.75) !important;
+    /* backdrop-filter: blur(10px); */
     color: #fff;
     font-style: italic;
 }
@@ -83,10 +84,20 @@ export default {
     background: #00000077;
 }
 
-.m-ct__img {
+.msg-ct--img-ctn {
+    display: flex;
+}
+.msg-ct--img-ctn > img {
     border-radius: 20px;
     background: #00000077;
     width: 100%;
     max-height: 10000px;
+}
+
+.msg-ct--img-ctn.--emote-ctn > img {
+    border-radius: 0;
+    background: none;
+    width: 100px;
+    height: 100px;
 }
 </style>

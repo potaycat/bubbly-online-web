@@ -6,6 +6,7 @@
                     :key="room.id"
                     :room="room"
                 />
+                <h3 class="empty-fetchedLs" v-if="empty">No conversations. Try joining some public chats or get to know people through private chats</h3>
                 <Spinner v-if="loading4More" />
             </div>
             
@@ -19,7 +20,7 @@
 </template>
 
 <script>
-import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, refreshFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
 import FAB from '@/components/misc/FAB'
 import AddDiag from '../AddDiag'
 import ConvoItem from './ConvoItem'
@@ -27,7 +28,7 @@ import ConvoItem from './ConvoItem'
 export default {
     components: {FAB, AddDiag, ConvoItem},
     mixins: [
-        feedingFrenzy, maintainScrllPos,
+        feedingFrenzy, refreshFrenzy, maintainScrllPos,
         scrlDirection,
     ],
     data() {

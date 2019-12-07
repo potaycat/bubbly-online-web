@@ -10,7 +10,7 @@
 //
 
 import Dropdown from '@/components/misc/Dropdown'
-export const _comp_dropdown = {
+export const dropdown = {
     components: {Dropdown},
     data() {
         return {
@@ -18,12 +18,12 @@ export const _comp_dropdown = {
         }
     },
     methods: {
-        onDropDownPick(emmtdVal) {
-            if (this.diagHndlFun && emmtdVal) this.diagHndlFun(emmtdVal)
-            this.openDiag = null
-            this.diagHndlFun = null
+        onDropDownPick() {
+            this.touchPos = null
         },
         performDrop(evt) {
+            console.log(evt);
+            
             this.touchPos = {x: evt.clientX, y: evt.clientY}
         }
     }

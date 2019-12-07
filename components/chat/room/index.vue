@@ -1,6 +1,6 @@
 <template>
-    <div id="inChat">
-        <div class="the_big_frame" :style="[moring ? {'filter':'blur(15px)'} :null]">
+    <div id="inside-chat-room">
+        <div class="the_big_frame">
             <transition appear name="fade_in">
                 <img class="chat-bg"
                     :style="'background:'+roomBackground"
@@ -17,18 +17,20 @@
                     :key="message.id"
                     :message="message"
                     :prev="conversation[index-1]"
-                    @peak="popItUp"
+                    @peak="popItUp($event.pos);performDisplay($event.profile)"
                 />
                 <PeepTyping :peeps="typing"/>
                 
                 <div ref="sndBxLev" style="transition:.2s"/>
             </div>
             <transition name="just_slide_up" >
-                <button v-if="!atBottom" class="chat__s2b-btn box-shadow-2 nopaque" @click="jump2Present()">Jump to present</button>
+                <button v-if="!atBottom" class="chat__s2b-btn shiny-white-bg box-shadow-2 nopaque" @click="jump2Present()">Jump to present</button>
             </transition>
             <SendBox
-                @outBoxing="showAnyway"
-                @barHeight="bottomShift"
+                @outBoxing="outBoxing"
+                @heightChange="bottomShift"
+                @typing="signalTyping"
+                @sendEmote="performSendEmote"
             />
         </div>
         <div v-if="fullyLoaded">
@@ -43,21 +45,20 @@
 </template>
 
 <script>
-import SendBox from './SendBox'
 import Bubble from './bubble'
 import PeepTyping from './PeepTyping'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 import ChatInfo from './info'
-import { _comp_profilePeak } from '@/mixins/_comp_profilePeak'
+import { profilePeak } from '@/mixins/cmpnentsCtrl/profilePeak'
+import { sendingHandler } from './sendBox/sendingHandler'
 
 export default {
     components: {
-        SendBox,
         Bubble,
         PeepTyping,
         ChatInfo,
     },
-    mixins: [feedingFrenzy, _comp_profilePeak],
+    mixins: [feedingFrenzy, profilePeak, sendingHandler],
     data() {
         return {
             feedUrl: `chat/${this.$route.params.id}/history/`,
@@ -71,7 +72,7 @@ export default {
     //}
     computed: {
         conversation() {return this.fetchedData.slice().reverse()},
-        threadInfo() {return this.$store.state.chat.currentChat},
+        threadInfo() {return this.$store.state.chatx.currentChat},
         moring() {return this.$store.state.appBar.moring},
         roomBackground() {
             if (this.threadInfo) {
@@ -85,7 +86,7 @@ export default {
         roomTitle() {
             const owo = this.threadInfo            
             if (owo) {
-                const t = this.threadInfo.name
+                const t = owo.name
                 switch (owo.room_type) {
                     case 'direct':
                         return [
@@ -93,11 +94,11 @@ export default {
                             t || owo.room_type_data.alias
                         ]
                     case 'group':
-                        return [null, t || `Nhóm chat gồm ${owo.room_type_data.member_count.toString()} người`]
+                        return [null, t || `Nhóm chat ${owo.room_type_data.roommate_count.toString()} người`]
                     case 'public':
                         return [
                             {src: owo.room_type_data.bg_img, style: 'square'},
-                            t || "Chat cộng đồng"
+                            t || owo.room_type_data.community.name + ` #${owo.room_type_data.order}`
                         ]
                 }
             }
@@ -118,14 +119,12 @@ export default {
         },
     },
     updated() {
-        // this.$nextTick(function () {})
         if (this.atBottom) this.scroll2Bottom()
     },
     methods: {
         scrllActive() {
             const container = this.$refs.scrollCtn
             container.addEventListener('scroll', () => {
-                // console.log(evt);
                 if (container.scrollTop <= 350) {
                     if (!this.loading4More && !this.reachedEnd) {
                         this.fetch();
@@ -135,16 +134,6 @@ export default {
                     if(!this.atBottom) this.atBottom=!this.atBottom
                 } else if(this.atBottom) this.atBottom=!this.atBottom
             }, {capture: true, passive: true})
-        },
-
-            DEBUG(){
-                console.log("debug bruh")
-            // document.getElementById("the_big_frame").style["filter"]= 'blur(35px)';        
-            },
-            
-        bottomShift(height) { // dynamic send box height
-            const butt = this.$refs.sndBxLev
-            butt.style["min-height"] = height
         },
         scroll2Bottom() {
             const container = this.$refs.scrollCtn
@@ -163,17 +152,11 @@ export default {
             this.reachedEnd = false;
             this.scroll2Bottom()
         },
-
-        showAnyway(outboxMsg) {
-            this.fetchedData.unshift(outboxMsg)
-        },
-
         onMessageHandler() {
             this.$connect(`${this.$store.state.wsBase}ws/chat/${this.$route.params.id}?token=${this.$store.state.auth.jwt}`)
             this.$options.sockets.onmessage = (res) => {
                 const recived = JSON.parse(res.data)
-
-                if (recived.typing){ // typing signal            
+                if (recived.type == 'tpng') { // typing signal
                     if (recived.user.username != this.$store.state.auth.my_profile.username) {
                         const i = this.typing.findIndex(x => x.user.username==recived.user.username)
                         if (i == -1){
@@ -195,11 +178,11 @@ export default {
                     //todo refector
                     const msg = recived.msg_data
                     if (msg.msg_type == 6) {
-                        this.$store.commit('chat/updateName', msg.content)
+                        this.$store.commit('chatx/updateName', msg.content)
                         this.$store.commit('appBar/loadText', msg.content)
                         this.fetchedData.unshift(msg)
                     } else if (msg.msg_type == 7) {
-                        this.$store.commit('chat/updateBgImg', msg.content)
+                        this.$store.commit('chatx/updateBgImg', msg.content)
                         this.fetchedData.unshift(msg)
                     } else if (this.$options.safeMsgTypes.includes(msg.msg_type)) {
                         this.fetchedData.unshift(msg)
@@ -213,7 +196,7 @@ export default {
                         }
                         this.fetchedData.unshift(msg)
                     } else { // update my message
-                        const index = this.fetchedData.findIndex(x => x.id==recived.f_pseudoId)
+                        const index = this.fetchedData.findIndex(x => x.id==recived.c__id)
                         if (index != -1) {
                             const changeThis = this.fetchedData[index]
                             changeThis.timestamp = msg.timestamp
@@ -228,10 +211,9 @@ export default {
         this.$axios.get(`chat/${this.$route.params.id}`, 
             this.$store.state.authHeader)
             .then(res => {
-                this.$store.commit('chat/loadChat', res.data)
+                this.$store.commit('chatx/loadChat', res.data)
                 this.fullyLoaded = true
             })
-
         this.onMessageHandler()
     },
     mounted() {
@@ -239,24 +221,24 @@ export default {
     },
     destroyed() {
         this.$disconnect()
-        if (this.threadInfo.roommate_info) {
+        if (this.fullyLoaded && this.threadInfo.roommate_info) {
             this.$axios.put(`chat/${this.threadInfo.id}/self-edit`, null,
                 this.$store.state.authHeader).then(res => {}) // update last seen
         }
-        this.$store.commit('chat/loadChat', null)
+        this.$store.commit('chatx/loadChat', null)
     },
 }
 </script>
 
 <style>
-#inChat .common_ls_cntainr {
+#inside-chat-room .common_ls_cntainr {
     padding-bottom: 44px;
 }
-#inChat .chat-bg {
+#inside-chat-room .chat-bg {
     z-index: -999;
     height: 100%;
     width: 100%;
-    position: fixed;
+    position: absolute;
 }
 
 ._thread-beginning {
@@ -272,14 +254,13 @@ export default {
 
 .chat__s2b-btn {
     border-radius: 100px 100px 50px 50px ;
-    position: fixed; bottom: 60px;
+    position: absolute; bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
     padding: 4px 8px;
-    background: #ffffffcc;
     font-size: 12px;
     color: rgba(72, 133, 237, 0.75);
-    z-index: 19;
+    z-index: 5;
     word-spacing: 0;
 }
 .just_slide_up-enter-active,
@@ -288,6 +269,6 @@ export default {
 }
 .just_slide_up-enter,
 .just_slide_up-leave-to { /* .fade-leave-active below version 2.1.8 */
-    margin-bottom: -35px;
+    margin-bottom: -40px;
 }
 </style>

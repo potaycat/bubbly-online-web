@@ -1,35 +1,37 @@
 <template>
-    <div class="the_big_frame"><div class="common_ls_cntainr" ref="feed">
-        <Tabs
-            lockable=1
-            locked=1
-            :tabs="['FOLLOWINGS', 'FOLLOWERS']"
-            :currentTab="currentTab"
-            @switchTo="newTab"
-        />
-        <div style="min-height:25px"/>
-        <UserItem v-for="profile in fetchedData"
-            :key="profile.username"
-            :profile="profile"
-        />
-    </div></div>
+    <div class="the_big_frame">
+        <div class="common_ls_cntainr --with-tabs" ref="feed">
+            <Tabs
+                lockable=1
+                locked=1
+                :tabs="['FOLLOWINGS', 'FOLLOWERS']"
+                :currentTab="currentTab"
+                @switchTo="newTab"
+            />
+            <UserItem v-for="profile in fetchedData"
+                :key="profile.username"
+                :profile="profile"
+            />
+        </div>
+        <h3 class="empty-fetchedLs" v-if="empty">No follows</h3>
+        <Spinner v-if="loading4More" />
+    </div>
 </template>
 
 <script>
-import { _comp_tabs } from '@/mixins/_comp_tabs'
+import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
-import { disableHamburger } from '@/mixins/commonLogicSeparation'
+import { disableHamburger, appBarTitle } from '@/mixins/appBarStuff'
 
 import UserItem from './list/UserItem'
 
 export default {
-    components: {
-        UserItem,
-    },
-    mixins: [_comp_tabs, feedingFrenzy, disableHamburger],
+    components: { UserItem },
+    mixins: [tabs, feedingFrenzy, disableHamburger, appBarTitle],
     data() {
         return {
             currentTab: this.$route.query.get=="followers"?1:0,
+            appBarDisplayTitle: "Follow",
         }
     },
     // const: {
@@ -47,13 +49,13 @@ export default {
         },
     },
     watch: {
-        currentTab() {
-            // if (get_flwer) {
-            //     this.$router.push({query: {get: 'followers'}})
-            // } else {
-            //     this.$router.push({query: {get: 'followings'}})
-            // }
-            this.fetchNRefresh()
+        currentTab(get_flwer) {
+            if (get_flwer) {
+                this.$router.replace({query: {get: 'followers'}})
+            } else {
+                this.$router.replace({query: {get: 'followings'}})
+            }
+            this.firstFetch()
         },
     },
 }

@@ -1,6 +1,6 @@
 <template>
 <transition name="fade" appear >
-    <div class="total_darkness" @click.self="$emit('close')">
+    <div class="total_darkness no-bg" @click.self="$emit('close')">
         <transition name="zoom_from_click" appear @enter="enter" >
             <div class="prfl-peak shiny-white-bg box-shadow-3" ref="drpdwn">
                 <img class="pfp" :src="profile.profile_pic" />
@@ -17,41 +17,27 @@
                 </div>
             </div>
         </transition>
-        <InputDialog v-if="openDiag"
-            :toDisplay="openDiag"
-            @clicked="onDiagClose"
-        />
+        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </transition>
 </template>
 
 <script>
 import Button from '@/components/misc/Button'
-import { _comp_inputDiag } from '@/mixins/_comp_inputDiag'
+import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 import { performToPrivate } from '@/mixins/performFollow'
+import { child } from '@/mixins/fancyTransition/zoom_from_click'
 
 export default {
     components: {Button},
-    mixins: [_comp_inputDiag, performToPrivate],
-    props: ['profile', 'touchPos', 'threadInfo'],
+    mixins: [inputDiag, performToPrivate, child],
+    props: ['profile', 'threadInfo'],
     computed: {
         isAdmin() {
             return this.threadInfo.roommate_info.is_admin
         }
     },
     methods: {
-        enter( element ) {
-            // https://www.bennadel.com/blog/3559-animating-elements-in-from-a-mouse-event-location-in-vue-js-2-5-21.htm
-            const rect = element.getBoundingClientRect();
-            const deltaX = ( this.touchPos.x - rect.left - ( rect.width / 2 ) );
-            const deltaY = ( this.touchPos.y - rect.top - ( rect.height / 2 ) );
-            
-            element.style.transform = `scale(0.5) translate(${deltaX}px, ${deltaY}px)`;
-            element.style.transition = "none";
-            this.__force_paint__ = document.body.offsetHeight;
-            element.style = null;
-        },
-        
         promote() {
             this.loading = true
             this.$axios.patch(`chat/${this.threadInfo.id}/roommates/${this.profile.username}`,
@@ -59,7 +45,7 @@ export default {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$emit('close')
+                    this.$emit('close', true)
                 })
         },
         kick() {
@@ -68,7 +54,7 @@ export default {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$emit('close')
+                    this.$emit('close', true)
                 })
                 .catch(err => {
                     this.$emit('close')

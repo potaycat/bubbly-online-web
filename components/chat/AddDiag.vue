@@ -1,7 +1,7 @@
 <template>
 <transition appear name="zoom_fade">
     <div class="total_darkness">
-        <div id="add-container" class="box-shadow-4 shiny-white-bg">
+        <div id="add-container" class="box-shadow-4">
             <div class="add__btn-ctnr">
                 <button class="add__btn" @click="$router.back()">Cancel</button>
                 <button class="add__btn" style="margin-left:auto" @click="hahayes()">
@@ -10,7 +10,7 @@
                 </button>
             </div>
             
-            <div class="_added-peep">
+            <div class="_added-peep no-bg">
                 <strong v-if="selected_peeps.length" style="margin:4px 5px">Selected: </strong>
                 <div v-for="person in selected_peeps"
                     :key="person.username"
@@ -35,7 +35,7 @@
             </div>
             
             <Tabs
-                fixed=1
+                contractless=1
                 style="position: absolute; width: 95%;
                     background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%)"
                 :tabs="['FOLLOWINGS', 'FOLLOWERS']"
@@ -55,6 +55,7 @@
                         <div :id="[isChosen(person.username) ? 'checked' :null]" class="checkbox"/>
                     </div>
                 </transition-group>
+                <h3 class="empty-fetchedLs" v-if="empty">No follows</h3>
                 <Spinner v-if="loading4More" />
             </div></div>
         </div>
@@ -63,10 +64,10 @@
 </template>
 
 <script>
-import { _comp_tabs } from '@/mixins/_comp_tabs'
+import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
-    mixins: [_comp_tabs, feedingFrenzy],
+    mixins: [tabs, feedingFrenzy],
     props: ['roomId'],
     data() {
         return {
@@ -91,7 +92,7 @@ export default {
                 this.searcgphrase = "Search my followings"
                 this.feedUrl = `accounts/${usr}/circles/?minimal=1&`
             }
-            this.fetchNRefresh()
+            this.firstFetch()
         },
     },
     methods: {
@@ -131,7 +132,7 @@ export default {
                             this.$router.back()
                             this.$emit('added')
                         } else {
-                            this.$router.replace(`/chat/t/${res.data.id}`)
+                            this.$router.push(`/chat/t/${res.data.id}`)
                         }
                     })
             }
@@ -142,6 +143,7 @@ export default {
 
 <style>
 #add-container {
+    background: #fff;
     z-index: 999;
     border-radius: 20px;
     width: 95%;
@@ -186,11 +188,11 @@ export default {
     background: #00000055;
 }
 
-._added-peep input {
+._added-peep > input {
     font-size: 15px;
-    background: none;
     border: none;
     outline: none;
+    background: none;
     flex-grow: 1;
     padding: 5px;
 }

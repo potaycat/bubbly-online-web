@@ -1,27 +1,30 @@
 <template>
-    <div style="width:100%;padding:0 8px">
+    <div class="common_ls_wrapper" style="padding:0 8px">
         <PostCard v-for="post in fetchedData"
             :key ="post.id"
             :post ="post"
             :community="community"
         />
+        <h3 class="empty-fetchedLs" v-if="empty">No posts</h3>
         <Spinner v-if="loading4More" />
-        <!-- <FAB @clicked="$router.push(`/post/compose?cmnty=${community.id}`)"
-            icon= "post_add"
-            actionName="Post to community"
-            style="bottom:20px"
-        /> -->
+        <FAB @clicked="$router.push(`/post/compose?to=${community.id}`)"
+            v-if="community.membership_info && 
+                ['moderator','administrator','member'].includes(community.membership_info.role)"
+            icon= "add"
+            actionName= "Post to community"
+            inActvtView=1
+        />
     </div>
 </template>
 
 <script>
-import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, postFeed, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
 import PostCard from '@/components/post/postCard/'
 import FAB from '@/components/misc/FAB'
 
 export default {
     components: {PostCard, FAB},
-    mixins: [feedingFrenzy, maintainScrllPos, scrlDirection],
+    mixins: [feedingFrenzy, postFeed, maintainScrllPos, scrlDirection],
     props: ['community'],
     data() {
         return {

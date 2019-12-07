@@ -9,7 +9,7 @@
                     <p v-else-if="profile.you_block">This person blocked you</p>
                     <div v-else-if="isSelf" id="prfl-inf__cmd">
                         <Button class="prfl-inf__cmd__btn" style="width:auto"
-                            text="Edit Profile" @clicked="$router.push('/user/profile-settings')" :padding="['5px', '20px']"/>
+                            text="Edit Profile" @clicked="$router.push('/settings/profile')" :padding="['5px', '20px']"/>
                     </div>
                     <div v-else id="prfl-inf__cmd">
                         <Button class="prfl-inf__cmd__btn"
@@ -39,21 +39,15 @@
                 </section>
             </div>
         </transition>
-        <InputDialog v-if="openDiag"
-            :toDisplay="openDiag"
-            @clicked="onDiagClose"
-        />
-        <Dropdown v-if="moring" @pick="onDropDownPick"
+        <Dropdown v-if="moring" 
             :options="[
-                profile.you_block ? {value:'unblock', name:'Unblock'} :
-                    {value:'block', name:'Block'},
-                {value:'report', name:'Report'},
-                {value:'a', name:'Let\'s'},
-                {value:'b', name:'Get'},
-                {value:'c', name:'This'},
-                {value:'copyUrl', name:'Bread OwO'},
+                profile.you_block ? {action:'makeUnblock', label:'Unblock'} :
+                    {action:'confirmBlock', label:'Block'},
+                {action:'confirm_userReport', label:'Report'},
+                {action:'make_userCopyUrl', label:'Copy profile URL'},
             ].filter(x=>x)"
         />
+        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </template>
 
@@ -81,27 +75,16 @@ export default {
         })
     },
     methods: {
+        onDropDownPick() {
+            this.$store.commit('appBar/burgerState', false)
+        },
         onUnfollowHandle() {this.$emit('unfollowed')},
         onPerformFollow() {this.$emit('followed')},
         onFollowFailHandle(e) {this.$emit('unfollowed')},
         onBlockHandle() {this.$emit('blocked')},
         onUnblockHandle() {this.$emit('unblocked')},
 
-        onDropDownPick(value) {
-            this.$store.commit('appBar/burgerState', false)
-            switch (value) {
-                case 'block':
-                    this.confirmBlock()
-                    break
-                case 'unblock':
-                    this.makeUnblock()
-                    break
-                default:
-                    break
-            }
-        },
-
-        toDetailBanner() {
+        toDetailBanner() { // TODO mixin
             this.$store.commit('appBar/loadText', this.profile.alias)
             this.$store.commit('appBar/loadPic', {
                 src: this.profile.profile_pic,

@@ -11,22 +11,11 @@
 </template>
 
 <script>
-import { _comp_tabs } from '@/mixins/_comp_tabs'
+import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import AllNoti from './AllNoti'
 
 export default {
     components: {AllNoti},
-    mixins: [_comp_tabs],
+    mixins: [tabs],
 }
 </script>
-
-<style>
-.noti__no-new {
-    font-size: 20px;
-    font-weight: bold;
-    color: #666;
-    width: 100%;
-    text-align: center;
-    margin-top: 50px;
-}
-</style>

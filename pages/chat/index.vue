@@ -13,6 +13,11 @@ export default {
     activated() {
         this.$store.commit('changeDestination', 3)
     },
+    beforeCreate() { // TODO refactor
+        if (this.$route.query.chat_add) {
+            this.$router.replace('')
+        }
+    }
 }
 </script>
 

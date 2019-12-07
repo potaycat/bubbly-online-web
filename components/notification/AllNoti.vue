@@ -8,9 +8,7 @@
                 />
             </transition-group>
             <Spinner v-if="loading4More" />
-
-            <p v-if="!fetchedData.length&&!loading4More"
-                class="noti__no-new">No new notifications</p>
+            <h3 class="empty-fetchedLs" v-if="empty">No new notifications</h3>
         </div>
         <FAB @clicked="clearAll"
             icon= "clear_all"

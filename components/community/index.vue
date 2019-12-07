@@ -3,7 +3,7 @@
         <CommunityInfo :community="community" />
         <Tabs
             lockable=1
-            :tabs="['POSTS', 'CHAT ROOMS', 'ABOUT']"
+            :tabs="['POSTS', 'CHAT ROOMS', 'PINBOARD']"
             :currentTab="currentTab"
             @switchTo="newTab"
         />
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { _comp_tabs } from '@/mixins/_comp_tabs'
+import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 
 import CommunityInfo from './CommunityInfo'
 import CommunityPosts from './list/CommunityPosts'
@@ -31,10 +31,10 @@ export default {
         PublicChats,
         Anouncements
     },
-    mixins: [_comp_tabs],
+    mixins: [tabs],
     props: ['community'],
     created() {
-        this.$store.dispatch("reactIcons/getCmntyIcons", this.community.id)
+        this.$store.dispatch("reactionx/getCmntyEmotes", this.community.id)
     },
     mounted() {
         const scroll = this.$refs.feed

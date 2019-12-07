@@ -1,9 +1,11 @@
 <template>
-    <div style="width:100%">
+    <div class="common_ls_wrapper">
         <CmntyItem v-for="community in fetchedData"
             :key="community.id"
             :community="community"
         />
+        <h3 class="empty-fetchedLs" v-if="empty">This user has not joined any community</h3>
+        <Spinner v-if="loading4More" />
     </div>
 </template>
 

@@ -10,7 +10,7 @@
 
 
 <script>
-import { disableHamburger } from '@/mixins/commonLogicSeparation'
+import { disableHamburger } from '@/mixins/appBarStuff'
 export default {
     props: ['customCmds'],
     mixins: [disableHamburger],
@@ -19,10 +19,11 @@ export default {
 
 <style>
 .app-bar-custom-actions {
-    position: fixed;
+    position: absolute;
     top: 2px;
     right: 3px;
     z-index: 9999999;
+    background: #fff;
 }
 .app-bar-custom-actions > i {
     padding: 12px;

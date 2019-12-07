@@ -46,6 +46,7 @@ export default {
 .content-block > div > *{
     margin-bottom: 6px;
     width: 100%;
+    user-select: text;
 }
 .content-block .attch {
     margin-bottom: -5px;

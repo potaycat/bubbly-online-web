@@ -18,8 +18,5 @@ export default {
             // membershipsRes,
         }
     },
-    created() {        
-        this.$store.commit('appBar/reset')
-    },
 }
 </script>

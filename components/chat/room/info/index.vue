@@ -20,8 +20,7 @@
             </div>
 
             <div v-for="cmdGroup in visibleCmd" class="_chat-cmd-list" :key="cmdGroup[0].icon+'_'">
-                <div v-for="cmd in cmdGroup"
-                    :key="cmd.icon"
+                <div v-for="cmd in cmdGroup" :key="cmd.icon"
                     class="_chat-cmd glow"
                     :style="cmd.style"
                     @click="cmd.action()"
@@ -33,10 +32,7 @@
             </div>
 
         </div>
-        <InputDialog v-if="openDiag"
-            :toDisplay = "openDiag"
-            @clicked="onDiagClose"
-        />
+        <InputDialog v-if="openDiag" :toDisplay="openDiag" />
         <transition name="fade">
             <div v-if="loading" class="total_darkness">
                 <Spinner color="#fff" />
@@ -61,7 +57,7 @@ export default {
     }),
     computed: {
         // threadInfo() {
-        //     return this.$store.state.chat.currentChat
+        //     return this.$store.state.chatx.currentChat
         // },
         visibleCmd() {
             return [
@@ -74,7 +70,7 @@ export default {
                     [
                         {
                             icon: "people_outline",
-                            lable: `Chat Members (${this.spcfcTypdData.member_count})`,
+                            lable: `Chat Members (${this.spcfcTypdData.roommate_count})`,
                             action: this.showRoomates,
                             scndIcon: this.more_members ? "expand_less" : "expand_more"
                         },
@@ -186,7 +182,7 @@ export default {
             )
                 .then(res => {
                     this.loading = false
-                    this.$store.commit('chat/pblcRoomSaved', res.data)
+                    this.$store.commit('chatx/pblcRoomSaved', res.data)
                 })
         },
         turnNoti(boolval) {
@@ -197,7 +193,7 @@ export default {
             )
                 .then(res => {
                     this.loading = false
-                    this.$store.commit('chat/bellUpdate', res.data.enable_noti)
+                    this.$store.commit('chatx/bellUpdate', res.data.enable_noti)
                 })
         },
         performLeave() {
@@ -207,13 +203,13 @@ export default {
             )
                 .then(res => {
                     this.loading = false
-                    this.$store.commit('chat/pblcRoomSaved', null)
+                    this.$store.commit('chatx/pblcRoomSaved', null)
                     this.$router.back()
                 })
         },
         onPerformBlock() {this.loading = true},
         onBlockHandle() {
-            this.$store.commit('chat/pblcRoomSaved', null)
+            this.$store.commit('chatx/pblcRoomSaved', null)
             this.loading = false
             this.$router.back()
         },
@@ -226,10 +222,12 @@ export default {
 
 <style scoped>
 #chat-info{
+    backdrop-filter: blur(20px);
+    z-index: 8;
     width: 100%;
     min-height: 100vh;
     background: #1d99ff77;
-    position: fixed; top: 0; left: 0;
+    position: absolute; top: 0; left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -252,7 +250,7 @@ export default {
     height: 90px;
     width: 90px;
 }
-._set_info .cmnty-ico{
+._set_info .cmnty_ico{
     height: 40px;
     width: 40px;
     margin: 4px 12px;

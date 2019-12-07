@@ -1,10 +1,10 @@
 <template>
     <div class="total-reacts-ctn">
-        <div class="emote-ctnr">
-            <div class="emote_ctnr__ani" ref="emote_ctnr__ani">
-                <div v-for="(icon, index) in iconPreviewLs" :key="index" class="emot-ico">
-                    <img v-if="icon.img_src" :src="icon.img_src">
-                    <p>{{ icon }}</p>
+        <div class="emo-preview-ctn">
+            <div class="emo-preview-ctn__ani" ref="emote_ctnr__ani">
+                <div v-for="(emote, index) in emotesPreview" :key="index" class="emot-ico">
+                    <img v-if="emote.img_src" :src="emote.img_src">
+                    <p>{{ emote }}</p>
                 </div>
             </div>
         </div>
@@ -28,18 +28,18 @@ export default {
     // }
     computed: {
         ...mapGetters({
-            iconsByCmnty: 'reactIcons/iconsByCmnty',
+            emotesByCmnty: 'reactionx/emotesByCmnty',
         }),
-        iconPreviewLs() {
-            let icoArr = this.iconsByCmnty(this.communityId) || []
-            const len = icoArr.length
+        emotesPreview() {
+            let emoArr = this.emotesByCmnty(this.communityId) || []
+            const len = emoArr.length
             if (len < 6) {
-                icoArr = [
-                    ...icoArr,
+                emoArr = [
+                    ...emoArr,
                     ...this.$options.defaultList.slice(0, 6-len)
                 ]
             }
-            return this.shuffle(icoArr).slice(0, 6)
+            return this.shuffle(emoArr).slice(0, 6)
         }
     },
     mounted() {
@@ -70,13 +70,13 @@ export default {
     margin-left: 6px;
 }
 
-.emote_ctnr__ani {
+.emo-preview-ctn__ani {
     display: flex;
     width: 60px;
     transform: translateX(-60px);
     animation: slide 24s infinite
 }
-.emote-ctnr {
+.emo-preview-ctn {
     /* border: solid 1px red; */
     overflow: hidden;
 }

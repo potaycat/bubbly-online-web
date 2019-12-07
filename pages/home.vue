@@ -12,9 +12,9 @@ export default {
     components: {TopLvlDestination,TopLvlFeed},
     activated() {
         this.$store.commit('changeDestination', 1)
-        // this.$store.commit('reactIcons/clearLocal')
-        if (Object.entries(this.$store.state.reactIcons.localIcons).length == 0) {
-            this.$store.dispatch("reactIcons/getMyIcons")
+        // this.$store.commit('reactionx/clearLocal')
+        if (Object.entries(this.$store.state.reactionx.localEmotes).length == 0) {
+            this.$store.dispatch("reactionx/getMyEmotes")
         }
     },
 }

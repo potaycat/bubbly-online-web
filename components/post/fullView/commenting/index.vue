@@ -1,30 +1,37 @@
 <template>
-    <section class="pf-comments">
+    <section class="common_ls_wrapper pf-comments">
         <div>Comments <span>({{onPost.reply_count}})</span></div>
         <div class="cmt-add-block">
             <img class="pfp" :src="pfp">
-            <span class="glow">Add yours...</span>
+            <span class="glow" @click="launchReplyComposer">Add yours...</span>
         </div>
 
         <CommentItem v-for="comment in fetchedData"
             :key="comment.id"
             :comment="comment"
-            :community="onPost.allocated_to"
+            :communityId="onPost.allocated_to.id"
         />
         <Spinner v-if="loading4More" />
+        <SendBox v-if="openComposer"
+            class="in-comment-send-box"
+            immediateFocus=1
+            @outBoxing="outBoxing"
+            @sendEmote="performSendEmote"
+        />
     </section>
 </template>
 
 <script>
 import CommentItem from './CommentItem'
-import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, refreshFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
+import { sendingHandler } from '@/components/comment/composer'
 
 export default {
     components: {CommentItem},
-    mixins: [feedingFrenzy, maintainScrllPos],
+    mixins: [feedingFrenzy, refreshFrenzy, maintainScrllPos, sendingHandler],
     props: ['onPost'],
     data() {return {
-        feedUrl: `posts/${this.onPost.id}/comments/`,
+        feedUrl: `posts/${this.onPost.id}/comments/?sort_by=best&`,
     }},
     computed: {
         pfp() {
@@ -39,7 +46,6 @@ export default {
 
 <style>
 .pf-comments{
-    width: 100%;
     margin-top: 15px;
 }
 .pf-comments .pfp {
@@ -60,5 +66,11 @@ export default {
     padding: 6px 10px;
     margin: 0 10px;
     width: 100%;
+}
+
+.in-comment-send-box {
+    transform: translateX(-56px);
+    width: calc(100% + 41px) !important;
+    clip-path: inset(0 0 0 41px);
 }
 </style>

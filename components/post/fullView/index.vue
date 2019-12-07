@@ -13,17 +13,17 @@
                 </div>
             </nuxt-link>
 
-            <BubblyMarkdownParse :text="post.text" :attachments="post.attachments" />
+            <BubblyMarkdownParse :text="post.text" :attachments="post.attachments||post.attachments_preview.attchs" />
 
             <nuxt-link :to="`/community/${post.allocated_to.id}`" class="pf__where glow">
-                <img class="cmnty-ico" :src=" post.allocated_to.icon_img">
+                <img class="cmnty_ico" :src=" post.allocated_to.icon_img">
                 <p>Được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
             </nuxt-link>
 
             <section >
                 <p class="pf__react-label glow">Reactions ({{post.total_reacts}})</p> 
                 <div class="pf-reactions">
-                    <React
+                    <React v-if="post.reactions"
                         :reacts="reactionsLsSorted"
                         :myReact="post.my_react"
                         :communityId="post.allocated_to.id"
@@ -42,9 +42,9 @@
             
             <Commenting :onPost="post" />
         </div>
-        <Dropdown v-if="moring" @pick="onDropDownPick"
-            :options="hamburgerOptions"
-        />
+        <Dropdown v-if="moring" :options="hamburgerOptions" />
+        <InputDialog v-if="openDiag" :toDisplay="openDiag" />
+        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id"/>
     </div>
 </transition>
 </template>
@@ -52,21 +52,24 @@
 <script>
 import { mapGetters } from "vuex"
 import BubblyMarkdownParse from '../mdParse'
-import { _comp_reactAdd } from '@/mixins/_comp_reactAdd'
+import { reactAdd } from '@/mixins/cmpnentsCtrl/reactAdd'
+import { performEdit } from '@/mixins/performEdit'
+import { performFollow, performBlock } from '@/mixins/performFollow'
 import Dropdown from '@/components/misc/Dropdown'
-
 import Commenting from './commenting/'
+import { sharePost } from '@/mixins/cmpnentsCtrl/sharePost'
 export default {
     components: {
         BubblyMarkdownParse,
         Dropdown,
         Commenting,
     },
-    mixins: [_comp_reactAdd],
+    mixins: [reactAdd, performEdit, sharePost,
+        performFollow, performBlock],
     props: ['post'],
     computed: {
         ...mapGetters({
-            isMod: 'moderating/isMod',
+            isMod: 'communityx/isMod',
             moring: 'appBar/hmbrgrLaunchd',
         }),
         profile() {return this.post.author}, // to work with performFollow mixin
@@ -74,27 +77,31 @@ export default {
             if (this.post.title) {
                 return this.post.title
             }
-            return "Bài đăng của "+ this.post.author.alias
+            return "Bài viết của "+ this.post.author.alias
         },
         hamburgerOptions() {
             const vbName = this.profile.alias
             return [
-                ...this.post.author.username==this.$store.state.auth.my_profile.username ? [
-                    {value:'edit', name:'Edit'},
-                    {value:'delete', name:'Delete post'},
-                ] : [
-                    this.post.author.you_follow ? {value:'unfollow', name:`Unfollow ${vbName}`} :
-                        {value:'follow', name:`Follow ${vbName}`},
-                    this.post.author.you_block ? {value:'unblock', name:`Unblock ${vbName}`} :
-                        {value:'block', name:`Block ${vbName}`},
-                    this.isMod(this.post.allocated_to.id) ? {value:'mod_delete', name:'[Mod] Remove comment'} :
-                        {value:'flag', name:'Report'},
-                ],
                 ...[
-                    {value:'copyLink', name:'Copy post URL'},
-                ]
+                    {action:'goToReactions', label:'View reactions'},
+                    {action:'goToShare', label:'Share...'},
+                ],
+                ...this.post.author.username==this.$store.state.auth.my_profile.username ? [
+                    {action:'goToEdit', label:'Edit'},
+                    {action:'confirm_delete', label:'Delete post'},
+                ] : [
+                    this.post.author.you_follow ? {action:'confirmUnfollow', label:`Unfollow ${vbName}`} :
+                        {action:'makeFollow', label:`Follow ${vbName}`},
+                    this.post.author.you_block ? {action:'makeUnblock', label:`Unblock ${vbName}`} :
+                        {action:'confirmBlock', label:`Block ${vbName}`},
+                    this.isMod(this.post.allocated_to.id) ? {action:'confirm_modDelete', label:'[Mod] Remove Post'} :
+                        {action:'confirm_report', label:'Report'},
+                ],
             ]
         }
+    },
+    activated() {
+        // this.$store.commit('postx/loadPost', this.post) // causes wierd exception: mutate vuex store state outside mutation handlers
     },
     mounted() {
         const tt = this.$refs.title
@@ -110,16 +117,14 @@ export default {
             passive: true})
     },
     methods: {
-        onDropDownPick(value) {
+        onDropDownPick() {
             this.$store.commit('appBar/burgerState', false)
-            switch (value) {
-                default:
-                    break
-            }
         },
-
-        
-    },
+        goToShare() {
+            this.popItUp({clientX:400})
+            this.sharing=true
+        }
+    }
 }
 </script>
 
@@ -159,7 +164,7 @@ export default {
     align-items: center;
     margin: 20px 0 20px;
 }
-.pf__where .cmnty-ico {
+.pf__where .cmnty_ico {
     height: 26px;
     width: 26px;
 }

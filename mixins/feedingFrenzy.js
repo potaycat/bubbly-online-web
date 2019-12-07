@@ -13,63 +13,82 @@ export const feedingFrenzy = {
     // }
     computed: {
         offset() {
-            const last = this.fetchedData[this.fetchedData.length - 1]
-            return last ? last[this.$options.offsetProp] : ""
+            return this.fetchedData[this.fetchedData.length-1][this.$options.offsetProp]
         },
         urlConstruct() {
             const u = this.feedUrl
-            return `${u.slice(-1) == "&" ? u : u + "?"}offset=${this.offset}`
+            return `${u.slice(-1)=="&" ? u : u+"?"}offset=${this.offset}`
         },
         scrollCtnr() { return this.$refs.feed },
+        empty() {
+            return !this.loading4More && !this.fetchedData.length
+        }
     },
-
     created() {
-        this.fetchCache()
-        this.fetch()
+        this.firstFetch()
     },
     mounted() {
         this.scrllActive()
     },
     methods: {
-        fetchCache() {
-            // let stored2 = this.$store.state.ramCache[this.cache]
-            // if (stored2) {
-            //     this.fetchedData = stored2
-            // }
-        },
-        fetch() {
+        fetch(url=this.urlConstruct, resAction=this.fillFeeder) {
             this.loading4More = true
-            this.$axios.get(this.urlConstruct,
+            this.$axios.get(url,
                 this.$store.state.authHeader)
                 .then(res => {
                     if (res.data.length == 0) this.reachedEnd = true
-                    this.fetchedData.push(...res.data)
+                    resAction(res.data)
                     this.loading4More = false
                 })
         },
-        fetchNRefresh() {
-            this.loading4More = true
-            this.$axios.get(this.feedUrl,
-                this.$store.state.authHeader)
-                .then(res => {
-                    this.fetchedData = res.data
-                    this.loading4More = false
-                })
+        fillFeeder(data) {this.fetchedData.push(...data)},
+        firstFetch() {
+            const replace = (data) => this.fetchedData = data
+            this.fetch(this.feedUrl, replace)
+            this.reachedEnd = false
+            this.$nextTick(() => {
+                try {
+                    this.scrollCtnr.scrollTop = 0
+                } catch (error) {
+                    // console.log("CATCHED: "+error)
+                }
+            })
         },
         scrllActive() {
             const scrllable = this.scrollCtnr
             scrllable.scrollTop = this.lastScrollPosition
             scrllable.addEventListener('scroll', () => {
-                // Infinite scroll. 200px till bottom of page
-                if (scrllable.scrollTop + scrllable.clientHeight > scrllable.scrollHeight - 200) {
+                // Infinite scroll. 500px till bottom of page
+                if (scrllable.scrollTop + scrllable.clientHeight > scrllable.scrollHeight - 500) {
                     if (!this.loading4More && !this.reachedEnd) {
-                        this.fetch()
+                        this.fetch(this.urlConstruct, this.fillFeeder)
                     }
                 }
             }, { capture: false, passive: true })
         }
     },
 }
+
+export const postFeed = {
+    activated() {
+        const update = this.$store.state.postx.currentPost
+        if (update) {
+            const post = this.fetchedData.find(post => post.id == update.id)
+            if (post && update.reactions) {
+                post.my_react = update.my_react
+                this.$set(post, 'reactions', update.reactions)
+                this.$store.commit('postx/loadPost', null)
+            }
+        }
+    },
+}
+
+export const refreshFrenzy = {
+    activated() {
+        this.firstFetch()
+    },
+}
+
 
 export const scrlDirection = {
     // this.$options.nonReactiveData {

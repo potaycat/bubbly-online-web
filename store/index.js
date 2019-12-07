@@ -7,9 +7,6 @@ export const state = () => ({
 
     topLevelDestination: 1,
     scrollinUp: true,
-
-    scrollPosition: {},
-    ramCache: {},
 })
 
 export const mutations = {
@@ -18,12 +15,5 @@ export const mutations = {
     },
     toggleScrDir(state) {
         state.scrollinUp = !state.scrollinUp
-    },
-
-    keepLastPosition(state, { key, pos }) {
-        state.scrollPosition[key] = pos
-    },
-    keepLastPosition2(state, { key, pos }) {
-        state.ramCache[key] = pos
     },
 }

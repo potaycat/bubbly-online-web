@@ -1,34 +1,29 @@
 <template>
-    <div id="community-chats" class="cards-wrapper">
+    <div class="community-chats-ls common_ls_wrapper">
         <div v-for="room in fetchedData"
             class="c-p-room box-shadow-2 bg lift"
-            @click="toChat(room)"
+            @click="$router.push(`/chat/t/${room.id}`)"
             :key="room.id"
             :style="`background:url(${room.bg_img || community.cover_img}) center`"
         >
             <div class="text-info">
-                <div class="name">{{ room.name || "Phòng chat cộng đồng" }}</div>
+                <div class="name">{{ room.name || `Chat #${room.order}` }}</div>
                 <span>{{ room.last_msg.timestamp | tiemstamp}}</span>
             </div>
             <p class="last"><strong>{{ room.description }}</strong></p>
             <p class="last">{{ room.last_msg | lastMsgDspl }}</p>
         </div>
+        <h3 class="empty-fetchedLs" v-if="empty">Community has no public chats</h3>
         <Spinner v-if="loading4More" />
     </div>
 </template>
 
 <script>
 import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
-import { chatLs } from '@/mixins/chatLs'
 
 export default {
-    props: [
-        'community',
-    ],
-    mixins: [
-        feedingFrenzy, maintainScrllPos,
-        chatLs,
-    ],
+    props: ['community',],
+    mixins: [feedingFrenzy, maintainScrllPos],
     data() {
         return {
             feedUrl: `communities/${this.community.id}/public-rooms/`,
@@ -43,11 +38,10 @@ export default {
 </script>
 
 <style>
-#community-chats {
-    width: 100%;
+.community-chats-ls {
     padding: 0 20px;
 }
-#community-chats .c-p-room {
+.community-chats-ls .c-p-room {
     height: 160px;
     margin-bottom: 20px;
     border-radius: 25px;
@@ -56,13 +50,13 @@ export default {
     align-items: stretch;
 
 }
-#community-chats .c-p-room .text-info {
+.community-chats-ls .c-p-room .text-info {
     color: #fff;
     margin-top: auto;
     text-shadow: 0px 0px 10px #000;
     display: flex;
 }
-#community-chats .c-p-room .name {
+.community-chats-ls .c-p-room .name {
     font-size: 19px;
     overflow: hidden;
     padding: 1px 5px 5px 14px;
@@ -71,7 +65,7 @@ export default {
     font-weight: bold;
     max-height: 50px;
 }
-#community-chats .c-p-room .last {
+.community-chats-ls .c-p-room .last {
     margin: 0 14px 9px 14px;
 
     /* border-radius: 20px;
@@ -85,7 +79,7 @@ export default {
     overflow: hidden;
     word-break: break-all;
 }
-#community-chats .c-p-room span {
+.community-chats-ls .c-p-room span {
     font-size: 14px;
     margin: 5px 14px 0 auto;
 }

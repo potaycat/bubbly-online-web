@@ -5,39 +5,37 @@
             :key="roomCluster.id"
         >
             <nuxt-link :to="`/community/${roomCluster.id}`" class="xplr-chat__cmnty-inf glow">
-                <img class="cmnty-ico" :src="roomCluster.icon_img">
+                <img class="cmnty_ico" :src="roomCluster.icon_img">
                 <p>{{ roomCluster.name }}</p>
                 <i class="material-icons-round">arrow_forward</i>
             </nuxt-link>
 
             <div v-for="room in roomCluster.recently_active"
                 class="pblc-chats box-shadow-2 bg lift"
-                @click="toChat(room)"
+                @click="$router.push(`/chat/t/${room.id}`)"
                 :key="room.id"
                 :style="`background:url(${room.bg_img || roomCluster.cover_img}) center`"
             >
                 <div class="pblc-chats__txt">
-                    <div class="name">{{ room.name || "Phòng chat cộng đồng" }}</div>
+                    <div class="name">{{ room.name || `Chat #${room.order}` }}</div>
                     <span>{{ room.last_msg.timestamp | tiemstamp }}</span>
                 </div>
                 <p class="pblc-chats__last">{{ room.last_msg | lastMsgDspl }}</p>
             </div>
         </div>
+        <h3 class="empty-fetchedLs" v-if="empty">Empty list. Get started by joining a few communities</h3>
         <Spinner v-if="loading4More" />
     </div></div>
 </template>
 
 <script>
 import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
-import { chatLs } from '@/mixins/chatLs'
 
 export default {
-    mixins: [feedingFrenzy, maintainScrllPos, chatLs, scrlDirection],
-    data() {
-        return {
-            feedUrl: 'chat/explore/',
-        }
-    },
+    mixins: [feedingFrenzy, maintainScrllPos, scrlDirection],
+    data: () => ({
+        feedUrl: 'chat/explore/',
+    }),
 }
 </script>
 
@@ -51,7 +49,7 @@ export default {
     display: flex;
     padding: 5px;
 }
-.xplr-chat__cmnty-inf .cmnty-ico {
+.xplr-chat__cmnty-inf .cmnty_ico {
     height: 35px;
     width: 35px;
     

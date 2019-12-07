@@ -36,7 +36,7 @@ export default {
                 case 'circle':
                     return 'pfp'
                 case 'square':
-                    return 'cmnty-ico'
+                    return 'cmnty_ico'
                 default:
                     return ''
             }
@@ -45,12 +45,16 @@ export default {
     activated() {
         this.$store.commit('appBar/reset')
     },
+    created() {
+        this.$store.commit('appBar/reset')
+    },
     methods: {
         openInfo() {
             this.$store.commit('appBar/burgerState', true)
         },
         bacc() {
             if (this.moring) {
+                this.$store.commit('appBar/burgerState', false)
             } else {
                 this.$router.back()
             }

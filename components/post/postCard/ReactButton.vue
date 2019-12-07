@@ -35,11 +35,11 @@ export default {
     // }
     computed: {
         ...mapGetters({
-            iconById: 'reactIcons/iconById',
+            emoteById: 'reactionx/emoteById',
         }),
         myReactIcon() {
             try {
-                const mine = this.iconById(this.communityId, this.myReact)
+                const mine = this.emoteById(this.communityId, this.myReact)
                 return mine || {
                     img_src: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/223/grinning-face_1f600.png",
                     name: "Reacted"

@@ -1,5 +1,5 @@
 <template>
-    <button class="FAB box-shadow-2 lift"
+    <button :class="['FAB box-shadow-2 lift', inActvtView?'--fab-top-lev':null]"
         @click="$emit('clicked')"
         @mousedown="startDrag"
         @mousemove="doDrag"
@@ -22,6 +22,7 @@ export default {
     props: [
         'actionName',
         'icon',
+        'inActvtView'
     ],
     data() {
         return {
@@ -66,13 +67,14 @@ export default {
     top: calc(100vh - 125px);
     right: 20px;
     background: rgba(72, 133, 237, 0.95);
-    border-radius:100px;
+    border-radius: 100px;
     display: flex;
+    align-items: center;
     padding: 16px;
     color: #fff;
 }
-.FAB span{
-    margin: 4px 0;
+.--fab-top-lev {
+    top: calc(100vh - 80px);
 }
 
 .text_begone-enter-active,

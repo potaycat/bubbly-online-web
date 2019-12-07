@@ -10,7 +10,7 @@
 
         <transition-group name="fade_in">
             <div v-for="mate in fetchedData" :key="mate.username" class="rmate-item push"
-                @click="popItUp({pos: $event, profile: mate})">
+                @click="popItUp($event);performDisplay(mate)">
                 <img class="pfp" :src="mate.profile_pic">
                 <p class="rmate-item__alias">{{ mate.alias }}</p>
                 <div v-if="mate.is_admin" class="rmate__is-admin box-shadow-1">🛡</div>
@@ -18,8 +18,8 @@
         </transition-group>
 
         <AddDiag v-if="$route.query.chat_add=='open'" :roomId="threadInfo.id" 
-            @added="refreshMates" style="height:calc(100% - 35px);top:45px"/>
-        <ProfilePeak v-if="peakingAt" @close="refreshMates();onClose()" 
+            @added="onDidSomething" style="height:calc(100% - 35px);top:45px"/>
+        <ProfilePeak v-if="peakingAt" @close="onClose" 
             :profile="peakingAt" :touchPos="touchPos"
             :threadInfo="threadInfo"
         />
@@ -30,12 +30,12 @@
 <script>
 import AddDiag from '../../AddDiag'
 import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
-import { _comp_profilePeak } from '@/mixins/_comp_profilePeak'
+import { profilePeak } from '@/mixins/cmpnentsCtrl/profilePeak'
 export default {
     components: {
         AddDiag,
     },
-    mixins: [feedingFrenzy, maintainScrllPos, _comp_profilePeak],
+    mixins: [feedingFrenzy, maintainScrllPos, profilePeak],
     props: [
         'threadInfo',
         'isAdmin'
@@ -49,9 +49,8 @@ export default {
         openAddDiag() {
             this.$router.push({query: {chat_add: 'open'}})
         },
-        refreshMates() {
-            this.fetchedData = []
-            this.fetch()
+        onDidSomething() {
+            this.firstFetch()
         },
     }
 }
@@ -69,7 +68,7 @@ export default {
         inset 0px 11px 8px -10px #00000077,
         inset 0px -11px 8px -10px #00000077; 
     background: #00000019;
-    height: 390px;
+    height: 400px;
     position: relative;
 }
 .rmate-ctnr span {
@@ -79,7 +78,9 @@ export default {
 }
 
 .rmate__actions{
-    background: #00000033;
+    background: #00000055;
+    z-index: 99;
+    backdrop-filter: blur(5px);
     box-shadow: 0px 0px 10px #00000055;
     width: 70px;
     position: absolute;

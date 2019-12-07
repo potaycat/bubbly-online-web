@@ -29,7 +29,7 @@ export const actions = {
                     })
             })
             .catch((error) => {
-                console.log(error)
+                console.error("CAUGHT: "+error)
             })
     },
 
@@ -42,7 +42,7 @@ export const actions = {
                 this.commit('auth/updateToken', res.data.token)
             })
             .catch((error) => {
-                console.log(error)
+                console.error("CAUGHT: "+error)
             })
     },
 

@@ -5,21 +5,27 @@
                 :key ="post.id"
                 :post ="post"
             />
+            <h3 class="empty-fetchedLs" v-if="empty">Empty post feed? Get started by joining a few communities</h3>
             <Spinner v-if="loading4More" />
         </div>
     </div>
 </template>
 
 <script>
-import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, postFeed, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
 import PostCard from './postCard/'
 
 export default {
     components: {PostCard},
-    mixins: [feedingFrenzy, maintainScrllPos, scrlDirection],
+    mixins: [feedingFrenzy, postFeed, maintainScrllPos, scrlDirection],
     data() {
         return {
             feedUrl: 'posts/feed/',
+        }
+    },
+    watch: {
+        empty(boolVal) {
+            if (boolVal) this.$router.push('/explore')
         }
     },
 }

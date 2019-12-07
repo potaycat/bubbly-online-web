@@ -1,5 +1,5 @@
 import Tabs from '@/components/misc/Tabs'
-export const _comp_tabs = {
+export const tabs = {
     components: {Tabs},
     data() {
         return {

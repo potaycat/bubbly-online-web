@@ -4,12 +4,12 @@
     >
         <i class="material-icons-round">
             {{ isReact ? "emoji_emotions" :
-                isFollow ? "person_add" : "" }}
+                isFollow ? "person_add" :
+                isComment ? "comment" : "" }}
         </i>
         <img class="pfp" :src="noti.actor.profile_pic" @click.stop="$router.push(`/user/${noti.actor.username}`)">
         <div class="noti-item__txt">
-            <p><strong>{{noti.actor.alias}}</strong> {{displayText}} dscdcscsd
-            </p>
+            <p><strong>{{noti.actor.alias}}</strong> {{displayText}}</p>
             <p class="noti-item__timestmp">{{ noti.timestamp | timeAgo }}</p>
             <!-- <div style="word-break: break-all;">{{noti}}</div> -->
         </div>
@@ -20,19 +20,21 @@
 export default {
     props: ['noti'],
     computed: {
-        isReact() {
-            return this.noti.verb.includes('reacted with')
-        },
-        isFollow() {
-            return this.noti.verb.includes('followed you')
-        },
+        isReact() { return this.noti.verb.includes('reacted with') },
+        isFollow() { return this.noti.verb.includes('followed you') },
+        isComment() { return this.noti.verb.includes('commented') },
         displayText() {
             const n = this.noti
             let strBuild = ""
             strBuild += n.verb
+
+            const targetPreview = n.target.title||n.target.text||n.target.preview
             if (this.isReact) {
                 strBuild += ` ${n.action_object.name} on ${
-                    n.target.type}: "${n.target.text}"`
+                    n.target.type}: "${targetPreview}"`
+            } else if (this.isComment) {
+                strBuild += ` "${n.action_object.preview}" on ${
+                    n.target.type}: "${targetPreview}"`
             }
 
             return strBuild
@@ -44,6 +46,13 @@ export default {
             else if (this.isReact) {
                 if (this.noti.target.type == 'post') {
                     this.$router.push(`/post/${this.noti.target.id}`)
+                }
+            }
+            else if (this.isComment) {
+                if (this.noti.target.type == 'post') {
+                    this.$router.push(`/post/${this.noti.target.id}`)
+                } else if (this.noti.target.type == 'comment') {
+                    this.$router.push(`/comment/${this.noti.target.id}`)
                 }
             }
         }
@@ -64,8 +73,9 @@ export default {
     max-width: 50px;
 }
 .noti-item__txt {
-    font-size: 15px;
+    font-size: 14px;
     margin-left: 10px;
+    word-break: break-word;
 }
 .noti-item__timestmp {
     font-size: 13px;
@@ -73,7 +83,7 @@ export default {
     color: #555;
 }
 .noti-item-ctnr .material-icons-round {
-    background: linear-gradient(90deg, rgba(0,94,89,1) 1%, rgba(0,212,255,1) 100%);
+    background: linear-gradient(0deg, rgba(0,94,89,1) 20%, rgb(75, 225, 255) 100%);
     background-clip: text;
     -webkit-text-fill-color: transparent;
 

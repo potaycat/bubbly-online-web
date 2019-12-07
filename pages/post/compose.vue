@@ -1,23 +1,17 @@
 <template>
     <div>
         <ActivityView />
-        <PostEditor :community="{
-            id: $route.params.cmnty,
-        }" />
+        <PostComposer />
     </div>
 </template>
 
 <script>
 import ActivityView from '@/components/layout/ActivityView'
-import PostEditor from '@/components/post/editor/'
+import PostComposer from '@/components/post/composer/'
 export default {
-    components: {ActivityView, PostEditor},
-    head() {
-        return {
-            title: "Write a post",
-        }
-    },
-    created() {
-    }
+    components: {ActivityView, PostComposer},
+    head:() => ({
+        title: "Write a post",
+    })
 }
 </script>

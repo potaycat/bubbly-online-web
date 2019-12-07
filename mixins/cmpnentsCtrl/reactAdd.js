@@ -8,27 +8,25 @@
 
 import React from '@/components/post/react/'
 import ReactAdd from '@/components/post/react/ReactAdd'
-export const _comp_reactAdd = {
+export const reactAdd = {
     components: {React, ReactAdd},
-    data() {
-        return {
-            reacting: null,
-            reactionLs: null
-        }
-    },
+    data:() => ({
+        reacting: null,
+    }),
     computed: {
         reactionsLsSorted() {
-            return this.reactionLs.sort((a,b) => (a.count>b.count) ? -1 : ((b.count>a.count) ? 1 : 0))
+            return this.post.reactions.slice().sort((a,b) => (a.count>b.count) ? -1 : ((b.count>a.count) ? 1 : 0))
             // for ascending order, swap 1 with -1
         },
     },
-    created() {
-        this.reactionLs = this.post.reactions
-    },
     mounted() {
-        document.querySelector(".common_ls_cntainr").addEventListener('scroll',()=>{
-             this.reacting = null
-        })
+        try {
+            document.querySelector(".common_ls_cntainr").addEventListener('scroll',()=>{
+                this.reacting = null
+            })
+        } catch (error) {
+            console.error("CAUGHT: "+error)
+        }
     },
     methods: {
         launchAddBox(posEvt) {
@@ -39,16 +37,18 @@ export const _comp_reactAdd = {
         },
         performReact(iconId) {
             if (iconId) {
+                const fallBack = this.post.my_react
                 this.post.my_react = iconId
                 this.$axios.post(`reacts/${this.post.id}`, {icon: iconId},
                     this.$store.state.authHeader
                 )
                     .then(res => {
-                        this.reactionLs = res.data.reactions
+                        this.$set(this.post, 'reactions', res.data.reactions)
                     })
                     .catch((error) => {
-                        this.post.my_react = null
-                        console.log(error)
+                        this.post.my_react = fallBack
+                        this.$store.dispatch("reactionx/getCmntyEmotes", this.post.allocated_to.id)
+                        // console.error("CAUGHT: "+error)
                         this.$forceUpdate()
                     })
             }
@@ -62,7 +62,7 @@ export const _comp_reactAdd = {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    const reactLs = this.reactionLs
+                    const reactLs = this.post.reactions
                     if (reactLs) {
                         const reIndex = reactLs.findIndex(react => react.icon_id == mine)
                         reactLs[reIndex].count -= 1
