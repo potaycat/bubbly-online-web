@@ -1,43 +1,31 @@
 <template>
-<transition appear name="zoom_fade">
-    <div id="chat-info" class="the_big_frame">
+<transition appear name="zoom_in_fade">
+    <div id="chat-info" class="the_big_frame shiny-white-bg">
         <div class="common_ls_cntainr">
-
-            <div class="_set_info" v-if="type=='direct'">
+            <div class="chat-inf__set" v-if="type=='direct'">
                 <img class="pfp" :src="threadInfo.room_type_data.profile_pic">
-                <div id="_alias">{{ title }}</div>
+                <div class="chat-inf__alias">{{ title }}</div>
             </div>
-            <div class="_set_info" v-else-if="type=='group'">
+            <div class="chat-inf__set" v-else-if="type=='group'">
                 <img v-if="threadInfo.bg_img" class="pfp" :src="threadInfo.bg_img">
                 <img v-else class="pfp" style="filter: invert(1)" src="~assets/group.png">
-                <div id="_alias">{{ title }}</div>
-                <Roomates v-if="more_members" :threadInfo="threadInfo"
-                    :isAdmin="isAdmin"/>
+                <div class="chat-inf__alias">{{ title }}</div>
             </div>
-            <div class="_set_info" v-else-if="type=='public'">
-                <div id="_alias">{{ title }}</div>
-                <!-- cmnty name, room dscrption -->
+            <Roomates v-if="more_members" :threadInfo="threadInfo"
+                :isAdmin="isAdmin"/>
+            <div class="chat-inf__set" v-else-if="type=='public'">
+                <div class="chat-inf__alias">{{ title }}</div>
+                <p class="chat-inf__desc">{{ threadInfo.description }}</p>
             </div>
-
-            <div v-for="cmdGroup in visibleCmd" class="_chat-cmd-list" :key="cmdGroup[0].icon+'_'">
-                <div v-for="cmd in cmdGroup" :key="cmd.icon"
-                    class="_chat-cmd glow"
-                    :style="cmd.style"
-                    @click="cmd.action()"
-                >
-                    <i class="material-icons-round">{{ cmd.icon }}</i>
-                    <p>{{ cmd.lable }}</p>
-                    <i class="material-icons-round">{{ cmd.scndIcon }}</i>
-                </div>
-            </div>
-
+            <ButtonList :allCommands="visibleCmd" class="chat-cmd-list"/>
+            <input type="file" accept="image/*" @change="performChangeBg" ref="img_input" style="display:none">
         </div>
-        <InputDialog v-if="openDiag" :toDisplay="openDiag" />
         <transition name="fade">
             <div v-if="loading" class="total_darkness">
                 <Spinner color="#fff" />
             </div>
         </transition>
+        <InputDialog v-if="openDiag" :toDisplay="openDiag" class="no-bg" />
     </div>
 </transition>
 </template>
@@ -46,64 +34,64 @@
 import Spinner from '@/components/misc/Spinner'
 import Roomates from './Roomates'
 import { performBlock } from '@/mixins/performFollow'
+import ButtonList from '@/components/misc/ButtonList'
 
 export default {
-    components: {Spinner, Roomates},
+    components: {Spinner, Roomates, ButtonList},
     mixins: [performBlock],
     props: ['threadInfo', 'title'],
-    data: () => ({
+    data:() => ({
         loading: false,
         more_members: false,
     }),
     computed: {
-        // threadInfo() {
-        //     return this.$store.state.chatx.currentChat
-        // },
+        roommateInfo() {
+            return this.threadInfo.roommate_info
+        },
         visibleCmd() {
             return [
                 this.type == 'direct' ? 
                     [
-                        {icon: "person", lable: "View Profile", action: this.toProfile, scndIcon: "arrow_forward"},
-                        {icon: "block", lable: "Block", action: this.confirmBlock},
+                        {icon: "person", lable: "View Profile", action: 'toProfile', scndIcon: "arrow_forward"},
+                        {icon: "block", lable: "Block", action: 'confirmBlock'},
                     ] :
                 this.type == 'group' ?
                     [
                         {
                             icon: "people_outline",
                             lable: `Chat Members (${this.spcfcTypdData.roommate_count})`,
-                            action: this.showRoomates,
+                            action: 'showRoomates',
                             scndIcon: this.more_members ? "expand_less" : "expand_more"
                         },
                     ] :
                 this.type == 'public' ?
                     [
-                        {icon: "group_work", lable: "Go to community", action: this.toCommunity, scndIcon: "launch"},
+                        {icon: "group_work", lable: `Go to ${this.spcfcTypdData.community.name}`, action: 'toCommunity', scndIcon: "arrow_forward"},
                     ] :
                 null,
                 [
                     this.isAdmin && this.type != 'direct' ?
-                        {icon: "text_fields", lable: "Change Chat Name", action: this.cnfrm_ChngeName} :null,
-
+                        {icon: "text_fields", lable: "Change Chat Name", action: 'cnfrm_ChngeName'} :null,
                     this.isAdmin || this.type == 'direct' ?
-                        {icon: "photo_size_select_actual", lable: "Change Background Image", action: this.cnfrm_ChngeBg} :null,
-
-                    {icon: "search", lable: "Search For Message", action: this.soon},
-
-                    this.threadInfo.roommate_info ?
-                        this.threadInfo.roommate_info.enable_noti ?
-                            {icon: "notifications", lable: "Notification: On", action: this.turnNotiOff} : 
-                            {icon: "notifications_off", lable: "Notification: Turned Off", action: this.turnNotiOn} : 
-                        {icon: "person_add", lable: "Add to My Chats", action: this.cnfrm_AddPblcRoom},
+                        {icon: "photo_size_select_actual", lable: "Change Background Image", action: 'pickBgPic'} :null,
+                    // {icon: "search", lable: "Search For Message", action: 'soon'},
+                    this.roommateInfo ?
+                        this.roommateInfo.enable_noti ?
+                            {icon: "notifications", lable: "Notification: On", action: 'turnNotiOff'} : 
+                            {icon: "notifications_off", lable: "Notification: Turned Off", action: 'turnNotiOn'} : 
+                        {icon: "person_add", lable: "Add to My Chats", action: 'cnfrm_AddPblcRoom'},
                 ].filter(x => x), // removes nulls
-                this.threadInfo.roommate_info ? 
+                this.roommateInfo ? 
                     [
-                        {icon: "exit_to_app", lable: "Leave conversation", action: this.cnfrm_Leave, style: 'color:red'},
+                        {icon: "exit_to_app", lable: "Leave conversation", action: 'cnfrm_Leave', style: 'color:red'},
                     ] :
                 null,
             ].filter(x => x)
         },
         isAdmin() {
-            return this.threadInfo.roommate_info && this.threadInfo.roommate_info.is_admin
+            if (this.roommateInfo) { // public rooms may not have roommate_info
+                return this.roommateInfo.is_admin
+            } return false
         },
         type() {return this.threadInfo.room_type},
         spcfcTypdData() {return this.threadInfo.room_type_data},
@@ -122,11 +110,8 @@ export default {
             }
             this.diagHndlFun = this.performChngeName
         },
-        cnfrm_ChngeBg() {
-            this.openDiag = {
-                input_desc: "Bg img url" // todo img uploader
-            }
-            this.diagHndlFun = this.performChngeBg
+        pickBgPic() {
+            this.$refs.img_input.click()
         },
         cnfrm_Leave() {
             this.openDiag = {
@@ -145,7 +130,7 @@ export default {
         turnNotiOn() {this.turnNoti(true)},
         turnNotiOff() {this.turnNoti(false)},
         toProfile() {this.$router.push(`/user/${this.profile.username}`)},
-        toCommunity() {this.$router.push(`/community/${this.spcfcTypdData.id}`)},
+        toCommunity() {this.$router.push(`/communities/${this.spcfcTypdData.community.id}`)},
         soon() {
             this.openDiag = {
                 alert: true,
@@ -165,29 +150,36 @@ export default {
                     this.loading = false
                 })
         },
-        performChngeBg(imgUrl) {
+        performChangeBg(file_evt) {
             this.loading = true
-            this.$axios.patch(`chat/${this.threadInfo.id}`,
-                {bg_img: imgUrl},
-                this.$store.state.authHeader
-            )
-                .then(res => {
-                    this.loading = false
-                })
+            const files = file_evt.target.files
+            this.batchCompressUpload(files, uploadedUrls => {
+                this.$axios.patch(`chat/${this.threadInfo.id}`,
+                    {bg_img: uploadedUrls[0]},
+                    this.$store.state.authHeader
+                )
+                    .then(res => {
+                        this.loading = false
+                    })
+            })
         },
         performAddPblcRoom() {
             this.loading = true
-            this.$axios.post(`chat/${this.threadInfo.id}/save-as-public`, null,
+            this.$axios.post(`chat/${this.threadInfo.id}/save-public${
+                this.$store.getters['communityx/isMod'](this.spcfcTypdData.community.id) ?
+                    '?as-mod=1' : ''}`, null,
                 this.$store.state.authHeader
             )
                 .then(res => {
                     this.loading = false
-                    this.$store.commit('chatx/pblcRoomSaved', res.data)
+                    this.$store.commit('chatx/loadChat', {
+                        roommate_info: res.data
+                    })
                 })
         },
         turnNoti(boolval) {
             this.loading = true
-            this.$axios.patch(`chat/${this.threadInfo.id}/self-edit`,
+            this.$axios.patch(`chat/${this.threadInfo.id}/roommates/__self`,
                 {enable_noti: boolval},
                 this.$store.state.authHeader
             )
@@ -198,18 +190,18 @@ export default {
         },
         performLeave() {
             this.loading = true
-            this.$axios.delete(`chat/${this.threadInfo.id}/self-edit`,
+            this.$axios.delete(`chat/${this.threadInfo.id}/roommates/__self`,
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.loading = false
-                    this.$store.commit('chatx/pblcRoomSaved', null)
-                    this.$router.back()
+                    this.onBlockHandle()
                 })
         },
         onPerformBlock() {this.loading = true},
         onBlockHandle() {
-            this.$store.commit('chatx/pblcRoomSaved', null)
+            this.$store.commit('chatx/loadChat',
+                {roommate_info: null}
+            )
             this.loading = false
             this.$router.back()
         },
@@ -220,14 +212,15 @@ export default {
 }
 </script>
 
-<style scoped>
-#chat-info{
+<style>
+#chat-info {
+    background: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(20px);
     z-index: 8;
-    width: 100%;
-    min-height: 100vh;
-    background: #1d99ff77;
-    position: absolute; top: 0; left: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -235,27 +228,27 @@ export default {
 #chat-info .common_ls_cntainr{
     padding-top: 90px;
 }
-#chat-info ._set_info #_alias, #chat-info ._chat-cmd-list ._chat-cmd{
+.chat-inf__set, .chat-cmd-list {
     color: #fff;
-    text-shadow: 0px 0px 17px #333;
+    text-shadow: 0px 0px 5px #555;
 }
 
-#chat-info ._set_info{
+#chat-info .chat-inf__set{
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-._set_info .pfp{
+.chat-inf__set > .pfp{
     height: 90px;
     width: 90px;
 }
-._set_info .cmnty_ico{
+.chat-inf__set .cmnty_ico{
     height: 40px;
     width: 40px;
     margin: 4px 12px;
 }
-#chat-info #_alias {
+#chat-info .chat-inf__alias {
     font-size: 22px;
     margin: 10px 20px 25px 20px;
     font-weight: bold;
@@ -263,23 +256,7 @@ export default {
     word-break: break-all;
 }
 
-#chat-info ._chat-cmd-list {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-._chat-cmd-list ._chat-cmd {
-    width: 100%;
-    display: flex;
-}
-._chat-cmd-list .material-icons-round {
-    margin: 12px 20px;
-}
-._chat-cmd-list p {
-    margin: auto;
-    margin-left: 10px;
-    font-size: 16px;
+.chat-cmd-list .generic-btn-ls__btn {
+    border-bottom: none;
 }
 </style>

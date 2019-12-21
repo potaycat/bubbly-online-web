@@ -2,19 +2,27 @@ import jwt_decode from 'jwt-decode'
 
 export const state = () => ({
     jwt: localStorage.getItem('t'),
-    my_profile: JSON.parse(localStorage.getItem('p')),
+    my_profile: JSON.parse(localStorage.getItem('p')) || {},
+    error: null
 })
 
 export const mutations = {
     storeAuthUser(state, profile_obj) {
-        localStorage.setItem('p', JSON.stringify(profile_obj))
+        if (profile_obj.constructor === Object) {
+            state.my_profile = profile_obj
+            localStorage.setItem('p', JSON.stringify(profile_obj))
+        }
     },
     updateToken(state, newToken) {
+        state.jwt = newToken // because localStorage is not reactive
         localStorage.setItem('t', newToken)
     },
     removeToken(state) {
+        state.jwt = null
         localStorage.removeItem('t')
-        localStorage.removeItem('p')
+    },
+    throwServerErr(state, data) {
+        state.error = data
     }
 }
 
@@ -26,13 +34,13 @@ export const actions = {
                 this.$axios.get(`accounts/${credential.username}`)
                     .then((res) => {
                         this.commit('auth/storeAuthUser', res.data)
+                        this.$router.go()
                     })
             })
             .catch((error) => {
-                console.error("CAUGHT: "+error)
+                this.commit('auth/throwServerErr', error.response.data)
             })
     },
-
     refreshToken() {
         const payload = {
             token: this.state.jwt
@@ -45,7 +53,6 @@ export const actions = {
                 console.error("CAUGHT: "+error)
             })
     },
-
     inspectToken() {
         const token = this.state.jwt;
         if (token) {

@@ -23,73 +23,74 @@ export default {
 
 <style>
 .typing_holder {
-    margin: 6px 0 -15px 11px;
+    margin: 20px 11px 0;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    height: 12px;
+    /* background: #000; */
 }
 .typing_holder .pfp {
     width: 35px;
     height: 35px;
-    margin: 0 8px 5px 0;
+    margin-right: 10px;
 }
 
 
 
-/* that loading thingy */
 .lds-ellipsis {
-    margin: -13px -8px;
-
-  display: inline-block;
-  position: relative;
-  width: 64px;
-  height: 64px;
+    display: flex;
+    align-items: center;
+    transform: scale(0.8);
+    
+    position: relative;
 }
 .lds-ellipsis div {
-  position: absolute;
-  top: 27px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: #fff;
-  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #fff;
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 .lds-ellipsis div:nth-child(1) {
-  left: 6px;
-  animation: lds-ellipsis1 0.6s infinite;
+    left: 6px;
+    animation: lds-ellipsis1 0.6s infinite;
 }
 .lds-ellipsis div:nth-child(2) {
-  left: 6px;
-  animation: lds-ellipsis2 0.6s infinite;
+    left: 6px;
+    animation: lds-ellipsis2 0.6s infinite;
 }
 .lds-ellipsis div:nth-child(3) {
-  left: 26px;
-  animation: lds-ellipsis2 0.6s infinite;
+    left: 26px;
+    animation: lds-ellipsis2 0.6s infinite;
 }
 .lds-ellipsis div:nth-child(4) {
-  left: 45px;
-  animation: lds-ellipsis3 0.6s infinite;
+    left: 45px;
+    animation: lds-ellipsis3 0.6s infinite;
 }
 @keyframes lds-ellipsis1 {
-  0% {
-    transform: scale(0);
-  }
-  100% {
-    transform: scale(1);
-  }
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 @keyframes lds-ellipsis3 {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0);
-  }
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
 }
 @keyframes lds-ellipsis2 {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(19px, 0);
-  }
-} /* end of that loading thingy */
-
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(19px, 0);
+    }
+}
 </style>

@@ -11,15 +11,15 @@
 
 .glow:active {
     transition: .15s !important;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.12);
 }.glow:not(:active) {
     transition: .5s;
 }
 
 .lift:active {
     transition: .2s !important;
-    box-shadow: 0 5px 15px #555 !important;
-    opacity: 0.7;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6) !important;
+    opacity: 0.85;
 }.lift:not(:active) {
     transition: .5s;
 }

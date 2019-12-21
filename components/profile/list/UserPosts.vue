@@ -5,8 +5,8 @@
             :post ="post"
             :user="profile"
         />
-        <h3 class="empty-fetchedLs" v-if="empty">This user has not posted anything</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+            headsup="This user has not posted anything"/>
     </div>
 </template>
 

@@ -6,11 +6,12 @@
         ]">
             <div class="explr__srch-bar">
                 <i class="material-icons-round">search</i>
-                <input placeholder="Search Bubbly" @input="debounceSearch">
+                <input ref="srch_bx" placeholder="Search Bubbly" @input="debounceSearch">
+                <div v-if="kw" class="clr_srch glow" @click="kw='';$refs.srch_bx.value=''">x</div>
             </div>
         </nav>
         <Tabs
-            :tabs="['CỘNG ĐỒNG', 'MỌI NGƯỜI', 'BÀI ĐĂNG']"
+            :tabs="['COMMUNITIES', 'PEOPLE', 'POSTS']"
             :currentTab="currentTab"
             @switchTo="newTab"
         />
@@ -20,8 +21,8 @@
                 :key="item.id"
                 v-bind="{[exploreType]: item}"
             />
-            <Spinner style="margin-top:15px" v-if="loading4More" />
-            <h3 class="empty-fetchedLs"  v-if="empty">No results</h3>
+            <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+                headsup="No results"/>
         </div>
     </div>
 </template>
@@ -41,49 +42,50 @@ export default {
         Post,
     },
     mixins: [tabs, feedingFrenzy, postFeed, maintainScrllPos, scrlDirection],
-    // this.$options.nonReactiveData {
+    // nonReactive: {
         debounce: null,
     // },
     data:() => ({
-        kw: ""
+        kw: "",
+        exploreType: '',
+        feedUrlPrefix: '',
     }),
-    watch: {
-        kw() {
-            this.firstFetch()
-        },
-        currentTab(val) {
-            this.fetchedData = []
-            this.firstFetch()
-            if (val == 1) { // bruh it's profile field
-                this.$options.offsetProp = 'username'
-            } else this.$options.offsetProp = 'id'
-        },
-    },
     computed: {
-        feedUrlPrefix() {
-            switch (this.currentTab) {
-                case 0:
-                    return `communities/`
-                case 1:
-                    return `accounts/`
-                case 2:
-                    return `posts/search/`
-            }
-        },
         feedUrl() {
             return `${this.feedUrlPrefix}?search=${this.kw}&`
         },
-        exploreType() {
-            return this.currentTab == 0 ? "community" :
-                this.currentTab == 1 ? "profile" :
-                this.currentTab == 2 ? "post" : ""
-        }
+    },
+    watch: {
+        feedUrl() {
+            this.firstFetch()
+        },
+        currentTab: {
+            immediate: true,
+            handler(val) {
+                this.fetchedData = []
+                this.$options.offsetProp = 'id'
+                switch (val) {
+                    case 0:
+                        this.exploreType = 'community'
+                        this.feedUrlPrefix = 'communities/'
+                        break
+                    case 2:
+                        this.exploreType = 'post'
+                        this.feedUrlPrefix = 'posts/search/'
+                        break
+                    case 1:
+                        this.exploreType = 'profile'
+                        this.feedUrlPrefix = 'accounts/'
+                        this.$options.offsetProp = 'username'
+                }
+            }
+        },
     },
     methods: {
-        debounceSearch(event) {
+        debounceSearch(evt) {
             clearTimeout(this.$options.debounce)
             this.$options.debounce = setTimeout(() => {
-                this.kw = event.target.value
+                this.kw = evt.target.value
             }, 600)
         }
     }
@@ -96,7 +98,7 @@ export default {
     width: calc(100% - 50px);
 }
 .--expanded-srch {
-    transition: .2s;
+    /* transition: .2s; */
     margin-left: 0;
     width: 100%;
 }
@@ -110,7 +112,6 @@ export default {
 }
 
 .explr__srch-bar > i {
-    /* color: rgba(72, 133, 237, 0.5); */
     color: #aaa;
     margin: 0 7px;
 }
@@ -120,5 +121,15 @@ export default {
     background: none;
     width: 100%;
     height: 30px;
+}
+.clr_srch {
+    position: absolute;
+    right: 25px;
+    background: #999;
+    font-size: 10px;
+    width: 13px;
+    text-align: center;
+    border-radius: 50px;
+    color: white;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <div :class="['push glow _react ', size, isMine?'mine box-shadow-1':null]">
-        <img :src="react.img_src||emote.img_src">
+    <div :class="['push glow _react ', size, isMine?'--mine box-shadow-1':null]">
+        <img :src="sauce">
         <div> {{ react.count }} </div>
     </div>
 </template>
@@ -18,6 +18,14 @@ export default {
         ...mapGetters({
             emoteById: 'reactionx/emoteById',
         }),
+        sauce() {
+            switch (this.react.img_src) {
+                case '_':
+                    return require('@/assets/heart.png')
+                default:
+                    return this.react.img_src || this.emote.img_src
+            }
+        },
         emote() {            
             const emote = this.emoteById(this.communityId, this.react.icon_id)
             if (emote) {
@@ -42,11 +50,11 @@ export default {
     margin-right: 4px;
 }
 
-._react.mine {
-    background: rgba(72, 132, 237, 0.219);
+._react.--mine {
+    background: var(--primary-color-low-opacity);
 }
-._react.mine > div {
-    color: rgb(72, 133, 237);
+._react.--mine > div {
+    color: var(--primary-color);
 }
 
 ._react > img {

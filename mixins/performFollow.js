@@ -91,13 +91,16 @@ export const performJoin = {
                     this.$store.state.authHeader
                 )
                     .then(res => {
-                        this.onJoinHandle(res)
+                        this.onJoinHandle(res.data)
                     })
             } else {
                 this.confirmJoinWithCode()
             }
         },
-        onJoinHandle() {console.log("Joined")},
+        onJoinHandle(data) {
+            this.community.membership_info = data
+            this.$store.dispatch("communityx/getJoinedCmnties")
+        },
 
         confirmJoinWithCode() {
             this.openDiag = {
@@ -108,7 +111,7 @@ export const performJoin = {
             this.diagHndlFun = this.performJoinWithCode
         },
         performJoinWithCode(value) {
-            this.$router.push(`/community/${this.$route.params.id}/join/${value}`)
+            this.$router.push(`/communities/${this.$route.params.id}/join/${value}`)
         },
         confirmLeave() {
             this.openDiag = {
@@ -122,10 +125,12 @@ export const performJoin = {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.onLeaveHandle(res)
+                    this.onLeaveHandle(res.data)
                 })
         },
-        onLeaveHandle() {console.log("Blocked")},
+        onLeaveHandle() {
+            this.$store.dispatch("communityx/getJoinedCmnties")
+        },
     },
 }
 export const performToPrivate = {
@@ -145,7 +150,7 @@ export const performToPrivate = {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$router.push('/chat/t/'+res.data.id)
+                    this.$store.dispatch("chatx/toChat", res.data)
                 })
         },
 

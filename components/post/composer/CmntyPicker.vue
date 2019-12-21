@@ -1,5 +1,7 @@
 <template>
-    <div :class="['cmnty-picker', launchLs?'cmnty-picker--picking':null, pinboard?'cmnty-picker--pinboard':null]">
+    <div :class="['cmnty-picker', launchLs?'cmnty-picker--picking':null,
+        pinboard?'cmnty-picker--pinboard':null, attention?'--over-here':null
+    ]">
         <div class="pickr-main-bar box-shadow-1" @click="launchLs=true">
             <div v-if="!community.icon_img" class="cmnty_ico pickr--blank-ico" />
             <img v-else :src="community.icon_img" class="cmnty_ico">
@@ -15,9 +17,10 @@
             <section v-if="launchLs" class="total_darkness no-bg" @click.self="launchLs=false">
                 <transition name="zoom_in_fade" appear>
                     <div class="cmnty-pickr-drpdwn shiny-white-bg box-shadow-2">
+                        <p v-if="!filtered.length" class="drpdwn__empty">No results</p>
                         <div v-for="cmnty in filtered"
                             :key="cmnty.id"
-                            class="cmnty-drpdwn-item glow"
+                            class="cmnty-drpdwn__item glow"
                             @click="$router.replace({query: {to: cmnty.id}});
                                 launchLs = false;
                                 nameInput = getJoinedById(cmnty.id).name
@@ -40,7 +43,7 @@ export default {
         launchLs: false,
         nameInput: ""
     }),
-    props: ['pinboard'],
+    props: ['pinboard', 'attention'],
     watch: {
         launchLs: {
             immediate: true,
@@ -94,20 +97,21 @@ export default {
 
 <style>
 .pickr-main-bar {
-    margin: 15px 10px;
+    margin: 10px;
+    margin-bottom: 20px;
     border-radius: 10px;
     position: relative;
 }
-.pickr-main-bar, .cmnty-drpdwn-item {
+.pickr-main-bar, .cmnty-drpdwn__item {
     padding: 4px;
     display: flex;
     align-items: center;
 }
-.cmnty-drpdwn-item {
+.cmnty-drpdwn__item {
     padding: 5px 3px;
 }
 
-.pickr-main-bar .cmnty_ico, .cmnty-drpdwn-item .cmnty_ico {
+.pickr-main-bar .cmnty_ico, .cmnty-drpdwn__item .cmnty_ico {
     height: 30px;
     min-width: 30px;
     max-width: 30px;
@@ -139,8 +143,8 @@ export default {
 .cmnty-pickr-drpdwn {
     max-height: 60vh;
     overflow: auto;
-    width: 100%;
-    margin: 111px 10px 0 10px;
+    width: 95%;
+    margin-top: 120px;
     border-radius: 5px;
 
 }
@@ -162,7 +166,7 @@ export default {
     opacity: 1;
 }
 .cmnty-picker--picking .pickr__cmnty-name {
-    border-bottom: solid 1px deepskyblue;
+    border-bottom: solid 1px var(--primary-color) !important;
 }
 
 .cmnty-picker--pinboard {
@@ -170,5 +174,15 @@ export default {
 }
 .cmnty-picker--pinboard i:last-child {
     display: none;
+}
+.cmnty-picker.--over-here .pickr__cmnty-name {
+    border-bottom: solid 1px red;
+}.cmnty-picker.--over-here .pickr__cmnty-name::placeholder {
+    color: red;
+}
+.drpdwn__empty {
+    color: #888;
+    text-align: center;
+    padding: 5px;
 }
 </style>

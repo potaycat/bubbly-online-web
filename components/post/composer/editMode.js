@@ -7,9 +7,8 @@ export const editMode = {
     },
     activated() {
         if (this.editMode) {
-            this.$store.commit('appBar/loadText',
-                `Edit ${this.content.title || this.content.text.substring(0,22)+'...'}`
-            )
+            this.appBarDisplayTitle = `Edit ${this.content.title ||
+                this.content.text.substring(0,22)+'...' }`
             this.body = this.content.text
         }
     },
@@ -24,7 +23,7 @@ export const editMode = {
             )
                 .then(res => {
                     this.uploading = false
-                    this.$store.commit('postx/loadPost', null)
+                    this.$store.commit('postx/loadToEdit', res.data)
                     this.$router.back()
                 })
         },

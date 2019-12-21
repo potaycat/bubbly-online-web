@@ -1,7 +1,7 @@
 <template>
     <transition name="big_slide_up" appear>
         <div class="fsb-ctn">
-            <Button class="fsb" :color="color" text="Save" fill @clicked="$emit('clicked')"/>
+            <Button class="fsb" :colorScnd="color" :wait="wait" text="Save" fill @clicked="$emit('clicked')"/>
         </div>
     </transition>
 </template>
@@ -10,13 +10,14 @@
 import Button from '@/components/misc/Button'
 export default {
     components: {Button},
-    props: ['color']
+    props: ['color', 'wait']
 }
 </script>
 
 <style>
 .fsb-ctn {
     position: absolute;
+    overflow: hidden;
     width: 100%;
     bottom: 10px;
     padding: 10px 30px;

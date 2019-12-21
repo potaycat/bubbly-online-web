@@ -29,10 +29,10 @@ export default {
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$router.replace(`/community/${this.$route.params.id}`)
+                    this.$router.replace(`/communities/${this.$route.params.id}`)
                 })
-                .catch(err => {
-                    this.error = err
+                .catch(error => {
+                    this.error = error.response.data
                 })
         }
     }
@@ -42,12 +42,17 @@ export default {
 <style>
 .join-prcdr {
     z-index: 1;
-    /* background:  */
+    animation: colorchange 50s;
+}@keyframes colorchange {
+    0%, 100% {background: rgba(0, 0, 255, 0.1);}
+    50%  {background: rgba(0, 255, 0, 0.1);}
+    25%  {background: rgba(255, 0, 0, 0.1);}
+    75%  {background: rgba(255, 255, 0, 0.1);}
 }
+
 .join-prcdr-prompt-ctnr {
     border-radius: 20px;
     max-width: 360px;
-    height: 200px;
 
     display: flex;
     flex-direction: column;

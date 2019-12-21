@@ -15,7 +15,7 @@
     <button oncontextmenu="return false" v-else class="push"
         @mouseenter="onDown"
         @mouseleave="notLongEnough"
-        @click="quickReact"
+        @click="makeQuickReact"
 
         @touchstart="onDown"
         @touchmove="notLongEnough"
@@ -39,13 +39,15 @@ export default {
         }),
         myReactIcon() {
             try {
-                const mine = this.emoteById(this.communityId, this.myReact)
-                return mine || {
-                    img_src: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/google/223/grinning-face_1f600.png",
+                const a =  this.emoteById(this.communityId, this.myReact) || {
+                    img_src: require('@/assets/smile.png'),
                     name: "Reacted"
                 }
+                // console.log(a);
+                return a
+                
             } catch (error) {
-                console.log("My React not found!")
+                console.error("CATCHED: My React not found! " + error)
                 return {}
             }
         },
@@ -63,7 +65,7 @@ export default {
                 }
             }, 500)
         },
-        quickReact() {
+        makeQuickReact() {
             this.notLongEnough()
             this.$emit('quickReact')
         },
@@ -83,7 +85,7 @@ export default {
     width: 20px;
 }
 ._p__my-react > p {
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
     word-wrap: break-all;
 }
 </style>

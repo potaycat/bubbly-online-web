@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mnge__pp-ctnr box-shadow-2">
-            <p class="mnge__pp__order">#{{indexPlus1}}</p>
+            <p class="mnge__pp__order">{{indexPlus1}}</p>
             <div class="mnge__pp__text " >
                 <p>{{ previewText }}</p>
                 <div class="mnge__pp__attch-prview-ctnr">
@@ -9,6 +9,7 @@
                         :key="attch.order"
                         v-if="attch.type==2"
                         :src="attch.content"
+                        alt="post image"
                     >
                 </div>
                 <div class="mnge__pp__author">

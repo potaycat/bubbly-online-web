@@ -1,0 +1,75 @@
+{
+    "general": {
+        "circle": {
+            "followings": "Followings",
+            "followers": "Followers"
+        },
+        "empty_list": "It's lonely here",
+        "search": "Search"
+    },
+    "top_lvl_dir": {
+        "home": "Home",
+        "explore": "Explore",
+        "community": "Community",
+        "chat": "Chat",
+        "notification": "Notification"
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome Back!",
+            "fields": {
+                "username": "Username",
+                "password": "Password",
+                "validate_warn": {
+                    "username": "At least 6 characters please",
+                    "password": "At least 6 characters please"
+                }
+            },
+            "buttons": {
+                "login": "Login"
+            },
+            "if_not_registered": {
+                "question": "New to Bubbly?",
+                "confirm": "Register"
+            }
+        },
+        "register": {
+            "title": "Create account",
+            "fields": {
+                "email": "Email",
+                "username": "Username",
+                "password": "Password",
+                "confirm_pw": "Re-type Password",
+                "alias": "Display name",
+                "validate_warn": {
+                    "email": "Email",
+                    "username": "Username",
+                    "password": "Password",
+                    "confirm_pw": "Re-type Password",
+                    "alias": "Display name"
+                }
+            },
+            "buttons": {
+                "next": "Next",
+                "finalize": "Finish!"
+            },
+            "if_registered": {
+                "question": "Have an account?",
+                "confirm": "Login"
+            }
+        }
+    },
+    "chat": {
+        "add_diag": {
+            "buttons": {
+                "cancel": "Cancel",
+                "new_room": "Enter room",
+                "add_mates": "Add"
+            },
+            "selected": "Selected",
+            "empty_list": "No follows"
+        },
+        "beginning": "Welcome to the start of the conversation",
+        "member": "Chat members",
+    }
+}

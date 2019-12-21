@@ -7,13 +7,13 @@
                 :currentTab="currentTab"
                 @switchTo="newTab"
             />
-            <transition-group name="zoom_in_fade">
+            <transition-group name="zoom_in_fade" style="width:100%">
                 <UserItem v-for="profile in fetchedData"
                     :key="profile.username"
                     :profile="profile"
                 />
             </transition-group>
-            <h3 class="empty-fetchedLs" v-if="empty">No one reacted</h3>
+            <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
         </div>
     </div>
 </template>
@@ -70,9 +70,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.react-ls > span {
-    width: 100%;
-}
-</style>

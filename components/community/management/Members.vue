@@ -1,19 +1,10 @@
 <template>
     <div class="cmnty-mnge-mems" ref="feed">
-        <div class="mnge-mems__btns">
-            <div v-for="cmdGroup in visibleCmd" class="mnge-mems__btn-grp" :key="cmdGroup[0].icon+'_'">
-                <div v-for="cmd in cmdGroup" :key="cmd.icon"
-                    class="mnge-mems__btn glow" :style="cmd.style"
-                    @click="cmd.action()"
-                >
-                    <i class="material-icons-round">{{ cmd.icon }}</i>
-                    <p>{{ cmd.lable }}</p>
-                    <i class="material-icons-round">{{ cmd.scndIcon }}</i>
-                </div>
-            </div>
-        </div>
+
+        <ButtonList :allCommands="visibleCmd" />
+
         <section class="mnge__mod-list">
-            <h4>Community management team</h4>
+            <h4>Management team</h4>
             <UserItem v-for="profile in fetchedData"
                 :key="profile.username"
                 :profile="profile"
@@ -28,9 +19,10 @@
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 import UserItem from '@/components/profile/list/UserItem'
 import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
+import ButtonList from '@/components/misc/ButtonList'
 
 export default {
-    components: {UserItem},
+    components: {UserItem, ButtonList},
     mixins: [feedingFrenzy, inputDiag],
     props: ['community', 'isAdmin'],
     data() {return {
@@ -40,27 +32,27 @@ export default {
         visibleCmd() {
             return [
                 [
-                    {icon: "people", lable: `All members (${this.community.total_members})`, scndIcon: "chevron_right", action: this.allMembers},
-                    {icon: "sentiment_very_dissatisfied", lable: "Banned accounts", scndIcon: "chevron_right", action: this.allBanned},
+                    {icon: "people", lable: `All members (${this.community.total_members})`, scndIcon: "chevron_right", action: 'allMembers'},
+                    {icon: "sentiment_very_dissatisfied", lable: "Banned accounts", scndIcon: "chevron_right", action: 'allBanned'},
                 ],
                 [
-                    {icon: "gavel", lable: "Ban an account", action: this.cnfrmBan},
-                    {icon: "_", lable: "Revoke ban an account", action: this.cnfrmUnban},
+                    {icon: "gavel", lable: "Ban an account", action: 'cnfrmBan'},
+                    {icon: "_", lable: "Revoke ban an account", action: 'cnfrmUnban'},
                 ],
                 true ? [
-                    {icon: "star_border", lable: "Promote to Moderator", action: this.cnfrmPromoteMod},
-                    {icon: "star", lable: "Promote to Administrator", action: this.cnfrmPromoteAdmin},
-                    {icon: "_", lable: "Demote a Mod/Admin", action: this.cnfrmDemote},
+                    {icon: "star_border", lable: "Promote to Moderator", action: 'cnfrmPromoteMod'},
+                    {icon: "star", lable: "Promote to Administrator", action: 'cnfrmPromoteAdmin'},
+                    {icon: "_", lable: "Demote a Mod/Admin", action: 'cnfrmDemote'},
                 ] : null
             ].filter(x => x)
         },
     },
     methods: {
         allMembers() {
-            this.$router.push(`/community/${this.$route.params.id}/members`)
+            this.$router.push(`/communities/${this.$route.params.id}/members`)
         },
         allBanned() {
-            this.$router.push(`/community/${this.$route.params.id}/banned`)
+            this.$router.push(`/communities/${this.$route.params.id}/banned`)
         },
 
         cnfrmBan() {
@@ -125,19 +117,6 @@ export default {
 </script>
 
 <style>
-.mnge-mems__btn-grp {
-    margin-top: 20px;
-}
-.mnge-mems__btn {
-    width: 100%;
-    border-bottom: solid 1px #ddd;
-    padding: 10px;
-    display: flex;
-}
-.mnge-mems__btn > p {
-    margin: 0 auto 0 15px;
-}
-
 .mnge__mod-list > h4 {
     margin: 60px 0 10px 15px;
     color: #999;

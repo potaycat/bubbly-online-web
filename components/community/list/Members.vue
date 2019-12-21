@@ -4,8 +4,7 @@
             :key="profile.username"
             :profile="profile"
         />
-        <h3 class="empty-fetchedLs" v-if="empty">No members? Give people your invite URL</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
     </div></div>
 </template>
 

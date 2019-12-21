@@ -3,7 +3,7 @@
         
         <section v-if="post.allocated_to" class="p__info">
             <img class="cmnty_ico lift" :src="post.allocated_to.icon_img"
-                @click="$router.push(`/community/${post.allocated_to.id}`)"
+                @click="$router.push(`/communities/${post.allocated_to.id}`)"
             />
             <div class="p-info__text">
                 <strong>{{ post.allocated_to.name }}</strong>
@@ -47,10 +47,10 @@
             :myReact="post.my_react"
             :communityId="allocated_to.id"
             diableAdd=1
-            @quickReact="performReact"
+            @emoteChose="performReact"
             @deleteReact="deleteReaction"
         />
-        <ReactTotal v-else class="_p__reactions glow"
+        <TotalReacts v-else class="_p__reactions glow"
             :total="post.total_reacts"
             :communityId="allocated_to.id"
             :replyCount="post.reply_count"
@@ -58,7 +58,7 @@
         />
 
         <div class="_p__actions">
-            <ReactButton
+            <ReactButton 
                 :myReact="post.my_react"
                 :communityId="allocated_to.id"
                 @quickReact="performReact(1)"
@@ -74,24 +74,25 @@
                 <p>Share</p>
             </button>
         </div>
-        <ReactAdd v-if="reacting"
+        <FloatingEmotes v-if="reacting"
             :position="reacting"
             :communityId="allocated_to.id"
-            @performReact="performReact"
+            @emoteChose="performReact"
+            @cancel="closeEmoteSelector"
             quickLeave=1
         />
-        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id"/>
+        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id" :postTitle="post.title"/>
     </div>
 </template>
 
 <script>
-import ReactTotal from '../react/TotalView'
+import TotalReacts from './TotalReacts'
 import ReactButton from './ReactButton'
 import { reactAdd } from '@/mixins/cmpnentsCtrl/reactAdd'
 import { sharePost } from '@/mixins/cmpnentsCtrl/sharePost'
 export default {
     components: {
-        ReactTotal,
+        TotalReacts,
         ReactButton,
     },
     mixins: [reactAdd, sharePost],
@@ -211,7 +212,7 @@ export default {
     align-items: center;
     justify-content: center;
     height: 34px;
-    width: 34%;
+    width: 90%;
     overflow: hidden;
     color: #999;
 }

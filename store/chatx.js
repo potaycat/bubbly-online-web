@@ -1,25 +1,43 @@
 export const state = () => ({
     currentChat: null,
+    queued: null
 })
 
 export const mutations = {
-    loadChat(state, threadInfo){
-        if (!state.currentChat ||!threadInfo) state.currentChat = threadInfo
-        else state.currentChat = Object.assign(threadInfo, state.currentChat)
+    loadChat(state, thread) {
+        if (!thread) {
+            state.currentChat = state.queued
+            state.queued = null
+        }
+        state.currentChat = {
+            ...state.currentChat,
+            ...thread,
+        }
     },
-    bellUpdate(state, boolval){
+    preloadChat(state, thread) {
+        state.queued = thread
+    },
+    
+    bellUpdate(state, boolval) {
         state.currentChat.roommate_info.enable_noti = boolval
     },
-    pblcRoomSaved(state, mateObj){
-        state.currentChat.roommate_info = mateObj
-    },
-    updateName(state, newName){
-        state.currentChat.name = newName
-    },
-    updateBgImg(state, imgUrl){
-        state.currentChat.bg_img = imgUrl
+
+    updateLastMsg(state, newMsg) {
+        try {
+            state.currentChat.last_msg = newMsg
+            state.currentChat.roommate_info.last_seen = newMsg.timestamp
+        } catch (error) {}
     },
 }
 
 export const actions = {
+    toChat(state, room) {
+        this.commit('chatx/preloadChat', room)
+        if (window.innerWidth >= 750) {
+            if (this.$router.currentRoute.query.room) this.$router.replace(`/chat?room=${room.id}`)
+            else this.$router.push(`/chat?room=${room.id}`)
+        } else {
+            this.$router.push(`/chat/t/${room.id}`)
+        }
+    },
 }

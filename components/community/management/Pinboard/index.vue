@@ -12,12 +12,13 @@
                 @mutated="firstFetch"
             />
         </transition-group>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+            headsup="It's empty. Too empty"/>
+            
         <FAB @clicked="confirmNewChat"
             v-if="isAdmin"
             icon= "add"
             actionName= "Create new pinned post"
-            inActvtView=1
         />
         <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>

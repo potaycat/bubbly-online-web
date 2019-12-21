@@ -1,6 +1,6 @@
-import Spinner from '@/components/misc/Spinner'
+import StatusIndicator from '@/components/misc/feedingFrenzy/StatusIndicator'
 export const feedingFrenzy = {
-    components: {Spinner},
+    components: {StatusIndicator},
     data() {
         return {
             fetchedData: [],
@@ -12,17 +12,14 @@ export const feedingFrenzy = {
         offsetProp: 'id',
     // }
     computed: {
-        offset() {
-            return this.fetchedData[this.fetchedData.length-1][this.$options.offsetProp]
+        lastInList() {
+            return this.fetchedData[this.fetchedData.length-1]
         },
         urlConstruct() {
             const u = this.feedUrl
-            return `${u.slice(-1)=="&" ? u : u+"?"}offset=${this.offset}`
+            return `${u.slice(-1)=="&" ? u : u+"?"}offset=${this.lastInList[this.$options.offsetProp]}`
         },
         scrollCtnr() { return this.$refs.feed },
-        empty() {
-            return !this.loading4More && !this.fetchedData.length
-        }
     },
     created() {
         this.firstFetch()
@@ -70,13 +67,21 @@ export const feedingFrenzy = {
 }
 
 export const postFeed = {
+    watch: {
+        'fetchedData.length'(newVal) { // virtual scroll substitute
+            if (newVal > 100) {
+                this.fetchedData = this.fetchedData.slice(-10)
+            }
+        }
+    },
     activated() {
         const update = this.$store.state.postx.currentPost
         if (update) {
             const post = this.fetchedData.find(post => post.id == update.id)
             if (post && update.reactions) {
-                post.my_react = update.my_react
-                this.$set(post, 'reactions', update.reactions)
+                Object.keys(update).forEach(field => {
+                    this.$set(post, field, update[field])
+                })
                 this.$store.commit('postx/loadPost', null)
             }
         }

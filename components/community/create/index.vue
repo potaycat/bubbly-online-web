@@ -1,50 +1,17 @@
 <template>
-    <div class="auth-form">
-        <h2 class="auth-form__title">Create your community</h2>
-        <transition-group name="slide_left" >
-            <form v-if="step == 0" :key="step">
-                <div class="form__group">
-                    <input id="name_fld" v-model="name" class="form__field" placeholder="_">
-                    <label for="name_fld" class="form__label">Name</label>
-                    <p :style="notValidated('name')?null:'opacity:0'" class="form__invalid">
-                        Lowercase, numbers and underscores only
-                    </p>
-                </div>
-                <div class="form__group">
-                    <input id="moto_fld" v-model="moto" class="form__field" placeholder="_">
-                    <label for="moto_fld" class="form__label">Short description (optional)</label>
-                    <p class="form__invalid">&nbsp;</p>
-                </div>
-                <Button class="form-btn" text="Next" @clicked="validateAnd(goToNextStep)" fill/>
-            </form>
-
-            <form v-else-if="step == 1" :key="step">
-                <StepTwo />
-                <p>{{color}}</p>
-                <Button class="form-btn" text="Next" @clicked="validateAnd(goToNextStep)" fill/>
-            </form>
-
-            <form v-else-if="step == 2" :key="step">
-                <div class="cmnty-create__vsblty-togglr">
-                    <div class="material-toggle">
-                        <input v-model="isVisible2Public" type="checkbox" id="toggle" class="switch" />
-                        <label for="toggle" class=""></label>
-                    </div>
-                    <strong>{{isVisible2Public?"Visible to public":"Visible to community members only"}}</strong>
-                </div>
-
-                <div class="form__group">
-                    <input id="code_fld" v-model="inviteCode" class="form__field" placeholder="_">
-                    <label for="code_fld" class="form__label">Require invitation code (optional)</label>
-                    <p class="form__invalid">&nbsp;</p>
-                </div>
-                <div class="form__group">
-                    <input id="id_fld" v-model="id" class="form__field" placeholder="_">
-                    <label for="id_fld" class="form__label">Custom ID (optional)</label>
-                    <p class="form__invalid">&nbsp;</p>
-                </div>
-                <Button class="form-btn" text="Finish!" @clicked="validateAnd(performCreate)" fill/>
-            </form>
+    <div class="create-procedure-form">
+        <h2 class="create-form__title">Create your community</h2>
+        <transition-group :name="slide_drction" >
+            <div class="form__fields-wrapper create-form-wrapper" :key="step">
+                <Form v-for="field in editingFields[step]" :key="field.vmodel"
+                    :fld="field"
+                    v-model="formData[field.vmodel]"
+                    :notValidated="notValidated(field.vmodel)"
+                />
+                <Button :wait="Requesting" class="create-form__btn" :colorScnd="formData.color" fill
+                    :text="step==1?'Create!':'Next'" @clicked="validateAnd(step==1?performCreate:goToNextStep)"/>
+                <p>{{error}}</p>
+            </div>
         </transition-group>
     </div>
 </template>
@@ -52,107 +19,104 @@
 <script>
 import Button from '@/components/misc/Button'
 import { formValidate } from '@/mixins/formValidate'
-import StepTwo from './StepTwo'
 import { disableHamburger } from '@/mixins/appBarStuff'
 export default {
-    components: {
-        Button,
-        StepTwo,
-    },
+    components: { Button },
     mixins: [formValidate, disableHamburger],
-    data: () => ({
-        name: "",
-        moto: "",
-
-        pic: "",
-        color: "",
-        
-        isVisible2Public: true,
-        inviteCode: "",
-        id: ""
-    }),
-    created() {
-        let color = ""
-        while (color.length!=7) {
-            color = '#'+(Math.random()*0xFFFFFF<<0).toString(16)
+    data() {
+        const initRndm = c => {
+            while (c.length!=7) {
+                c = '#'+(Math.random()*0xFFFFFF<<0).toString(16)
+            } return c
         }
-        this.color = color
+        return {
+            formData: {
+                name: "",
+                moto: "",
+                color: initRndm(''),
+                
+                custom_id: "",
+                isVisible2Public: true,
+                inviteCode: "",
+            },
+            slide_drction: "slide_left",
+        }
     },
     computed: {
         validated() {
-            const reIsNumber = /^-{0,1}\d+$/
-            const reEmail = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            if (this.step == 0) {
-                return {
-                    name: this.name.length > 2
-                }
-            }
-            if (this.step == 1) {
-                return {
-                }
-            }
-            if (this.step == 2) {
-                return {
-                }
+            switch (this.step) {
+                case 0:
+                    return {
+                        name: this.formData.name.length > 2 && this.formData.name.length < 100,
+                        moto: this.formData.moto.length < 255,
+                        color: this.formData.color != '#ffffff'
+                    }
+                case 1:
+                    return {
+                        custom_id: /^[\x00-\x7F]*$/.test(this.formData.custom_id),
+                        inviteCode: this.formData.inviteCode.length <= 8
+                    }
+                default:
+                    return {}
             }
         },
         step() {
             return Number(this.$route.query.step) || 0
+        },
+        editingFields() {
+            return [
+                [
+                    {type: 'text', label: "Name", vmodel: 'name', validateInfo: "Try another name please"},
+                    {type: 'text', label: "Tag line (optional)", vmodel: 'moto', validateInfo: `
+                        Please be concise. There are tools to tell the story of your community later on ;)
+                    `},
+                    {type: 'color', label: "Theme color: ", vmodel: 'color', validateInfo: "Try a color that doesn't too much resemble white"},
+                ],
+                [
+                    {type: 'text', label: "Custom ID (optional)", vmodel: 'custom_id', validateInfo: "Lowercase, numbers and underscores only"},
+                    {type: 'toggler', label: "Visible to public", vmodel: 'isVisible2Public'},
+                    {type: 'text', label: "Require invitation code (optional)", vmodel: 'inviteCode', validateInfo: `
+                        Code should be less than or equal to 8 characters
+                    `},
+                ]
+            ]
+        }
+    },
+    watch: {
+        step(newVal, oldVal) {
+            if (newVal > oldVal) {
+                this.slide_drction = 'slide_left'
+            } else this.slide_drction = 'slide_right'
         }
     },
     methods: {
         goToNextStep() {
+            this.Requesting = false
             this.submitedOnce = false
             this.$router.push({query: { step: this.step+1 }}) 
         },
         performCreate() {
-            const data = {
-                id: this.id,
-                name: this.name,
-                moto: this.moto,
-                icon_img: this.pic,
-                theme_color: this.color.replace("#",""),
+            let data = {
+                id: this.formData.custom_id,
+                name: this.formData.name,
+                moto: this.formData.moto,
+                theme_color: this.formData.color.replace("#",""),
                 cover_img: "",
                 background_img: "",
-                is_secret: !this.isVisible2Public,
-                invite_code: this.inviteCode,
+                is_secret: !this.formData.isVisible2Public,
+                invite_code: this.formData.inviteCode,
             }
-            Object.keys(data).forEach((key)=>(data[key]==false)&&delete data[key]) // falsy only
+            Object.keys(data).forEach(key => !data[key] && delete data[key])
 
             this.$axios.post('communities/create', data,
                 this.$store.state.authHeader
             ).then(res => {
-                this.$router.push(`/community/${res.data.id}`)
+                this.Requesting = false
+                this.$router.replace(`/communities/${res.data.id}`)
+            }).catch(error => {
+                this.serverErrRes(error.response.data)
             })
         }
     }
 };
 </script>
-
-<style>
-.auth-form {
-    padding: 60px 15px;
-}
-.auth-form__title {
-    background: linear-gradient(60deg, rgb(238,152,30) 0%, rgb(235,56,147) 100%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-
-    display: inline-block;
-    margin-bottom: 10px;
-}
-.auth-form .form__group {
-    margin-top: 10px;
-}
-.auth-form .form-btn {
-    margin-top: 20px;
-}
-.register > span, .register > span > form {
-    width: 100%;
-}
-
-.cmnty-create__vsblty-togglr {
-    display: flex;
-    margin: 25px 3px;
-}
-</style>

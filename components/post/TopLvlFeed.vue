@@ -1,10 +1,10 @@
 <template>
     <div>
-        <Tabs
+        <!-- <Tabs
             :tabs="['CỘNG ĐỒNG', 'CÁ NHÂN']"
             :currentTab="currentTab"
             @switchTo="newTab"
-        />
+        /> -->
         <keep-alive>
             <JoinedCmntyFeed v-if="currentTab==0" />
             <JoinedCmntyFeed v-if="currentTab==1" />

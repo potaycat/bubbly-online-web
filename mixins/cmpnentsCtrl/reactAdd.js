@@ -1,5 +1,5 @@
 //
-// <ReactAdd v-if="reacting"   
+// <FloatingEmotes v-if="reacting"   
 //     :community="allocated_to"
 //     :position="reacting"
 //     @closeAdd="reacting=null"
@@ -7,9 +7,9 @@
 //
 
 import React from '@/components/post/react/'
-import ReactAdd from '@/components/post/react/ReactAdd'
+import FloatingEmotes from '@/components/post/react/FloatingEmotes'
 export const reactAdd = {
-    components: {React, ReactAdd},
+    components: {React, FloatingEmotes},
     data:() => ({
         reacting: null,
     }),
@@ -22,13 +22,16 @@ export const reactAdd = {
     mounted() {
         try {
             document.querySelector(".common_ls_cntainr").addEventListener('scroll',()=>{
-                this.reacting = null
+                this.closeEmoteSelector()
             })
         } catch (error) {
             console.error("CAUGHT: "+error)
         }
     },
     methods: {
+        closeEmoteSelector() {
+            this.reacting = null
+        },
         launchAddBox(posEvt) {
             this.reacting = {
                 x: posEvt.clientX-25,
@@ -36,23 +39,19 @@ export const reactAdd = {
             }
         },
         performReact(iconId) {
-            if (iconId) {
-                const fallBack = this.post.my_react
-                this.post.my_react = iconId
-                this.$axios.post(`reacts/${this.post.id}`, {icon: iconId},
-                    this.$store.state.authHeader
-                )
-                    .then(res => {
-                        this.$set(this.post, 'reactions', res.data.reactions)
-                    })
-                    .catch((error) => {
-                        this.post.my_react = fallBack
-                        this.$store.dispatch("reactionx/getCmntyEmotes", this.post.allocated_to.id)
-                        // console.error("CAUGHT: "+error)
-                        this.$forceUpdate()
-                    })
-            }
-            this.reacting = null
+            const fallBack = this.post.my_react
+            this.post.my_react = iconId
+            this.$axios.post(`reacts/${this.post.id}`, iconId!=1? {icon: iconId} :null,
+                this.$store.state.authHeader)
+                .then(res => {
+                    this.$set(this.post, 'reactions', res.data.reactions)
+                })
+                .catch((error) => {
+                    this.post.my_react = fallBack
+                    this.$store.dispatch("reactionx/getCmntyEmotes", this.post.allocated_to.id)
+                    // console.error("CAUGHT: "+error)
+                })
+            this.closeEmoteSelector()
         },
         deleteReaction() {
             const mine = this.post.my_react
@@ -71,7 +70,7 @@ export const reactAdd = {
                         this.post.total_reacts -= 1
                     }
                 })
-            this.reacting = null
+            this.closeEmoteSelector()
         }
     }
 }

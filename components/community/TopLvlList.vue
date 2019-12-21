@@ -6,7 +6,7 @@
                 :community="community"
             />
         </div>
-        <FAB @clicked="$router.push('/community/create')"
+        <FAB @clicked="$router.push('/communities/create')"
             icon= "add_circle_outline"
             actionName= "Add a community"
         />

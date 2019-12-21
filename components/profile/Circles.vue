@@ -12,9 +12,8 @@
                 :key="profile.username"
                 :profile="profile"
             />
+            <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
         </div>
-        <h3 class="empty-fetchedLs" v-if="empty">No follows</h3>
-        <Spinner v-if="loading4More" />
     </div>
 </template>
 
@@ -31,7 +30,7 @@ export default {
     data() {
         return {
             currentTab: this.$route.query.get=="followers"?1:0,
-            appBarDisplayTitle: "Follow",
+            appBarDisplayTitle: "Follows",
         }
     },
     // const: {

@@ -7,9 +7,8 @@ export const comment = {
     },
     activated() {
         if (this.isComment) {
-            this.$store.commit('appBar/loadText',
-                `Commenting on ${this.post.title || this.post.text.substring(0,20)+'...'}`
-            )
+            this.appBarDisplayTitle = `Commenting on ${this.post.title ||
+                this.post.text.substring(0,20)+'...' }`
         }
     },
     methods: {

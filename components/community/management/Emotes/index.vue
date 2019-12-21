@@ -10,12 +10,13 @@
                 @mutated="firstFetch"
             />
         </transition-group>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+            headsup="It's empty. Too empty"/>
+
         <FAB @clicked="confirmNewEmote"
             v-if="isAdmin"
             icon= "add"
             actionName= "Upload new emote"
-            inActvtView=1
         />
         <input type="file" ref="upload_em" style="display:none">
     </div>

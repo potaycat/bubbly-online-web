@@ -23,10 +23,9 @@ export default {
     top: 2px;
     right: 3px;
     z-index: 9999999;
-    background: #fff;
 }
 .app-bar-custom-actions > i {
     padding: 12px;
-    color: rgba(72, 133, 237, 0.95);
+    color: var(--primary-color);
 }
 </style>

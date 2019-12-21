@@ -4,7 +4,7 @@
             class="xplr-chat__cmnty"
             :key="roomCluster.id"
         >
-            <nuxt-link :to="`/community/${roomCluster.id}`" class="xplr-chat__cmnty-inf glow">
+            <nuxt-link :to="`/communities/${roomCluster.id}`" class="xplr-chat__cmnty-inf glow">
                 <img class="cmnty_ico" :src="roomCluster.icon_img">
                 <p>{{ roomCluster.name }}</p>
                 <i class="material-icons-round">arrow_forward</i>
@@ -12,25 +12,24 @@
 
             <div v-for="room in roomCluster.recently_active"
                 class="pblc-chats box-shadow-2 bg lift"
-                @click="$router.push(`/chat/t/${room.id}`)"
+                @click="$store.dispatch('chatx/toChat', room)"
                 :key="room.id"
                 :style="`background:url(${room.bg_img || roomCluster.cover_img}) center`"
             >
-                <div class="pblc-chats__txt">
+                <div class="pblc-chats__inf">
                     <div class="name">{{ room.name || `Chat #${room.order}` }}</div>
-                    <span>{{ room.last_msg.timestamp | tiemstamp }}</span>
+                    <span>{{ room.last_msg.timestamp | tiemstamp2 }}</span>
                 </div>
-                <p class="pblc-chats__last">{{ room.last_msg | lastMsgDspl }}</p>
+                <p class="pblc-chats__last-msg">{{ renderLastMsg(room.last_msg) }}</p>
             </div>
         </div>
-        <h3 class="empty-fetchedLs" v-if="empty">Empty list. Get started by joining a few communities</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+            headsup="Try joining some communities. Their public chats will appear here"/>
     </div></div>
 </template>
 
 <script>
 import { feedingFrenzy, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
-
 export default {
     mixins: [feedingFrenzy, maintainScrllPos, scrlDirection],
     data: () => ({
@@ -69,17 +68,13 @@ export default {
 }
 
 .pblc-chats {
-    /* box-shadow: inset 0 -10px 10px -10px #000000; */
-    /* width: 100%; */
-    height: 120px;
-    margin: 2px 25px 10px 60px;
+    height: 110px;
+    margin: 2px 30px 10px 64px;
     border-radius: 25px;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-
 }
-.pblc-chats .pblc-chats__txt {
+.pblc-chats .pblc-chats__inf {
     color: #fff;
     margin-top: auto;
     text-shadow: 0px 0px 6px #000;
@@ -94,19 +89,17 @@ export default {
     font-weight: bold;
     max-height: 50px;
 }
-.pblc-chats .pblc-chats__last {
+.pblc-chats .pblc-chats__last-msg {
     margin: 0 14px 9px 14px;
-
-    /* border-radius: 20px;
-    max-width: 290px;
-    padding: 4px 8px;
-    background: rgba(255, 255, 255, 0.95); */
     color: #eee;
     text-shadow: 0px 0px 4px #222;
     font-size: 14px;
-    max-height: 53px;
-    overflow: hidden;
+
     word-break: break-all;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 .pblc-chats span {
     font-size: 14px;

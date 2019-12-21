@@ -1,98 +1,126 @@
 <template>
-    <div class="prfl-edit-ctnr --dtail-app-bar">
-        <AppBarCustomBtn
-            :customCmds="[
-                {action: 'finised', icon: 'done'},
-            ]"
-            @finised="finised"
-        />
+    <div class="the_big_frame">
+    <div class="common_ls_cntainr --dtail-app-bar">
+        <FloatingSaveButton v-if="hasUnsaved" :wait="Requesting" :color="formData.fave_color" @clicked="validateAnd(finised)"/>
 
         <div class="prfl-edit__cover-pic">
-            <img :src="coverInput || profile.cover_photo">
+            <img :src="formData.coverInput.preview || profile.cover_photo">
             <label class="prfl-edit__upload-btn glow">
                 <i class="material-icons-round">add_photo_alternate</i>
-                <input type="file" @change="onCoverChange" ref="cover_input" style="display:none">
+                <input type="file" accept="image/*" @change="onCoverChange" ref="cover_input" style="display:none">
             </label>
         </div>
         <div class="prfl-edit__pfp pfp">
-            <img :src="pfpInput || profile.profile_pic">
+            <img :src="formData.pfpInput.preview || profile.profile_pic">
             <label class="prfl-edit__upload-btn glow">
                 <i class="material-icons-round">add_photo_alternate</i>
-                <input type="file" @change="onPfpChange" ref="pfp_input" style="display:none">
+                <input type="file" accept="image/*" @change="onPfpChange" ref="pfp_input" style="display:none">
             </label>
         </div>
         
-        <section class="prfl-edit__fields-wrapper">
-            <div class="form__group" v-for="field in $options.editableFields" :key="field.label">
-                <input :id="field.vmodel" v-model="formData[field.vmodel]" class="form__field" placeholder="_">
-                <label :for="field.vmodel" class="form__label">{{ field.label }}</label>
-            </div>
+        <section class="form__fields-wrapper">
+            <Form v-for="field in $options.editableFields" :key="field.vmodel"
+                :fld="field"
+                v-model="formData[field.vmodel]"
+                :notValidated="notValidated(field.vmodel)"
+            />
         </section>
+    </div>
     </div>
 </template>
 
 <script>
-import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
+import { disableHamburger } from '@/mixins/appBarStuff'
 import { appBarTitle } from '@/mixins/appBarStuff'
+import { formValidate } from '@/mixins/formValidate'
+import FloatingSaveButton from '@/components/community/management/FloatingSaveButton'
 export default {
-    components: {AppBarCustomBtn},
-    mixins: [appBarTitle],
+    components: {FloatingSaveButton},
+    mixins: [disableHamburger, appBarTitle, formValidate],
     data() {
         return {
             formData: {
                 alias: this.$store.state.auth.my_profile.alias,
-                fave_color: this.$store.state.auth.my_profile.fave_color,
+                fave_color: '#'+this.$store.state.auth.my_profile.fave_color,
                 bio: this.$store.state.auth.my_profile.bio,
                 location: this.$store.state.auth.my_profile.location,
+
+                pfpInput: {},
+                coverInput: {},
             },
-            pfpInput: null,
-            coverInput: null,
             appBarDisplayTitle: "Profile edit"
         }
     },
     //consts {
         editableFields: [
-            {label: "Alias", vmodel: 'alias'},
-            {label: "Favorite Color", vmodel: 'fave_color'},
-            {label: "Short Bio", vmodel: 'bio'},
-            {label: "Location", vmodel: 'location'},
+            {type: 'text', label: "Alias", vmodel: 'alias', validateInfo: "Name should be between 3 and 40 characters"},
+            {type: 'text', label: "Short Bio", vmodel: 'bio', validateInfo: "More concise please"},
+            {type: 'text', label: "Location", vmodel: 'location', validateInfo: "More concise please"},
+            {type: 'color', label: "Favorite Color: ", vmodel: 'fave_color', validateInfo: "Try a color that doesn't too much resemble white"},
         ],
     //}
     computed: {
-        moring() {return this.$store.state.appBar.moring},
         profile() {
             return this.$store.state.auth.my_profile
-        }
+        },
+        validated() {
+            const form = this.formData
+            return {
+                alias: 3 < form.alias.length && form.alias.length <= 40,
+                bio: form.bio.length < 240,
+                location: form.location.length < 90,
+                fave_color: form.fave_color != '#ffffff'
+            }
+        },
     },
     methods: {
         onCoverChange() {
             const file = this.$refs.cover_input.files[0]
-            if (file) {
-                this.coverInput = URL.createObjectURL(file)
+            if (file && file.type.startsWith("image/")) {
+                this.formData.coverInput = {
+                    file: file,
+                    preview: URL.createObjectURL(file)
+                }
             }
         },
         onPfpChange() {
             const file = this.$refs.pfp_input.files[0]
-            if (file) {
-                this.pfpInput = URL.createObjectURL(file)
+            if (file && file.type.startsWith("image/")) {
+                this.formData.pfpInput = {
+                    file: file,
+                    preview: URL.createObjectURL(file)
+                }
             }
         },
-        
-        finised() {
-            const data = {
-                alias: this.formData.alias,
-                fave_color: this.formData.fave_color,
-                bio: this.formData.bio,
-                location: this.formData.location,
-            }
-            // Object.keys(data).forEach((key) => !data[key] && delete data[key])
 
+        finised() {
+            const form = this.formData
+            const pics = [form.pfpInput.file, form.coverInput.file].filter(x => x)
+            this.batchCompressUpload(pics, uploadedUrls => {
+                const imgs = {}
+                if (form.pfpInput.file) imgs.profile_pic = uploadedUrls.shift()
+                if (form.coverInput.file) imgs.cover_photo = uploadedUrls.shift()
+                const data = {
+                    alias: form.alias,
+                    fave_color: form.fave_color.substr(1), // removes '#'
+                    bio: form.bio,
+                    location: form.location,
+                    ...imgs
+                }
+                this.performUpdateProfile(data)
+            })
+        },
+        performUpdateProfile(data) {
             this.$axios.patch(`accounts/${this.profile.username}`,
                 data,
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$router.back()
+                    this.$store.commit('auth/storeAuthUser', {
+                        ...this.$store.state.auth.my_profile,
+                        ...res.data 
+                    })
+                    this.$router.go()
                 })
         }
     },
@@ -100,26 +128,24 @@ export default {
 </script>
 
 <style>
-.prfl-edit-ctnr {
-}
-
 .prfl-edit__cover-pic {
     position: relative;
     overflow: hidden;
 }.prfl-edit__cover-pic, .prfl-edit__cover-pic > img {
     width: 100%;
-    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
 }
 
 .prfl-edit__pfp {
     position: relative;
     overflow: hidden;
-    margin-top: -30px;
-    margin-left: 15px;
+    margin: -30px auto 0 15px;
     border: solid 4px #fff;
 }.prfl-edit__pfp, .prfl-edit__pfp > img {
-    height: 100px;
     width: 100px;
+    min-height: 100px;
+    max-height: 100px;
 }
 
 .prfl-edit__upload-btn {
@@ -131,12 +157,5 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.prfl-edit__fields-wrapper {
-    padding: 0 20px;
-}
-.prfl-edit__fields-wrapper .form__group {
-    margin-top: 15px;
 }
 </style>

@@ -9,7 +9,6 @@
 import ActivityView from '@/components/layout/ActivityView'
 import Management from '@/components/community/management/'
 export default {
-    // layout: 'lethalActivity',
     components: {ActivityView, Management},
     head:() => ({
         title: "Community management"

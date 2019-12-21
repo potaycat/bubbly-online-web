@@ -8,7 +8,7 @@ html {
     -webkit-font-smoothing: antialiased;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    overscroll-behavior: contain;
+    /* overscroll-behavior: contain; */
 }
 
 *,
@@ -43,4 +43,29 @@ a {
     -ms-user-select: none;
     color: #000;
     text-decoration: none;
+}
+
+
+.create-procedure-form {
+    width: 100%;
+    padding: 60px 15px;
+    overflow: hidden;
+    position: relative;
+}
+.create-form-wrapper {
+    padding: 0 !important;
+}
+.create-form__title {
+    background: linear-gradient(60deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.create-form__btn {
+    margin: 50px 0;
+}
+.auth-form__redirct {
+    margin-top: 20px;
 }

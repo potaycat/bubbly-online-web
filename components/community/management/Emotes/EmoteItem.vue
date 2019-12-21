@@ -27,7 +27,8 @@ export default {
     methods: {
         confirmRen() {
             this.openDiag = {
-                input_desc: "New Emote name"
+                title: `Rename "${this.emote.name}"`,
+                input_desc: "New name"
             }
             this.diagHndlFun = this.performRename
         },
@@ -39,14 +40,14 @@ export default {
 
         confirmDisable() {
             this.openDiag = {
-                title: "Disable this emote?",
+                title: `Disable "${this.emote.name}"?`,
                 description: "It will no longer be accessible in the future unless re-enabled"
             }
             this.diagHndlFun = this.performDisable
         },
         confirmEnable() {
             this.openDiag = {
-                title: "Re-enable this emote?",
+                title: `Re-enable "${this.emote.name}"?`,
             }
             this.diagHndlFun = this.performDisable
         },

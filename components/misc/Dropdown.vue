@@ -1,6 +1,6 @@
 <template>
 <transition name="fade">
-    <div class="total_darkness no-bg" @click.self="close">
+    <div class="total_darkness is-fixed no-bg" @click.self="close">
         <transition name="zoom_in_fade" appear>
             <div ref='drpdwn' class="drpdwn shiny-white-bg box-shadow-2">
                 <option v-for="option in options"
@@ -28,7 +28,7 @@ export default {
         const drpdwn = this.$refs.drpdwn
         const pos = this.position || {}
         drpdwn.style.top = `${pos.y || 20}px`
-        drpdwn.style.right = `${pos.x ? document.body.clientWidth-pos.x : document.body.clientWidth/3-110}px`
+        drpdwn.style.right = `${pos.x ? window.innerWidth-pos.x : window.innerWidth/3-110}px`
     },
     methods: {
         close() {

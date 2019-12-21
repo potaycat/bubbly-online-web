@@ -1,5 +1,5 @@
 <template>
-<transition name="fade_in" appear>
+<transition name="fade" appear>
     <div class="mbrshp-block lift"
         :style="`background-image:url(${community.cover_img})`"
         @click="goToCommunity"
@@ -7,33 +7,43 @@
         <img class="cmnty_ico" :src="community.icon_img"/>
         <div class="mbrshp__cmnty-txt">
             <p class="mbrshp__cmnty-name">{{ community.name }}</p>
-            <div class="mbrshp__reput">
-                <strong>{{community.reputation_point}}</strong> reputation
+            <div class="mbrshp__subtxt">
+                <p v-if="community.moto">{{ community.moto }}</p>
             </div>
-            <!-- <p class="_pop">1350 members</p> -->
-            <!--p class="_description">{{ community.intro }} </p-->
         </div>
-        <div :class="['mbrshp__role', role]">
+        <div v-if="role=='Member'" :class="['mbrshp__role', role]">
+            <strong>{{membership_info.reputation_point}}</strong> reputation
+        </div>
+        <p v-else-if="role" :class="['mbrshp__role', role]">
             {{ role }}
-        </div>
+        </p>
+        <Button v-else-if="community.visibility!='closed' && this.membership_info.role!='banned'" class="mbrshp__join-btn"
+            :colorScnd="`#${community.theme_color}`" text="Join" @click.native.stop="makeJoin" fill />
     </div>
 </transition>
 </template>
 
 <script>
+import Button from '@/components/misc/Button'
+import { performJoin } from '@/mixins/performFollow'
 export default {
+    components: { Button },
+    mixins: [performJoin],
     props: ['community'],
     computed: {
+        membership_info() {
+            return this.community.membership_info || this.community
+        },
         role() {
-            const role = this.community.role
+            const role = this.membership_info.role
             return role == 'administrator' ? 'Admin' :
                 role == 'moderator' ? 'Mod' :
                 role == 'member' ? 'Member' : null
-        }
+        },
     },
     methods: {
         goToCommunity(){
-            this.$router.push(`/community/${this.community.id}`)
+            this.$router.push(`/communities/${this.community.id}`)
         },
     },
 }
@@ -68,28 +78,41 @@ export default {
     font-size: 20px;
     max-height: 59px;
     overflow: hidden;
+    /* font-weight: bold; */
 }
-.mbrshp__cmnty-txt .mbrshp__reput {
-    font-size: 13px;
-    color: #ccc
+.mbrshp__cmnty-txt .mbrshp__subtxt {
+    font-size: 12px;
+    color: #ccc;
+    margin-right: 10px;
+}
+.mbrshp__subtxt > p {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
-.mbrshp__role {
+.mbrshp__join-btn, .mbrshp__role {
     margin-left: auto;
+}
+.mbrshp__role {
     padding: 3px 9px;
     border-radius: 100px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
 }
-.Admin {
+.mbrshp__role.Admin {
     background: rebeccapurple;
     color: white;
 }
-.Mod {
+.mbrshp__role.Mod {
     background: darkcyan;
     color: white;
 }
-.Member {
-    display: none;
+.mbrshp__role.Member {
+    background: mediumseagreen;
+    color: white;
+    font-weight: normal;
+    font-size: 11px;
 }
 </style>

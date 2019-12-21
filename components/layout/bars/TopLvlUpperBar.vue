@@ -2,7 +2,8 @@
     <nav :class="['app-bar', $store.state.scrollinUp ? null: 'top-lev-contract']">
         <div id="top-nav-bar">
             <!-- <button class="push" @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"> -->
-            <img class="top-nav__btn push pfp" :src="pfp"  @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"/>
+            <img v-if="smolScreen" class="top-nav__btn push pfp" :src="pfp"
+                @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"/>
             <!-- </button> -->
             <p>{{ destiName }}</p>
             <i @click="$router.push('/settings')" class="top-nav__btn material-icons-round push"
@@ -14,18 +15,21 @@
 <script>
 export default {
     computed: {
+        smolScreen() {
+            return window.innerWidth < 500
+        },
         destiName() {
-            switch (this.$store.state.topLevelDestination) {
-                case 1:
+            switch (this.$route.name) {
+                case 'home':
                     return "Post Feed"
-                case 2:
-                    return "Communities"
-                case 3:
-                    return "Messaging"
-                case 4:
-                    return "Notification"
-                case 5:
-                    return "Explore"
+                case 'communities':
+                    return "Joined Communities"
+                case 'chat':
+                    return "Chat"
+                case 'notifications':
+                    return "Notifications"
+                case 'explore':
+                    return "🔍👉"
                 default:
                     return ""
             }
@@ -62,6 +66,6 @@ export default {
 }
 #top-nav-bar .top-nav__btn {
     margin: 0 15px;
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
 }
 </style>

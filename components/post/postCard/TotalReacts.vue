@@ -24,14 +24,14 @@ export default {
         'replyCount',
     ],
     // const: {
-        defaultList: ["😢","👍","💗","🤣","😲","😡"],
+        defaultList: ["😢","👍","🤣","😲","😡"],
     // }
     computed: {
         ...mapGetters({
             emotesByCmnty: 'reactionx/emotesByCmnty',
         }),
         emotesPreview() {
-            let emoArr = this.emotesByCmnty(this.communityId) || []
+            let emoArr = this.emotesByCmnty(this.communityId)
             const len = emoArr.length
             if (len < 6) {
                 emoArr = [

@@ -7,35 +7,37 @@ export const sendingHandler = {
             butt.style["min-height"] = height
             if (this.atBottom) this.scroll2Bottom()
         },
-
         signalTyping() {
             try { this.$socket.send("tpng") }
             catch (error) {}
         },
 
-        sendThourghWs(msg) {
+        pseudoIdGenerator() {
+            return this.$store.state.auth.my_profile.username + Date.now()
+        },
+        wsSend(pseudoId, msgType, msgContent) {
             try {
-                this.$socket.sendObj(msg)
+                this.$socket.sendObj({
+                    c__id: pseudoId,
+                    c__msg_type: msgType,
+                    c__content: msgContent,
+                })
             } catch (error) {
-                console.error("CAUGHT: "+error)
+                console.error("CAUGHT ON WS SEND: "+error)
             }
         },
-
-        pseudoIdGenerator() {
-            const present = new Date
-            return present.getTime()
-        },
-        showImmediately(pseudoId, msg_type, msg_content) {
+        toPreview(pseudoId, msgType, msgContent) {
+            this.scroll2Bottom()
             this.fetchedData.unshift({ 
                 author: this.$store.state.auth.my_profile,
                 id: pseudoId,
-                msg_type: msg_type,
-                content: msg_content,
+                msg_type: msgType,
+                content: msgContent,
                 timestamp: "sndng",
             })
         },
 
-        outBoxing(input) {
+        textOutBoxing(input) {
             function messageConstr(content) {
                 function youtubeParser(url) { //https://stackoverflow.com/questions/3452546/how-do-i-get-the-youtube-video-id-from-a-url
                     const regExp = /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/
@@ -48,25 +50,32 @@ export const sendingHandler = {
                 }
                 return [1, content]
             }
+            let message = messageConstr(input)
+            message.unshift(this.pseudoIdGenerator())
+            this.toPreview(...message)
+            this.wsSend(...message)
 
-            const message = messageConstr(input)
-            const pseudoId = this.pseudoIdGenerator()
-            this.sendThourghWs({
-                c__id: pseudoId,
-                c__msg_type: message[0],
-                c__content: message[1],
-            })
-            this.showImmediately(pseudoId, message[0], message[1])
+            if (input == "test") {
+                for (let index = 0; index < 100; index++) {
+                    this.wsSend(index, 1, "test "+index)
+                }
+            }
         },
+        emoteOutBoxing(emote) {
+            const idNType = [this.pseudoIdGenerator(), 11]
+            this.toPreview(...idNType, emote.img_src)
+            this.wsSend(...idNType, emote.id)
+        },
+        imageOutBoxing(evt) {
+            const files = evt.target.files
+            const idNType = [this.pseudoIdGenerator(), 2]
+            this.toPreview(...idNType, URL.createObjectURL(files[0]))
 
-        performSendEmote(emote) {
-            const pseudoId = this.pseudoIdGenerator()
-            this.sendThourghWs({
-                c__id: pseudoId,
-                c__msg_type: 11,
-                c__content: emote.id,
+            this.batchCompressUpload(files, uploadedUrls => {
+                console.log(uploadedUrls);
+                
+                this.wsSend(...idNType, uploadedUrls[0])
             })
-            this.showImmediately(pseudoId, 11, emote.img_src)
         }
     },
 }

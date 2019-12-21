@@ -5,8 +5,8 @@
             :profile="profile"
             disableFollowBtn=1
         />
-        <h3 class="empty-fetchedLs" v-if="empty">No bans</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+            headsup="No bans"/>
     </div></div>
 </template>
 

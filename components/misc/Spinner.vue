@@ -5,16 +5,6 @@
 <script>
 export default {
     props: {
-        // // Basic type check (`null` and `undefined` values will pass any type validation)
-        // propA: Number,
-        // // Multiple possible types
-        // propB: [String, Number],
-        // // Required string
-        // propC: {
-        //   type: String,
-        //   required: true
-        // },
-        // // Number with a default value
         color: {
             type: String,
             default: '#999'

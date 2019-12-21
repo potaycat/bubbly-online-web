@@ -1,4 +1,5 @@
 <template>
+    <div class="the_big_frame">
     <div class="post-editor-ctnr --dtail-app-bar">
         <AppBarCustomBtn
             :customCmds="[
@@ -6,9 +7,9 @@
                 {action: 'done', icon: 'send'},
             ]"
             @togglePreview="previewing=true"
-            @done="done"
+            @done="validateAnd(done)"
         />
-        <CmntyPicker v-if="!editMode&&!isComment" :pinboard="isPinboard"/>
+        <CmntyPicker v-if="!editMode&&!isComment" :pinboard="isPinboard" :attention="notValidated('cmnty')"/>
         <div v-if="!editMode">
             <input v-if="!(isComment||isPinboard)"
                 class="pstedit__title"
@@ -18,12 +19,12 @@
             <section class="extra-content-bar box-shadow-3 shiny-white-bg">
                 <label class="pstedit__file-input bttm-bar__btn glow">
                     <i class="material-icons-round">add_photo_alternate</i>
-                    <input type="file" multiple @change="onFileChange" ref="file_input" style="display:none">
+                    <input type="file" accept="image/*" multiple @change="onFileChange" ref="img_input" style="display:none">
                 </label>
             </section>
         </div>
 
-        <textarea :class="['pstedit__body', editMode?'pstedit__body--editMd':null]"
+        <textarea :class="['pstedit__body', editMode?'pstedit__body--edit-mode':null]"
             v-model="body"
             placeholder="Text body"
         />
@@ -40,22 +41,29 @@
         <transition name="zoom_in_fade">
             <div v-if="previewing" class="pstedit__preview total_darkness" @click="previewing=false">
                 <h3 class="pstedit__prvw__title">{{title}} [Preview]</h3>
-                <BubblyMarkdownParse :text="body" :attachments="attachmentsList" class="pstedit__prvw__md"/>
+                <BubblyMarkdownParse :text="body" :attachments="attchs2prvw" class="pstedit__prvw__md"/>
                 <p class="clck-anywhr">Click anywhere to close preview</p>
             </div>
         </transition>
         <div v-if="uploading" class="total_darkness"><Spinner color="#fff" /></div>
     </div>
+    </div>
 </template>
 
 <script>
-import { textareaAutoResize } from '@/mixins/commonLogicSeparation'
-import BubblyMarkdownParse from '../mdParse'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
+import { appBarTitle } from '@/mixins/appBarStuff'
+
+import { textareaAutoResize } from '@/mixins/commonFuncs'
+import BubblyMarkdownParse from '../mdParse'
+
 import CmntyPicker from './CmntyPicker'
 import { editMode } from './editMode'
 import { comment, pinboard } from './typed'
+
 import Spinner from '@/components/misc/Spinner'
+import { formValidate } from '@/mixins/formValidate'
+
 export default {
     components: {
         BubblyMarkdownParse,
@@ -63,8 +71,10 @@ export default {
         CmntyPicker,
         Spinner,
     },
-    mixins: [editMode, comment,pinboard],
+    mixins: [editMode,comment,pinboard, appBarTitle, formValidate],
     data:() => ({
+        appBarDisplayTitle: "Write a post",
+
         title: "",
         body: "",
 
@@ -73,7 +83,18 @@ export default {
         previewing: false,
     }),
     computed: {
-        attachmentsList() {
+        validated() {
+            let toValidate = {}
+            toValidate.body = this.body.length || this.previews.length
+            if (!this.editMode) {
+                toValidate.cmnty = this.$route.query.to
+                if (!this.isPinboard) {
+                    toValidate.title = true
+                }
+            }
+            return toValidate
+        },
+        attchs2prvw() {
             let arr = []
             this.previews.forEach((attch, index) => {
                 arr.push({
@@ -93,16 +114,14 @@ export default {
         },
     },
     activated() {
-        if (!this.$store.state.appBar.text) {
-            this.$store.commit('appBar/loadText', "Write a post")
-        }
+        this.appBarDisplayTitle = "Write a post"
         const init = this.$route.query.init; if (init) {
             this.body = init
         }
     },
     methods: {
         onFileChange(evt) {
-            const input = this.$refs.file_input
+            const input = this.$refs.img_input
             const mapped = this.previews.map(item => { return item.name })
             Array.from(input.files).forEach(file => {
                 if ( !mapped.some(itemName => { return itemName == file.name }) ) {
@@ -130,31 +149,18 @@ export default {
             const attachmentsList = [
                 {
                     type: 2,
-                    content: "",
+                    content: "https://preview.redd.it/4daqv3k8qh441.jpg?width=640&height=644&crop=smart&auto=webp&s=9e8a2e4cdf1701b83e77e84e66e2f7580911a0dc",
                     order: 1
-                },
-                {
-                    type: 2,
-                    content: "",
-                    order: 2
-                },
-                {
-                    type: 2,
-                    content: "",
-                    order: 3
-                },
-                {
-                    type: 2,
-                    content: "",
-                    order: 4
-                },
-                {
-                    type: 2,
-                    content: "",
-                    order: 5
                 },
             ]
 
+            // this.performUpload(this.previews[0].file)
+
+            this.batchCompressUpload([this.previews[0].file, this.previews[1].file], uploadedUrls => {
+                console.log(uploadedUrls)
+            })
+            
+            return
             const data = {
                 // attachments: attachmentsList,
                 text: this.body,
@@ -178,7 +184,8 @@ export default {
 .post-editor-ctnr {
     display: flex;
     flex-direction: column;
-    padding-top: 52px;
+    overflow: auto;
+    width: 100%;
 }
 
 .pstedit__title, .pstedit__body {
@@ -194,10 +201,10 @@ export default {
 }
 .pstedit__body {
     resize: none;
-    height: calc(100vh - 250px);
+    min-height: calc(100vh - 250px);
 }
-.pstedit__body--editMd {
-    height: calc(100vh - 130px);
+.pstedit__body--edit-mode {
+    /* height: calc(100vh - 130px); */
 }
 
 .attch-prvw__itm {
@@ -243,7 +250,7 @@ export default {
     width: 100%;
     padding: 5px;
     text-align: center;
-    color: rgba(72, 133, 237, 0.95);
+    color: var(--primary-color);
 }
 
 
@@ -261,8 +268,7 @@ export default {
 }
 
 .pstedit__file-input {
-    /* background: #999; */
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;

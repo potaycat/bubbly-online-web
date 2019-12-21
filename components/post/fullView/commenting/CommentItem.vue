@@ -1,11 +1,11 @@
 <template>
     <div class="le-cmt">
         <nuxt-link :to="'/user/' + comment.author.username">
-            <img class="pfp" :src="comment.author.profile_pic">
+            <img class="pfp lift" :src="comment.author.profile_pic">
         </nuxt-link>
         <div class="cmt-content">
             <div class="cmt-info">
-                <div class="cmt-inf__author-name glow"> {{comment.author.alias}}&nbsp;</div>
+                <div class="cmt-inf__author-name"> {{comment.author.alias}}&nbsp;</div>
                 <div class="cmt-inf__timestmp">• {{comment.timestamp | timeAgo}}</div>
                 <i @click="performDrop" class="material-icons-round glow">more_horiz</i>
             </div>
@@ -22,9 +22,9 @@
                     :reacts="reactionsLsSorted"
                     :myReact="comment.my_react"
                     :communityId="communityId"
-                    size= "react-icon--smol"
+                    size="react-icon--smol"
                     @toggleAdd="launchAddBox"
-                    @quickReact="performReact"
+                    @emoteChose="performReact"
                     @deleteReact="deleteReaction"
                     @reply="$emit('reply');$router.push(`/comment/${comment.id}`)"
                 />
@@ -33,10 +33,11 @@
                 {{comment.reply_count}} replies <span>></span>
             </div>
         </div>
-        <ReactAdd v-if="reacting"
+        <FloatingEmotes v-if="reacting"
             :position="reacting"
             :communityId="communityId"
-            @performReact="performReact"
+            @emoteChose="performReact"
+            @cancel="closeEmoteSelector"
         />
         <Dropdown v-if="touchPos"
             :position="{y:touchPos.y, x:touchPos.x}"
@@ -76,9 +77,6 @@ export default {
         },
         post() { return this.comment } // to work with 'reactAdd'
     },
-    created() {
-        this.post.allocated_to = {id: this.communityId} // to work with 'performEdit'
-    },
     methods: {
         goToReactions() {
             this.$router.push(`/post/${this.comment.id}/reactions?comment=1`)
@@ -92,7 +90,7 @@ export default {
 
 <style>
 .le-cmt {
-    margin: 15px 0;
+    margin: 10px 0;
     display: flex;
     font-size: 14px;
 }
@@ -115,14 +113,15 @@ export default {
     font-size: 10px;
     margin: auto 0 1px;
 }
-.cmt-info .material-icons-round{
-    color: rgba(72, 133, 237, .9);
+.cmt-info > i {
+    color: var(--primary-color);
     margin: auto 0 0 auto;
     font-size: 18px;
 }
 
-.cmt-content p {
+.cmt-content > p {
     margin: 2px 0 6px;
+    user-select: text;
 }
 .cmt__attch {
     width: 100%;

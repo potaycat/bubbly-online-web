@@ -1,9 +1,11 @@
 <template>
     <div id="_send-box">
-        <button @click="sendEmote=true" class="_sb__btn shiny-white-bg box-shadow-4 push lift">
+        <button v-if="!immediateFocus" @click="sendEmote=true" class="_sb__btn shiny-white-bg box-shadow-4 push lift">
             <i class="material-icons-round">insert_emoticon</i></button>
-        <button @click="$emit('picPick')" class="_sb__btn shiny-white-bg box-shadow-4 push lift">
-            <i class="material-icons-outlined">photo_library</i></button>
+        <button @click="$refs.img_input.click()" class="_sb__btn shiny-white-bg box-shadow-4 push lift">
+            <i class="material-icons-outlined">photo_library</i>
+            <input type="file" accept="image/*" @change="$emit('picPick', $event);$refs.img_input.value=null" ref="img_input" style="display:none">
+        </button>
         <div class="sb__input shiny-white-bg box-shadow-4">
             <textarea
                 class="sb__input-area no-bg"
@@ -52,7 +54,7 @@ export default {
         },
         performSend() {
             if(this.inputNotBlank) {
-                this.$emit('outBoxing', this.input)
+                this.$emit('textOutbox', this.input)
 
                 this.signalable = true
                 this.input = ""
@@ -92,25 +94,21 @@ export default {
 
 <style>
 #_send-box {
-    overflow: hidden;
+    /* overflow: hidden; */
     position: absolute;
     bottom: 0;
     z-index: 6;
     display: flex;
     padding: 10px 3px;
     width: 100%;
-    /* width: 110%;
-    margin-left: -10%; */
 }
 #_send-box ._sb__btn {  
     border-radius: 100px;
-   
     width: 35px;
     height: 35px;
     padding: 5px;
     margin: auto 0 1px 4px;
-    
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
 }
 
 #_send-box .sb__input{
@@ -133,9 +131,9 @@ export default {
 }
 #_send-box #_sb__send-btn{
     transition: .2s;
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
     position: absolute;
-    bottom: 2px;
+    bottom: 11px;
 }
 
 </style>

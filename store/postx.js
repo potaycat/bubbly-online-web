@@ -4,7 +4,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-    loadPost(state, postObj){
+    loadPost(state, postObj) {
         state.currentPost = postObj
     },
     loadToEdit(state, obj){

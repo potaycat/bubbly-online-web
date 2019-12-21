@@ -18,6 +18,9 @@ export default {
             this.$store.state.authHeader
         )
             .then(res => {
+                console.log("AAAAAAAAAAaa");
+                console.log(res.data);
+                
                 this.comment = res.data
             })
             .catch(error => {

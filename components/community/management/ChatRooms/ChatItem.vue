@@ -3,7 +3,7 @@
         <div class="mnge__p-chat-item">
             <p class="mnge__p-chat-item__order">{{indexPlus1}}</p>
             <img class="pfp" :src="room.bg_img">
-            <div class="mnge__p-chat__text-inf glow" @click="$router.push(`/chat/t/${room.id}`)">
+            <div class="mnge__p-chat__text-inf glow" @click="$store.dispatch('chatx/toChat', room)">
                 <strong>{{ displayName }}</strong>
                 <p>{{ room.description }}</p>
             </div>

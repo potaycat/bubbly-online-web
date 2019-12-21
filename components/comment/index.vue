@@ -1,31 +1,33 @@
 <template>
-    <div class="single-cmt-view common_ls_cntainr --dtail-app-bar" ref="feed">
+    <div class="the_big_frame">
         <AppBarCustomBtn
             :customCmds="[{action: 'toPost', icon: 'input'}]"
             @toPost="$router.push(`/post/${comment.on}`)"
         />
-        <CommentItem class="smv-cmt-item"
-            :comment="comment"
-            :communityId="comment.allocated_to"
-            @reply="launchReplyComposer"
-        />
-        <section class="smv-replies-ctnr">
-            <CommentItem v-for="reply in fetchedData"
-                class="smv-cmt-item"
-                :key="reply.id"
-                :comment="reply"
+        <div class="single-cmt-view common_ls_cntainr --dtail-app-bar" ref="feed">
+            <CommentItem class="smv-cmt-item"
+                :comment="comment"
                 :communityId="comment.allocated_to"
+                @reply="launchReplyComposer"
             />
-        </section>
-        <Spinner v-if="loading4More" />
+            <section class="smv-replies-ctnr">
+                <CommentItem v-for="reply in fetchedData"
+                    class="smv-cmt-item"
+                    :key="reply.id"
+                    :comment="reply"
+                    :communityId="comment.allocated_to"
+                />
+            </section>
+            <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length" headsup=""/>
 
-        <div class="single-cmt__add-block">
-            <span class="glow" @click="launchReplyComposer">Write a reply...</span>
+            <div class="single-cmt__add-block">
+                <span class="glow" @click="launchReplyComposer">Write a reply...</span>
+            </div>
         </div>
         <SendBox v-if="openComposer"
             immediateFocus=1
-            @outBoxing="outBoxing"
-            @sendEmote="performSendEmote"
+            @textOutbox="outBoxing"
+            @picPick="imageOutBoxing"
         />
     </div>
 </template>
@@ -62,6 +64,7 @@ export default {
 
 .smv-cmt-item{
     width: 100%;
+    margin: 15px 0;
 }
 .smv-replies-ctnr {
     width: 100%;

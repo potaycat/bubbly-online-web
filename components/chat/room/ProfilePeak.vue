@@ -4,16 +4,17 @@
         <transition name="zoom_from_click" appear @enter="enter" >
             <div class="prfl-peak shiny-white-bg box-shadow-3" ref="drpdwn">
                 <img class="pfp" :src="profile.profile_pic" />
-                <div class="prfl-peak__name" :style="`color:#${profile.fave_color}`">{{ profile.alias }}</div>
+                <div class="prfl-peak__name" >{{ profile.alias }}</div>
                 <div class="prfl-peak__cmd">
-                    <Button class="prfl-peak__cmd__btn"
-                        text="Private chat" @clicked="confirmToPrivate" />
-                    <Button class="prfl-peak__cmd__btn"
-                        text="To profile" @clicked="$router.push(`/user/${profile.username}`)" />
-                    <Button class="prfl-peak__cmd__btn"
-                        text="Kick" @clicked="kick" />
-                    <Button class="prfl-peak__cmd__btn" v-if="profile.is_admin==false"
-                        text="Promote to admin" @clicked="promote" />
+                    <Button class="prfl-peak__cmd__btn" :colorScnd="'#'+profile.fave_color"
+                        text="To profile" @clicked="$router.push(`/user/${profile.username}`)" fill/>
+                        
+                    <Button v-if="!isSelf" class="prfl-peak__cmd__btn"
+                        :colorScnd="'#'+profile.fave_color" text="Private chat" @clicked="confirmToPrivate" />
+                    <Button v-if="!isSelf&&!isPublic" class="prfl-peak__cmd__btn"
+                        :colorScnd="'#'+profile.fave_color" text="Kick" @clicked="kick" />
+                    <Button v-if="profile.is_admin==false && !isSelf && !isPublic" class="prfl-peak__cmd__btn"
+                        :colorScnd="'#'+profile.fave_color" text="Promote to admin" @clicked="promote"/>
                 </div>
             </div>
         </transition>
@@ -35,6 +36,12 @@ export default {
     computed: {
         isAdmin() {
             return this.threadInfo.roommate_info.is_admin
+        },
+        isSelf() {
+            return this.profile.username == this.$store.state.auth.my_profile.username
+        },
+        isPublic() {
+            return this.threadInfo.room_type == "public"
         }
     },
     methods: {

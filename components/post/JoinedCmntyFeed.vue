@@ -1,12 +1,12 @@
 <template>
     <div id="" class="the_big_frame">
-        <div class="common_ls_cntainr --top-lev-app-bar --with-tabs cards-wrapper" ref="feed">
+        <div class="common_ls_cntainr --top-lev-app-bar cards-wrapper" ref="feed">
             <PostCard v-for="post in fetchedData"
                 :key ="post.id"
                 :post ="post"
             />
-            <h3 class="empty-fetchedLs" v-if="empty">Empty post feed? Get started by joining a few communities</h3>
-            <Spinner v-if="loading4More" />
+            <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+                headsup="Empty post feed? Get started by joining a few communities"/>
         </div>
     </div>
 </template>
@@ -24,8 +24,20 @@ export default {
         }
     },
     watch: {
-        empty(boolVal) {
-            if (boolVal) this.$router.push('/explore')
+        "fetchedData.length"(val) {
+            if (!val && !this.loading4More) {
+                this.$router.push('/explore')
+            }
+            if (val && val < 50) {
+                this.$OneSignal.isPushNotificationsEnabled(yes => {
+                    if (!yes) {
+                        this.$OneSignal.showSlidedownPrompt()
+                        .then(() => {
+                            this.myOneSignalInit()
+                        })
+                    }
+                })
+            }
         }
     },
 }

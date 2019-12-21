@@ -36,16 +36,23 @@ label,
     color: #9b9b9b;
 }
 .form__field:focus ~ .form__label {
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
 }
 .form__field:focus {
     padding-bottom: 6px;
-    border-bottom: 2px solid rgb(72, 133, 237);
+    border-bottom: 2px solid;
+    border-color: var(--primary-color);
 }
 
 /* end of plagarism */
 
+.form__fields-wrapper {
+    width: 100%;
+    padding: 0 20px;
+}
+
 .form__invalid {
+    width: 100%;
     margin-top: 2px;;
     color: red;
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="width:100%">
         <transition name="fade" appear >
             <div class="prfl-info card box-shadow-3">
                 <img id="prfl-inf__cover" :src="profile.cover_photo" />
@@ -8,15 +8,15 @@
                     <p v-if="profile.you_block">You blocked this person</p>
                     <p v-else-if="profile.you_block">This person blocked you</p>
                     <div v-else-if="isSelf" id="prfl-inf__cmd">
-                        <Button class="prfl-inf__cmd__btn" style="width:auto"
+                        <Button class="prfl-inf__cmd__btn" style="width:auto" :colorScnd="`#${profile.fave_color}`"
                             text="Edit Profile" @clicked="$router.push('/settings/profile')" :padding="['5px', '20px']"/>
                     </div>
                     <div v-else id="prfl-inf__cmd">
-                        <Button class="prfl-inf__cmd__btn"
+                        <Button class="prfl-inf__cmd__btn" :colorScnd="`#${profile.fave_color}`"
                             text="Chat" @clicked="confirmToPrivate" :padding="['5px', '0']" />
-                        <Button v-if="profile.you_follow" class="prfl-inf__cmd__btn"
+                        <Button v-if="profile.you_follow" class="prfl-inf__cmd__btn" :colorScnd="`#${profile.fave_color}`"
                             text="Following" @clicked="confirmUnfollow" :padding="['5px', '0']" fill/>
-                        <Button v-else class="prfl-inf__cmd__btn"
+                        <Button v-else class="prfl-inf__cmd__btn" :colorScnd="`#${profile.fave_color}`"
                             text="Follow" @clicked="makeFollow" :padding="['5px', '0']" />
                     </div>
                     <div id="prfl-inf__name">{{ profile.alias }}</div>
@@ -41,11 +41,13 @@
         </transition>
         <Dropdown v-if="moring" 
             :options="[
+                profile.you_follow ? {action:'confirmUnfollow', label:'Unfollow'} :
+                    {action:'makeFollow', label:'Follow'},
+                {action:'copyUserUrl', label:'Copy profile URL'},
                 profile.you_block ? {action:'makeUnblock', label:'Unblock'} :
                     {action:'confirmBlock', label:'Block'},
                 {action:'confirm_userReport', label:'Report'},
-                {action:'make_userCopyUrl', label:'Copy profile URL'},
-            ].filter(x=>x)"
+            ]"
         />
         <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
@@ -69,11 +71,6 @@ export default {
             return this.profile.username == this.$store.state.auth.my_profile.username
         }
     },
-    created() {
-        if (this.isSelf) this.$store.commit('auth/storeAuthUser', {
-            ...this.$store.state.auth.my_profile, ...this.profile 
-        })
-    },
     methods: {
         onDropDownPick() {
             this.$store.commit('appBar/burgerState', false)
@@ -84,36 +81,31 @@ export default {
         onBlockHandle() {this.$emit('blocked')},
         onUnblockHandle() {this.$emit('unblocked')},
 
-        toDetailBanner() { // TODO mixin
-            this.$store.commit('appBar/loadText', this.profile.alias)
-            this.$store.commit('appBar/loadPic', {
-                src: this.profile.profile_pic,
-                style:'circle'
-            })
+        copyUserUrl() {
+            navigator.clipboard.writeText(`${window.location.origin}/user/${this.profile.username}`)
+                .then()
+                .catch(err => {
+                    console.error('CATCHED: ', err);
+                })
         },
         viewFollowings() {
-            this.toDetailBanner()
             this.$router.push(`/user/${this.profile.username}/circles?get=followings`)
         },
         viewFollowers() {
-            this.toDetailBanner()
             this.$router.push(`/user/${this.profile.username}/circles?get=followers`)
         },
     },
 }
 </script>
 
-<style scoped>
+<style>
 .prfl-info {
     max-width: 950px;
-    min-width: 300px;
     margin: 0 8px;
 }
 
 .prfl-info #prfl-inf__cover {
     border-radius: 15px 15px 0 0;
-    /*box-shadow: inset 0 0 10px #000;*/
-    /* top: 0; */
     right: 0;
     width: 100%;
     height: 200px;
@@ -182,7 +174,7 @@ export default {
 .prfl-inf__follows > span:nth-child(2) {
     margin-left: 12px;
 }
-.prfl-inf__follows >span >strong {
+.prfl-inf__follows > span > strong {
     color:#000;
 }
 </style>

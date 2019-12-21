@@ -1,9 +1,9 @@
 <template>
 <transition appear name="zoom_fade">
-    <div class="total_darkness">
+    <div class="total_darkness is-fixed">
         <div id="add-container" class="box-shadow-4">
             <div class="add__btn-ctnr">
-                <button class="add__btn" @click="$router.back()">Cancel</button>
+                <button class="add__btn" @click="$parent.openAddDiag=false">Cancel</button>
                 <button class="add__btn" style="margin-left:auto" @click="hahayes()">
                     <div v-if="roomId">Add</div>
                     <div v-else>Enter room</div>
@@ -25,39 +25,39 @@
 
                 <i v-if="!selected_peeps.length" style="color:#00000077" class="material-icons-round">search</i>
                 <input
-                    :placeholder="searcgphrase"
-                    v-model="srch"
+                    placeholder="Search"
                     autocomplete="off"
-                    @input="deleting=null"
+                    @input="deleting=null;debounceSearch($event)"
                     @click="deleting=null"
-                    @keyup.delete="!srch&&selected_peeps.length ? toRemove(selected_peeps[selected_peeps.length-1]) :null"
+                    @keyup.delete="!kw&&selected_peeps.length ? toRemove(selected_peeps[selected_peeps.length-1]) :null"
                 >
             </div>
             
             <Tabs
                 contractless=1
-                style="position: absolute; width: 95%;
-                    background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%)"
+                class="add-diag__tabs"
                 :tabs="['FOLLOWINGS', 'FOLLOWERS']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
             />
             
-            <div id="_peep-ls-ctn" ref="feed"><div class="_peep-list">
-                <transition-group name="fade">
-                    <div v-for="person in fetchedData"
-                        :key="person.username"
-                        class="peep-ls__item glow"
-                        @click="toRemove(person, true)"
-                    >
-                        <img class="pfp" :src="person.profile_pic">
-                        <p>{{ person.alias }}</p>
-                        <div :id="[isChosen(person.username) ? 'checked' :null]" class="checkbox"/>
-                    </div>
-                </transition-group>
-                <h3 class="empty-fetchedLs" v-if="empty">No follows</h3>
-                <Spinner v-if="loading4More" />
-            </div></div>
+            <div id="_peep-ls-ctn" ref="feed">
+                <div class="_peep-list">
+                    <transition-group name="fade">
+                        <div v-for="person in fetchedData"
+                            :key="person.username"
+                            class="peep-ls__item glow"
+                            @click="toRemove(person, true)"
+                        >
+                            <img class="pfp" :src="person.profile_pic">
+                            <p>{{ person.alias }}</p>
+                            <div :class="['checkbox', isChosen(person.username)?'checked':null]"/>
+                        </div>
+                    </transition-group>
+                </div>
+                <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+                    headsup="Empty"/>
+            </div>
         </div>
     </div>
 </transition>
@@ -69,39 +69,42 @@ import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
     mixins: [tabs, feedingFrenzy],
     props: ['roomId'],
-    data() {
-        return {
-            srch: "",
-            selected_peeps: [],
-            deleting: null,
-
-            searcgphrase: "Search my followings",
-            feedUrl: `accounts/${this.$store.state.auth.my_profile.username}/circles/?minimal=1&`,
+    data:() => ({
+        kw: "",
+        selected_peeps: [],
+        deleting: null,
+    }),
+    // nonReactive: {
+        offsetProp: 'username',
+        debounce: null,
+    // },
+    computed: {
+        feedUrl() {
+            return `accounts/${this.$store.state.auth.my_profile.username
+                }/circles/?minimal=1&search=${this.kw}&${
+                    this.currentTab ? 'get_followers=1&' : ''
+                }`
         }
     },
-    // const: {
-        offsetProp: 'username',
-    // }
     watch: {
-        currentTab(get_flwer) {
-            const usr = this.$store.state.auth.my_profile.username
-            if (get_flwer) {
-                this.searcgphrase = "Search my followers"
-                this.feedUrl = `accounts/${usr}/circles/?minimal=1&get_followers=1&`
-            } else {
-                this.searcgphrase = "Search my followings"
-                this.feedUrl = `accounts/${usr}/circles/?minimal=1&`
-            }
+        feedUrl() {
             this.firstFetch()
         },
     },
     methods: {
+        debounceSearch(evt) {
+            clearTimeout(this.$options.debounce)
+            this.$options.debounce = setTimeout(() => {
+                this.kw = evt.target.value
+            }, 600)
+        },
+
         toRemove(whom, bypass) {
-            let index = this.selected_peeps.findIndex(x => x.username == whom.username)
+            const index = this.selected_peeps.findIndex(x => x.username == whom.username)
             if (index == -1) {
-                this.selected_peeps.push(whom) //(JSON.parse(JSON.stringify(whom))) // deep copy
+                this.selected_peeps.push(whom)
             } else {
-                if (this.deleting == whom.usernameid || bypass) {
+                if (this.deleting == whom.username || bypass) {
                     this.selected_peeps.splice(index, 1)
                     this.deleting = null
                 } else {
@@ -129,11 +132,11 @@ export default {
                 )
                     .then(res => {
                         if (this.roomId) {
-                            this.$router.back()
                             this.$emit('added')
                         } else {
-                            this.$router.push(`/chat/t/${res.data.id}`)
+                            this.$store.dispatch("chatx/toChat", res.data)
                         }
+                        this.$parent.openAddDiag = false
                     })
             }
         }
@@ -146,15 +149,16 @@ export default {
     background: #fff;
     z-index: 999;
     border-radius: 20px;
-    width: 95%;
     height: 95%;
+    width: 600px;
+    position: relative;
 }
 #add-container .add__btn-ctnr {
     display: flex;
     padding: 14px 10px;
 }
 .add__btn {
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
     font-weight: bold;
 }
 .add__btn:active {
@@ -198,12 +202,11 @@ export default {
 }
 
 #_peep-ls-ctn {
-    height: calc(100% - 94px);
+    height: calc(100% - 74px);
     border-radius: 0 0 20px 20px;
     overflow: hidden;
 }
 ._peep-list {
-    height: 100%;
     overflow: auto;
     padding-top: 50px;
 }
@@ -231,11 +234,17 @@ export default {
     margin-right: 10px;
     border: 2px solid #00000077;
 }
-._peep-list #checked {
+._peep-list .checked {
+    background: var(--primary-color);
     border: none;
-    background: rgba(72, 133, 237, 0.95);
     background-image: url("~assets/ding.png");
     background-size: cover;
 }
 
+.add-diag__tabs {
+    position: absolute;
+    width: 100%;
+    /* margin: 0 2.5%; */
+    background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%);
+}
 </style>

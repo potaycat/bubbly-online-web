@@ -1,14 +1,12 @@
 <template>
 <transition name="fade" appear >
-    <div class="total_darkness no-bg" @click.self="close">
+    <div class="total_darkness no-bg is-fixed" @click.self="close">
         <transition name="zoom_from_click" appear @enter="enter" >
             <div class="share-ctnr shiny-white-bg box-shadow-3">
                 <div class="share__service glow"
                     v-for="service in [
                         {action: 'rePost', title: 'Write a post with link to this post', icon: 'create'},
-                        {action: 'copyURL', title: 'Copy post URL', icon: 'link'},
-                        {action: 'fbShare', title: 'Share to Facebook', icon: 'share'},
-                        {action: 'twitterShare', title: 'Share to Twitter', icon: 'share'},
+                        ...moreSharingoption
                     ]"
                     :key="service.action"
                     @click="performAct(service.action)"
@@ -22,7 +20,7 @@
                     ref="fbLink" target="_blank" style="display:none"
                 />
                 <a 
-                    :href="`http://twitter.com/share?url=${postLink}&text=${$options.sharePhrase}`"
+                    :href="`http://twitter.com/share?url=${postLink}&text=${sharePhrase}`"
                     ref="twitterLink" target="_blank" style="display:none"
                 />
 
@@ -37,16 +35,37 @@ import { child } from '@/mixins/fancyTransition/zoom_from_click'
 
 export default {
     mixins: [child],
-    props: ['postId'],
-    // consts {
-        sharePhrase: encodeURIComponent("Từ Bubbly"),
-    //},
+    props: ['postId', 'postTitle'],
     computed: {
+        sharePhrase() {
+            return this.postTitle ? this.postTitle+" trên" : "Từ" + " Bubbly"
+        },
         postLink() {
             return `${window.location.origin}/post/${this.postId}`
+        },
+        moreSharingoption() {
+            if (navigator.share) { // Web Share API
+                return [{action: 'launchWebShareAPI', title: 'More...', icon: '_'}]
+            } else {
+                return [
+                    {action: 'copyURL', title: 'Copy post URL', icon: 'link'},
+                    {action: 'fbShare', title: 'Share to Facebook', icon: 'share'},
+                    {action: 'twitterShare', title: 'Share to Twitter', icon: 'share'},
+                ]
+            }
         }
     },
     methods: {
+        launchWebShareAPI() {
+            navigator.share({
+                title: this.sharePhrase,
+                url: this.postLink
+            })
+                .then(() => {
+                    this.close()
+                })
+                .catch(console.error)
+        },
         close() {
             this.$parent.onClose()
         },
@@ -64,7 +83,7 @@ export default {
                 })
                 .catch(err => {
                     console.error('CATCHED: ', err);
-                });
+                })
         }
     },
 }
@@ -75,7 +94,6 @@ export default {
     padding: 10px 0;
     max-width: 320px;
     border-radius: 10px;
-    overflow: hidden;
 }
 .share__service {
     padding: 10px;

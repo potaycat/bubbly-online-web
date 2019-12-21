@@ -1,6 +1,11 @@
+.form__togglr-wrapper {
+    display: flex;
+    margin: 35px 3px 25px 3px;
+}
+
 
 .material-toggle input:empty {
-    margin-left: -9999px;
+    display: none;
 }
 
 .material-toggle input:empty ~ label {
@@ -8,9 +13,6 @@
     float: left;
     width: 45px;
     cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
 }
 
@@ -19,7 +21,6 @@
     position: absolute;
     display: block;
     content: ' ';
-    -webkit-transition: all 250ms cubic-bezier(.4,0,.2,1);
     transition: all 250ms cubic-bezier(.4,0,.2,1);
 }
   
@@ -50,11 +51,11 @@ input.switch:empty ~ label:after {
 }
 
 .material-toggle input:checked ~ label:before {
-    background-color: #1e88e5;
+    background-color: var(--primary-color-reduced-opacity);
 }
 
 .material-toggle input:checked ~ label:after {
     left: 15px;
-    background-color: #1565c0;
-    border-color: #1565c0;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }

@@ -7,9 +7,9 @@
             You're at: Bubbly
         </h2>
         <div class="links">
-            <Button class="form-btn" style="margin-right:10px"
+            <Button class="auth-form__btn" style="margin-right:10px"
                 text="Login" @clicked="$router.push('/auth/login')" />
-            <Button class="form-btn" 
+            <Button class="auth-form__btn" 
                 text="Register" @clicked="$router.push('/auth/register')" fill />
         </div>
     </section>

@@ -2,20 +2,21 @@
     <div id="myRoomLs">
         <div class="the_big_frame">
             <div class="common_ls_cntainr --top-lev-app-bar --with-tabs" ref="feed">
-                <ConvoItem v-for="room in fetchedData"
-                    :key="room.id"
-                    :room="room"
-                />
-                <h3 class="empty-fetchedLs" v-if="empty">No conversations. Try joining some public chats or get to know people through private chats</h3>
-                <Spinner v-if="loading4More" />
+                <transition-group name="fade" style="width:100%">
+                    <ConvoItem v-for="room in fetchedData"
+                        :key="room.id"
+                        :room="room"
+                    />
+                </transition-group>
+                <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
             </div>
             
-            <FAB @clicked="openAddDiag"
+            <FAB @clicked="openAddDiag=true"
                 icon= "create"
                 actionName= "New message"
             />
         </div>
-        <AddDiag v-if="$route.query.chat_add=='open'"/>
+        <AddDiag v-if="openAddDiag"/>
     </div>
 </template>
 
@@ -31,15 +32,48 @@ export default {
         feedingFrenzy, refreshFrenzy, maintainScrllPos,
         scrlDirection,
     ],
-    data() {
-        return {
-            feedUrl: 'chat/my-rooms/',
+    data:() => ({
+        feedUrl: 'chat/my-rooms/?limit=20&',
+        openAddDiag: false
+    }),
+    computed: {
+        currentChat() {
+            return this.$store.state.chatx.currentChat
         }
     },
-    methods: {
-        openAddDiag() {
-            this.$router.push({query: {chat_add: 'open'}})
+    
+    watch: {
+        currentChat: {
+            deep: true,
+            immediate: true,
+            handler(obj) {
+                const index = this.fetchedData.findIndex(t => t.id == obj.id)
+                if (index != -1) {
+                    this.fetchedData[index] = {
+                        ...this.fetchedData[index],
+                        ...obj
+                    }
+                    this.$forceUpdate()
+                }
+            }
+        },
+        '$route.query.room'(newVal, oldVal) {
+            if (oldVal) {
+                this.autoRefresh()
+            }
         },
     },
+    mounted() {
+        setInterval(() => {
+            this.autoRefresh()
+        }, 42069)
+    },
+    methods: {
+        autoRefresh() {
+            if (this.scrollCtnr.scrollTop<10 && this.$route.name=='chat') {
+                this.firstFetch()
+            }
+        },
+    }
 }
 </script>

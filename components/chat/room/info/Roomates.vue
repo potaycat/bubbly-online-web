@@ -3,12 +3,12 @@
     <div class="rmate-ctnr" ref="feed">
             <div class="rmate__actions">
                 <p class="rmate__actions__lable">Options</p>
-                <button v-if="isAdmin" class="rmate__actions__btn glow" @click="openAddDiag">Add members</button>
+                <button v-if="isAdmin" class="rmate__actions__btn glow" @click="openAddDiag=true">Add members</button>
                 <!-- <button class="glow">Sort by:</button> -->
                 <button class="rmate__actions__btn glow" @click="">Order by:<br>Time</button>
             </div>
 
-        <transition-group name="fade_in">
+        <transition-group name="fade">
             <div v-for="mate in fetchedData" :key="mate.username" class="rmate-item push"
                 @click="popItUp($event);performDisplay(mate)">
                 <img class="pfp" :src="mate.profile_pic">
@@ -17,9 +17,9 @@
             </div>
         </transition-group>
 
-        <AddDiag v-if="$route.query.chat_add=='open'" :roomId="threadInfo.id" 
-            @added="onDidSomething" style="height:calc(100% - 35px);top:45px"/>
-        <ProfilePeak v-if="peakingAt" @close="onClose" 
+        <AddDiag v-if="openAddDiag" :roomId="threadInfo.id" 
+            @added="onDidSomething" class="rmate__add-diag no-bg"/>
+        <ProfilePeak v-if="peakingAt" @close="onClose" style="top:-200px"
             :profile="peakingAt" :touchPos="touchPos"
             :threadInfo="threadInfo"
         />
@@ -43,12 +43,10 @@ export default {
     data() {
         return {
             feedUrl: `chat/${this.threadInfo.id}/roommates/`,
+            openAddDiag: false
         }
     },
     methods: {
-        openAddDiag() {
-            this.$router.push({query: {chat_add: 'open'}})
-        },
         onDidSomething() {
             this.firstFetch()
         },
@@ -74,11 +72,11 @@ export default {
 .rmate-ctnr span {
     padding-top: 3px;
     overflow: auto;
-    padding-left: 85px;
+    padding: 0 85px;
 }
 
 .rmate__actions{
-    background: #00000055;
+    background: #00000022;
     z-index: 99;
     backdrop-filter: blur(5px);
     box-shadow: 0px 0px 10px #00000055;
@@ -104,7 +102,7 @@ export default {
 
 .rmate-ctnr .rmate-item{
     color: #fff;
-    text-shadow: 0px 0px 17px #333;
+    text-shadow: 0px 0px 4px #222;
     height: 95px;
     width: 95px;
     display: flex;
@@ -133,6 +131,12 @@ export default {
     font-weight: bold;
     font-size: 10px;
     background: slateblue;
+}
+
+.rmate__add-diag {
+    height: calc(100% - 45px);
+    padding: 0 10px;
+    top: 45px;
 }
 
 

@@ -4,8 +4,8 @@
             :key="community.id"
             :community="community"
         />
-        <h3 class="empty-fetchedLs" v-if="empty">This user has not joined any community</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
+            headsup="This user has not joined any community"/>
     </div>
 </template>
 

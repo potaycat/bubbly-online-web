@@ -3,18 +3,17 @@
     <!-- TODO refactor -->
     <div :class="['total_darkness', 'no-bg', quickLeave&&!$options.isMobile?'react-add--leave':null]"
         oncontextmenu="return false"
-        @mousedown.self="$emit('performReact', null)"
-        @touchstart.self="$emit('performReact', null)"
+        @mousedown.self="$emit('cancel')"
+        @touchstart.self="$emit('cancel')"
     >
             <transition name="zoom_in_fade" appear>
         <div class="react-add-ctnr shiny-white-bg box-shadow-4" ref="drpdwn"
-            @mouseleave="quickLeave?$emit('performReact', null):null">
+            @mouseleave="quickLeave?$emit('cancel'):null">
             <div v-for="emote in emotes" :key="emote.id" class="add__emo-item" oncontextmenu="return false"
-                @click="$emit('performReact', emote.id)"
+                @click="$emit('emoteChose', emote.id)"
             >
                 <img :src="emote.img_src">
             </div>
-            <h3 class="empty-fetchedLs" v-if="!emotes.length">No Emotes</h3>
             <Spinner v-if="!emotes" color="#888" style="margin:6px" />
         </div>
             </transition>
@@ -40,7 +39,7 @@ export default {
             emotesByCmnty: 'reactionx/emotesByCmnty',
         }),
         emotes() {
-            return this.emotesByCmnty(this.communityId)
+            return this.emotesByCmnty(this.communityId).filter(emo => emo.active)
         }
     },
     created() {
@@ -53,7 +52,7 @@ export default {
         const pos = this.position || {}
         drpdwn.style.bottom = `${pos.y || 20}px`
         drpdwn.style.left = `${pos.x ?
-            document.body.clientWidth-pos.x<280 ? document.body.clientWidth-280 : pos.x
+            window.innerWidth-pos.x<280 ? window.innerWidth-280 : pos.x
                 : 15}px`
     },
 }

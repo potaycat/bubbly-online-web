@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div style="width:100%">
         <transition name="fade" appear>
             <div class="cmnty-info card box-shadow-3">
                 <img class="cmnty-inf__cover" :src="community.cover_img" />
@@ -15,10 +15,12 @@
                         {{ community.name }}
                     </div>
                     <div class="cmnty-inf__moto">{{ community.moto }}</div>
-                    <div v-if="community.membership_info&&community.membership_info.role=='banned'">You are banned from this community</div>
+                    <div v-if="isBanned">You are banned from this community</div>
                     <div v-else class="cmnty-inf__actions">
-                        <Button v-if="roleDisplay" @clicked="onRoleButtonClick" :text="roleDisplay" :padding="['5px', '0']" fill/>
-                        <Button v-else @clicked="makeJoin" text="Join" :padding="['5px', '0']" />
+                        <Button v-if="roleDisplay" @clicked="onRoleButtonClick" :text="roleDisplay" :padding="['5px', '0']" 
+                            :colorScnd="`#${community.theme_color}`" fill/>
+                        <Button v-else @clicked="makeJoin" text="Join" :padding="['5px', '0']"
+                            :colorScnd="`#${community.theme_color}`" />
                     </div>
                 </section>
             </div>
@@ -28,7 +30,6 @@
             :options="[
                 {action:'copyUrl', label:'Copy Community URL'},
                 {action:'confirm_report', label:'Report Community'},
-                {action:'uwu', label:'OwO'},
             ].filter(x=>x)"
         />
     </div>
@@ -48,19 +49,20 @@ export default {
     props: ["community"],
     computed: {
         moring() {return this.$store.state.appBar.moring},
-        isBanned() {
-            return null
-        },
-        isModerator() {return this.community.membership_info.role=='moderator'},
-        isAdministrator() {return this.community.membership_info.role=='administrator'},
-        isMember() {return this.community.membership_info.role=='member'},
-        roleDisplay() {
+        hasRole() {
             if (this.community.membership_info) {
-                return this.isAdministrator ? 'Administering' :
-                    this.isModerator ? 'Moderating' :
-                    this.isMember ? 'Joined' : ''
-            }
-            return null
+                return this.community.membership_info.role
+            } return null
+        },
+        isBanned() { return this.hasRole == 'banned' },
+        isModerator() { return this.hasRole == 'moderator' },
+        isAdministrator() { return this.hasRole == 'administrator' },
+        isMember() { return this.hasRole == 'member' },
+        roleDisplay() {
+            if (this.isMember) return 'Joined'
+            if (this.isModerator) return 'Moderating'
+            if (this.isAdministrator) return 'Administering'
+            return ''
         }
     },
     methods: {
@@ -71,7 +73,7 @@ export default {
             if (this.isMember) {
                 this.confirmLeave()
             } else if (this.isModerator || this.isAdministrator) {
-                this.$router.push(`/community/${this.$route.params.id}/manage`)
+                this.$router.push(`/communities/${this.$route.params.id}/manage`)
             }
         },
         toCmntyMembers() {
@@ -80,10 +82,7 @@ export default {
                 src: this.community.icon_img,
                 style:'square'
             })
-            this.$router.push(`/community/${this.$route.params.id}/members`)
-        },
-        onJoinHandle(res) {
-            this.community.membership_info = res.data
+            this.$router.push(`/communities/${this.$route.params.id}/members`)
         },
         onLeaveHandle() {
             this.community.membership_info = null
@@ -97,7 +96,7 @@ export default {
             }
         },
         copyUrl() {
-            navigator.clipboard.writeText(`${window.location.origin}/community/${this.community.id}`)
+            navigator.clipboard.writeText(`${window.location.origin}/communities/${this.community.id}`)
         }
     }
 };
@@ -106,7 +105,6 @@ export default {
 <style>
 .cmnty-info {
     max-width: 950px;
-    min-width: 300px;
     margin: 0 8px;
 }
 

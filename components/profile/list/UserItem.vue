@@ -1,5 +1,5 @@
 <template>
-<transition name="fade_in" appear>
+<transition name="fade" appear>
     <div style="position:relative;width:100%">
         <div class="user-block glow"
             @click="goToProfile"
@@ -20,9 +20,9 @@
         </div>
         
         <div v-if="!disableFollowBtn && profile.username!=$store.state.auth.my_profile.username">
-            <Button v-if="profile.you_follow" class="usr-blck__btn"
+            <Button v-if="profile.you_follow" class="usr-blck__btn" :colorScnd="`#${profile.fave_color}`"
                 text="Following" @clicked="confirmUnfollow" :padding="['2px', '10px']" fill lite/>
-            <Button v-else class="usr-blck__btn"
+            <Button v-else class="usr-blck__btn" :colorScnd="`#${profile.fave_color}`"
                 text="Follow" @clicked="makeFollow" :padding="['2px', '10px']" lite/>
         </div>
         <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
@@ -78,7 +78,7 @@ export default {
 }
 
 .usr-blck__txt {
-    margin-left: 10px;
+    margin-left: 15px;
     width: 100%;
 }
 
@@ -86,7 +86,7 @@ export default {
     font-weight: bold;
     display: flex;
     align-items: center;
-    padding-bottom: 2px;
+    padding-bottom: 3px;
 }
 .usr-blck__btn {
     position: absolute;
@@ -105,7 +105,7 @@ export default {
 
 
 
-.usr-blck__role{
+.usr-blck__role {
     position: absolute;
     top: 53px;
     padding: 1px 5px;
@@ -113,15 +113,15 @@ export default {
     font-weight: bold;
     font-size: 11px;
 }
-.Admin {
+.usr-blck__role.Admin {
     background: rebeccapurple;
     color: white;
 }
-.Mod {
+.usr-blck__role.Mod {
     background: darkcyan;
     color: white;
 }
-.Member {
+.usr-blck__role.Member {
     display: none
 }
 

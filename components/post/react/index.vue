@@ -26,7 +26,7 @@
 
 <script>
 import ReactItem from './ReactItem'
-import ReactAdd from './ReactAdd'
+// TODO refactor
 export default {
     data:() =>({
         emote404: false,
@@ -38,10 +38,7 @@ export default {
             }
         }
     },
-    components: {
-        ReactItem,
-        ReactAdd,
-    },
+    components: { ReactItem },
     props: [
         'reacts',
         'myReact',
@@ -54,7 +51,9 @@ export default {
             if (this.myReact == emoteId) {
                 this.$emit('deleteReact', emoteId)
             } else {
-                this.$emit('quickReact', emoteId)
+                console.log(emoteId);
+                
+                this.$emit('emoteChose', emoteId)
             }
         }
     }
@@ -75,7 +74,6 @@ export default {
 
 .react-toggle-btn {
     font-size: 20px;
-    color: rgba(72, 133, 237, 0.8);
 }
 .react-toggle-btn.react-icon--smol{
     font-size: 18px;
@@ -89,11 +87,12 @@ export default {
     margin-right: 100px;
     display: flex;
     align-items: center;
+    color: var(--primary-color);
+    opacity: 0.7;
 }
 .cmt__reply-btn {
     font-size: 12px;
     margin-left: 8px;
-    color: rgba(72, 133, 237, 0.8);
     font-weight: bold;
 
 }

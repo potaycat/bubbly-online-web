@@ -1,16 +1,16 @@
 <template>
-    <div class="thr glow"
-        @click="$router.push(`/chat/t/${room.id}`);$store.commit('chatx/loadChat', room)">
-        <img class="pfp" :src="dsplPicSrc">
-        <div v-if="isUnread" class="thr__dot"></div>
+    <div :class="['thrd glow', isActive?'room--active': null]"
+        @click="$store.dispatch('chatx/toChat', room)">
+        <img :class="isPublic?'cmnty_ico':'pfp'" :src="dsplPicSrc">
+        <div v-if="isUnread" class="thrd__dot"></div>
         <div class="thread-txt">
-            <div class="thr__top-txt">
-                <p class="thr-top__title" :style="[room.room_type=='direct' ? {'color':'#'+room.room_type_data.fave_color} :null]"
+            <div class="thrd__top-txt">
+                <p class="thrd__top__title" :style="[room.room_type=='direct' ? {'color':'#'+room.room_type_data.fave_color} :null]"
                 >{{ dsplRoomTtle }}</p>
-                <span>{{ room.last_msg.timestamp | tiemstamp }}</span>
+                <span>{{ room.last_msg.timestamp | tiemstamp2 }}</span>
             </div>
-            <p class="thr__last-msg" :style="isUnread? 'font-weight:bold; color:black' :null">
-                {{ room.last_msg | lastMsgDspl }}
+            <p class="thrd__last-msg" :style="isUnread? 'font-weight:bold; color:black' :null">
+                {{ renderLastMsg(room.last_msg) }}
             </p>
         </div>
     </div>
@@ -35,10 +35,14 @@ export default {
             return this.isDirect ? dat.alias :
                 this.room.name ? this.room.name :
                 this.isGroup ? "Nhóm " + dat.roommate_count + " người" :
-                dat.community.name + ` #${dat.order}`
+                this.isPublic ? dat.community.name + ` #${dat.order}` : ""
         },
         isUnread() {
+            if (this.isActive) return false
             return new Date(this.room.roommate_info.last_seen) < new Date(this.room.last_msg.timestamp)
+        },
+        isActive() {
+            return this.$route.query.room == this.room.id
         }
     }
 }
@@ -46,18 +50,21 @@ export default {
 
 
 <style>
-.thr {
-    padding: 10px 15px;
+.room--active {
+    background: #d3d3d3;
+}
+.thrd {
+    padding: 8px 15px;
     word-wrap: break-word;
     display: flex;
     align-items: center;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 15px;
     position: relative;
 }
-.thr .pfp {
+.thrd .pfp, .thrd .cmnty_ico {
     align-self: flex-start;
-    z-index: -2;
+    /* z-index: -2; */
     height: 55px;
     min-width: 55px;
     max-width: 55px;
@@ -66,29 +73,28 @@ export default {
     margin-left: 15px;
     width: 100%;
 }
-.thread-txt .thr__top-txt{
+.thread-txt .thrd__top-txt{
     display: flex;
     width: 100%;
 }
-.thr__top-txt .thr-top__title {
+.thrd__top-txt .thrd__top__title {
     font-weight: bold;
-    word-wrap: break-word;
     word-break: break-all;
-
+    
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical; 
 }
-.thr__top-txt span {
+.thrd__top-txt > span {
     color: #888;
     margin: 2px 0 0 auto;
     font-size: 14px;
     padding-left: 10px;
 }
-.thread-txt .thr__last-msg{
+.thread-txt .thrd__last-msg{
     color: #777;
-    font-size: 15px;
+    font-size: 14px;
     
     word-break: break-all;
     overflow: hidden;
@@ -99,14 +105,15 @@ export default {
     max-height: 70px;
 }
 
-.thr__dot {
-  position: absolute;
-  top: 10px;
-  left: 58px;
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
-  background-color: rgba(72, 133, 237, 0.95);
-  /* box-shadow: #777 */
+.thrd__dot {
+    position: absolute;
+    top: 9px;
+    left: 57px;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    opacity: 0.95;
+    /* box-shadow: #777 */
 }
 </style>

@@ -72,7 +72,16 @@ export const actions = {
 
 export const getters = {
     emotesByCmnty: (state) => (cmntyId) => {
-        return state.emotes[cmntyId] || state.localEmotes[cmntyId]
+        const eArr = state.emotes[cmntyId] || state.localEmotes[cmntyId] || []
+        return [
+            {  
+                id: 1,
+                img_src: require('@/assets/heart.png'),
+                name: "Like",
+                active: true
+            },
+            ...eArr
+        ]
     },
     emoteById: (state, getters) => (cmntyId, icon_id) => {
         const icons = getters.emotesByCmnty(cmntyId)

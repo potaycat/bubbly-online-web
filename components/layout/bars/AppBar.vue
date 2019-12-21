@@ -74,7 +74,7 @@ export default {
     justify-content: space-between;
 }
 .dtail-bar__btn {
-    color: rgb(72, 133, 237);
+    color: var(--primary-color);
     height: 100%;
     min-width: 45px;
     max-width: 45px;

@@ -5,18 +5,18 @@
             <img class="pfp" :src="pfp">
             <span class="glow" @click="launchReplyComposer">Add yours...</span>
         </div>
-
         <CommentItem v-for="comment in fetchedData"
             :key="comment.id"
             :comment="comment"
             :communityId="onPost.allocated_to.id"
         />
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length" headsup=""/>
+        
         <SendBox v-if="openComposer"
-            class="in-comment-send-box"
             immediateFocus=1
-            @outBoxing="outBoxing"
-            @sendEmote="performSendEmote"
+            @textOutbox="outBoxing"
+            @picPick="imageOutBoxing"
+            class="pf-comments__send-box"
         />
     </section>
 </template>
@@ -68,9 +68,7 @@ export default {
     width: 100%;
 }
 
-.in-comment-send-box {
-    transform: translateX(-56px);
-    width: calc(100% + 41px) !important;
-    clip-path: inset(0 0 0 41px);
+.pf-comments__send-box {
+    transform: translateX(-15px);
 }
 </style>

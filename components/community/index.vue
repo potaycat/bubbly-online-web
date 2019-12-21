@@ -1,19 +1,20 @@
 <template>
-    <div class="the_big_frame"><div class="common_ls_cntainr --dtail-app-bar" ref="feed">
-        <CommunityInfo :community="community" />
-        <Tabs
-            lockable=1
-            :tabs="['POSTS', 'CHAT ROOMS', 'PINBOARD']"
-            :currentTab="currentTab"
-            @switchTo="newTab"
-        />
-        <keep-alive>
-            <CommunityPosts v-if="currentTab==0" :community="community" />
-            <PublicChats v-if="currentTab==1"  :community="community"/>
-            <Anouncements v-if="currentTab==2"  :community="community"/>
-        </keep-alive>
-
-    </div></div>
+    <div class="the_big_frame">
+        <div class="common_ls_cntainr --dtail-app-bar" ref="feed">
+            <CommunityInfo :community="community" />
+            <Tabs
+                lockable=1
+                :tabs="['POSTS', 'CHAT ROOMS', 'PINBOARD']"
+                :currentTab="currentTab"
+                @switchTo="newTab"
+            />
+            <keep-alive>
+                <CommunityPosts v-if="currentTab==0" :community="community" />
+                <PublicChats v-if="currentTab==1"  :community="community"/>
+                <Anouncements v-if="currentTab==2"  :community="community"/>
+            </keep-alive>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -23,13 +24,12 @@ import CommunityInfo from './CommunityInfo'
 import CommunityPosts from './list/CommunityPosts'
 import PublicChats from './list/PublicChats'
 import Anouncements from './list/Anouncements'
-
 export default {
     components: {
         CommunityInfo,
         CommunityPosts,
         PublicChats,
-        Anouncements
+        Anouncements,
     },
     mixins: [tabs],
     props: ['community'],
@@ -54,6 +54,3 @@ export default {
     }
 };
 </script>
-
-<style>
-</style>

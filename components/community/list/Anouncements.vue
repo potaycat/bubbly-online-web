@@ -5,8 +5,7 @@
         >
             <BubblyMarkdownParse :text="anoucemnt.text" :attachments="anoucemnt.attachments" />
         </div>
-        <h3 class="empty-fetchedLs" v-if="empty">No pinned posts</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
         <FAB @clicked="$router.push(`/post/compose?to=${community.id}&type=pinboard`)"
             v-if="community.membership_info && 
                 ['moderator','administrator'].includes(community.membership_info.role)"

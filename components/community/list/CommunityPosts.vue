@@ -5,14 +5,13 @@
             :post ="post"
             :community="community"
         />
-        <h3 class="empty-fetchedLs" v-if="empty">No posts</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
+        
         <FAB @clicked="$router.push(`/post/compose?to=${community.id}`)"
             v-if="community.membership_info && 
                 ['moderator','administrator','member'].includes(community.membership_info.role)"
             icon= "add"
             actionName= "Post to community"
-            inActvtView=1
         />
     </div>
 </template>

@@ -8,9 +8,6 @@
         </h1>
         <p>Sorry for the inconvenience</p>
         <div>
-            <NuxtLink to="/auth/login" style="color:#0000ff">
-                Login
-            </NuxtLink>
             <NuxtLink to="/" style="margin-left:10px;color:#0000ff">
                 Home
             </NuxtLink>

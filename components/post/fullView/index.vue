@@ -1,5 +1,5 @@
 <template>
-<transition appear name="fade_in">
+<transition appear name="fade">
     <div id="post-full-view" class="the_big_frame">
         <div class="common_ls_cntainr --dtail-app-bar" ref="feed">
 
@@ -15,7 +15,7 @@
 
             <BubblyMarkdownParse :text="post.text" :attachments="post.attachments||post.attachments_preview.attchs" />
 
-            <nuxt-link :to="`/community/${post.allocated_to.id}`" class="pf__where glow">
+            <nuxt-link :to="`/communities/${post.allocated_to.id}`" class="pf__where glow">
                 <img class="cmnty_ico" :src=" post.allocated_to.icon_img">
                 <p>Được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
             </nuxt-link>
@@ -29,13 +29,14 @@
                         :communityId="post.allocated_to.id"
                         size= "react-icon--big"
                         @toggleAdd="launchAddBox"
-                        @quickReact="performReact"
+                        @emoteChose="performReact"
                         @deleteReact="deleteReaction"
                     />
-                    <ReactAdd v-if="reacting"
+                    <FloatingEmotes v-if="reacting"
                         :position="reacting"
                         :communityId="post.allocated_to.id"
-                        @performReact="performReact"
+                        @emoteChose="performReact"
+                        @cancel="closeEmoteSelector"
                     />
                 </div>
             </section>
@@ -44,7 +45,7 @@
         </div>
         <Dropdown v-if="moring" :options="hamburgerOptions" />
         <InputDialog v-if="openDiag" :toDisplay="openDiag" />
-        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id"/>
+        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id" :postTitle="post.title"/>
     </div>
 </transition>
 </template>
@@ -100,8 +101,8 @@ export default {
             ]
         }
     },
-    activated() {
-        // this.$store.commit('postx/loadPost', this.post) // causes wierd exception: mutate vuex store state outside mutation handlers
+    deactivated() {
+        this.$store.commit('postx/loadPost', this.post)
     },
     mounted() {
         const tt = this.$refs.title

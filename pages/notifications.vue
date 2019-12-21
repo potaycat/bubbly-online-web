@@ -10,9 +10,6 @@ import TopLvlDestination from '@/components/layout/TopLvlDestination'
 import LeNoti from '@/components/notification/'
 export default {
     components: {TopLvlDestination, LeNoti},
-    activated() {
-        this.$store.commit('changeDestination', 4)
-    },
 }
 </script>
 

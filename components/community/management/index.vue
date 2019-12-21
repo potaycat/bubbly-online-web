@@ -66,6 +66,6 @@ export default {
     padding-bottom: 150px;
 }
 .material-icons-round.glow {
-    color: rgba(72, 133, 237, 0.95);
+    color: var(--primary-color);
 }
 </style>

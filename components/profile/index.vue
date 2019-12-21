@@ -11,7 +11,7 @@
 
             <Tabs
                 lockable=1
-                :tabs="['POSTS', 'COMMUNITIES', 'LIKED POSTS']"
+                :tabs="['POSTS', 'COMMUNITIES']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
             />
@@ -39,6 +39,11 @@ export default {
     },
     mixins: [tabs],
     props: ['profile'],
+    created() {
+        if (this.isSelf) this.$store.commit('auth/storeAuthUser', {
+            ...this.$store.state.auth.my_profile, ...this.profile 
+        })
+    },
     mounted() {
         const scroll = this.$refs.feed
         scroll.addEventListener('scroll', evt => {

@@ -1,5 +1,5 @@
 <template>
-    <div :class="['_msg-ct', isMe ? '_ct-is-me': null]">
+    <div :class="['_msg-ct', isMe?'_ct-is-me': null, sending?'--cntn-outbxng':null]">
         <p v-if="msg_type==1" class="m-ct__txt">{{ content }}</p>
 
         <div v-else-if="msg_type==3" class="m-ct__yt-embed">
@@ -11,6 +11,9 @@
 
         <div v-else-if="[2, 11].includes(msg_type)" :class="['msg-ct--img-ctn', msg_type==11?'--emote-ctn':null]">
             <img :src="content">
+            <div v-if="sending" class="total_darkness">
+                <Spinner color="#fff" />
+            </div>
         </div>
 
         <p v-else-if="msg_type==8" class="m-ct__txt _m-ct__chat-chng">Made the chat room</p>
@@ -28,11 +31,14 @@
 </template>
 
 <script>
+import Spinner from '@/components/misc/Spinner'
 export default {
+    components: { Spinner },
     props: [
         'isMe',
         'msg_type',
         'content',
+        'sending'
     ],
     computed: {
         ytLink() { 
@@ -55,7 +61,7 @@ export default {
     background: rgba(255, 255, 255, 0.98);
 } 
 ._ct-is-me .m-ct__txt { /*my bubble*/
-    background: rgba(72, 133, 237, 0.98);
+    background: var(--primary-color);
     color: #fff;
 }
 
@@ -86,6 +92,7 @@ export default {
 
 .msg-ct--img-ctn {
     display: flex;
+    position: relative;
 }
 .msg-ct--img-ctn > img {
     border-radius: 20px;
@@ -93,11 +100,22 @@ export default {
     width: 100%;
     max-height: 10000px;
 }
+.msg-ct--img-ctn .total_darkness {
+    border-radius: 20px;
+}
 
 .msg-ct--img-ctn.--emote-ctn > img {
     border-radius: 0;
     background: none;
     width: 100px;
     height: 100px;
+}
+
+._msg-ct.--cntn-outbxng .m-ct__txt {
+    opacity: 0.7;
+}
+._msg-ct.--cntn-outbxng .msg-ct--img-ctn {
+    min-height: 100px;
+    min-width: 100px;
 }
 </style>

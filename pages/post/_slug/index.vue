@@ -32,17 +32,17 @@ export default {
     data:() => ({
         error: null,
     }),
-    created() {
+    activated() {
         if (!this.isSSR) {
             this.$axios.get(`posts/${this.$route.params.slug}`, 
                 this.$store.state.authHeader
             )
                 .then(res => {
-                    this.$store.commit('postx/loadPost', res.data)
+                    // this.$store.commit('postx/loadPost', res.data)
                     this.post = res.data
                 })
                 .catch(error => {
-                    this.error = error
+                    this.error = error.response.data
                 })
         }
     },

@@ -1,5 +1,5 @@
 <template>
-<transition appear name="fade_in">
+<transition appear name="fade">
     <div :class="['_msg-ctnr', isMe ? '_yay' :null]">
         <div v-if="isMe && !consecutive" class='msg__timestmp'>
             <p v-if="sending">Sending</p>
@@ -14,6 +14,7 @@
             :isMe="isMe"
             :msg_type="message.msg_type"
             :content="message.content"
+            :sending="sending"
         />
     </div>
 </transition>
@@ -73,7 +74,7 @@ export default {
     margin: 0 7px 2px 16px;
     font-size: 14px;
     color: #fff;
-    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    text-shadow: 0px 0px 3px rgba(0, 0, 0, 0.9);
 }
 ._msg-ctnr .msg__timestmp{
     font-size: 11px;

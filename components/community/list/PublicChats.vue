@@ -2,7 +2,7 @@
     <div class="community-chats-ls common_ls_wrapper">
         <div v-for="room in fetchedData"
             class="c-p-room box-shadow-2 bg lift"
-            @click="$router.push(`/chat/t/${room.id}`)"
+            @click="goToPublic(room)"
             :key="room.id"
             :style="`background:url(${room.bg_img || community.cover_img}) center`"
         >
@@ -11,18 +11,16 @@
                 <span>{{ room.last_msg.timestamp | tiemstamp}}</span>
             </div>
             <p class="last"><strong>{{ room.description }}</strong></p>
-            <p class="last">{{ room.last_msg | lastMsgDspl }}</p>
+            <p class="last">{{ renderLastMsg(room.last_msg) }}</p>
         </div>
-        <h3 class="empty-fetchedLs" v-if="empty">Community has no public chats</h3>
-        <Spinner v-if="loading4More" />
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
     </div>
 </template>
 
 <script>
 import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
-
 export default {
-    props: ['community',],
+    props: ['community'],
     mixins: [feedingFrenzy, maintainScrllPos],
     data() {
         return {
@@ -34,6 +32,13 @@ export default {
             return this.$parent.$refs.feed
         },
     },
+    methods: {
+        goToPublic(room) {
+            if (['moderator','administrator','member'].includes((this.community.membership_info ||{}).role)) {
+                this.$store.dispatch('chatx/toChat', room)
+            }
+        }
+    }
 }
 </script>
 
