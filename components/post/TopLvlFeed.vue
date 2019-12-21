@@ -6,8 +6,8 @@
             @switchTo="newTab"
         /> -->
         <keep-alive>
-            <JoinedCmntyFeed v-if="currentTab==0" />
-            <JoinedCmntyFeed v-if="currentTab==1" />
+            <JoinedCmtyFeed v-if="currentTab==0" />
+            <JoinedCmtyFeed v-if="currentTab==1" />
         </keep-alive>
 
         <FAB @clicked="$router.push('/post/compose')"
@@ -21,12 +21,12 @@
 <script>
 import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import FAB from '@/components/misc/FAB'
-import JoinedCmntyFeed from './JoinedCmntyFeed'
+import JoinedCmtyFeed from './JoinedCmtyFeed'
 
 export default {
     components: {
         FAB,
-        JoinedCmntyFeed,
+        JoinedCmtyFeed,
     },
     mixins: [
         tabs,

@@ -34,7 +34,7 @@ export default {
     mixins: [tabs],
     props: ['community'],
     created() {
-        this.$store.dispatch("reactionx/getCmntyEmotes", this.community.id)
+        this.$store.dispatch("reactionx/getCmtyEmotes", this.community.id)
     },
     mounted() {
         const scroll = this.$refs.feed

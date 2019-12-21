@@ -1,5 +1,5 @@
 <template>
-    <div class="cmnty-mnge-mems" ref="feed">
+    <div class="cmty-mnge-mems" ref="feed">
 
         <ButtonList :allCommands="visibleCmd" />
 

@@ -16,10 +16,10 @@ export default {
         }
     },
     async asyncData({ $axios, params, store }) {
-        const cmntyInfoRes = await $axios.$get(`/communities/${params.id}`, store.state.authHeader)
+        const cmtyInfoRes = await $axios.$get(`/communities/${params.id}`, store.state.authHeader)
         // let postsRes = await $axios.$get(`/posts/feed?format=json&community=${communityInfoRes.id}`)
         return {
-            community: cmntyInfoRes
+            community: cmtyInfoRes
             // posts: communityPostsRes
         }
     },

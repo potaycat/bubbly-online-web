@@ -243,7 +243,7 @@ export default {
     height: 90px;
     width: 90px;
 }
-.chat-inf__set .cmnty_ico{
+.chat-inf__set .cmty_ico{
     height: 40px;
     width: 40px;
     margin: 4px 12px;

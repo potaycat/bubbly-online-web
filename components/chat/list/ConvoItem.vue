@@ -1,7 +1,7 @@
 <template>
     <div :class="['thrd glow', isActive?'room--active': null]"
         @click="$store.dispatch('chatx/toChat', room)">
-        <img :class="isPublic?'cmnty_ico':'pfp'" :src="dsplPicSrc">
+        <img :class="isPublic?'cmty_ico':'pfp'" :src="dsplPicSrc">
         <div v-if="isUnread" class="thrd__dot"></div>
         <div class="thread-txt">
             <div class="thrd__top-txt">
@@ -62,7 +62,7 @@ export default {
     border-radius: 15px;
     position: relative;
 }
-.thrd .pfp, .thrd .cmnty_ico {
+.thrd .pfp, .thrd .cmty_ico {
     align-self: flex-start;
     /* z-index: -2; */
     height: 55px;

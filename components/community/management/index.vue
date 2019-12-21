@@ -1,6 +1,6 @@
 <template>
     <div class="the_big_frame">
-        <div class="cmnty-mngmnt common_ls_cntainr --with-tabs" ref="feed">
+        <div class="cmty-mngmnt common_ls_cntainr --with-tabs" ref="feed">
             <Tabs
                 locked=1
                 :tabs="['GENERAL', 'MEMBERS', 'EMOTES', 'PINBOARD', 'CHAT ROOMS']"
@@ -62,7 +62,7 @@ export default {
 </script>
 
 <style>
-.cmnty-mngmnt {
+.cmty-mngmnt {
     padding-bottom: 150px;
 }
 .material-icons-round.glow {

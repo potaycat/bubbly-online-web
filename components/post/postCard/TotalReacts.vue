@@ -28,10 +28,10 @@ export default {
     // }
     computed: {
         ...mapGetters({
-            emotesByCmnty: 'reactionx/emotesByCmnty',
+            emotesByCmty: 'reactionx/emotesByCmty',
         }),
         emotesPreview() {
-            let emoArr = this.emotesByCmnty(this.communityId)
+            let emoArr = this.emotesByCmty(this.communityId)
             const len = emoArr.length
             if (len < 6) {
                 emoArr = [

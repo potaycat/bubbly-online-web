@@ -8,7 +8,7 @@
                 <input type="file" @change="onCoverChange" ref="cover_input" style="display:none">
             </label>
         </div>
-        <div class="prfl-edit__pfp cmnty_ico">
+        <div class="prfl-edit__pfp cmty_ico">
             <img :src="formData.pfpInput.preview || community.icon_img">
             <label class="prfl-edit__upload-btn glow">
                 <i class="material-icons-round">add_photo_alternate</i>

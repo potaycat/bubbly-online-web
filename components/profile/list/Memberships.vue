@@ -1,6 +1,6 @@
 <template>
     <div class="common_ls_wrapper">
-        <CmntyItem v-for="community in fetchedData"
+        <CmtyItem v-for="community in fetchedData"
             :key="community.id"
             :community="community"
         />
@@ -11,11 +11,11 @@
 
 <script>
 import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
-import CmntyItem from '@/components/community/list/CmntyItem'
+import CmtyItem from '@/components/community/list/CmtyItem'
 
 export default {
     components: {
-        CmntyItem,
+        CmtyItem,
     },
     mixins: [feedingFrenzy, maintainScrllPos],
     props: ['profile'],

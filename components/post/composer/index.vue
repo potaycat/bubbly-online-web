@@ -9,7 +9,7 @@
             @togglePreview="previewing=true"
             @done="validateAnd(done)"
         />
-        <CmntyPicker v-if="!editMode&&!isComment" :pinboard="isPinboard" :attention="notValidated('cmnty')"/>
+        <CmtyPicker v-if="!editMode&&!isComment" :pinboard="isPinboard" :attention="notValidated('cmty')"/>
         <div v-if="!editMode">
             <input v-if="!(isComment||isPinboard)"
                 class="pstedit__title"
@@ -57,7 +57,7 @@ import { appBarTitle } from '@/mixins/appBarStuff'
 import { textareaAutoResize } from '@/mixins/commonFuncs'
 import BubblyMarkdownParse from '../mdParse'
 
-import CmntyPicker from './CmntyPicker'
+import CmtyPicker from './CmtyPicker'
 import { editMode } from './editMode'
 import { comment, pinboard } from './typed'
 
@@ -68,7 +68,7 @@ export default {
     components: {
         BubblyMarkdownParse,
         AppBarCustomBtn,
-        CmntyPicker,
+        CmtyPicker,
         Spinner,
     },
     mixins: [editMode,comment,pinboard, appBarTitle, formValidate],
@@ -87,7 +87,7 @@ export default {
             let toValidate = {}
             toValidate.body = this.body.length || this.previews.length
             if (!this.editMode) {
-                toValidate.cmnty = this.$route.query.to
+                toValidate.cmty = this.$route.query.to
                 if (!this.isPinboard) {
                     toValidate.title = true
                 }

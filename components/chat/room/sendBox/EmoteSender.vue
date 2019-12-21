@@ -2,11 +2,11 @@
     <transition name="zoom_in_fade" appear>
         <div class="emo-sndr total_darkness no-bg" @click.self="$emit('emoed')">
             <div class="emo-sndr-ctn box-shadow-3 shiny-white-bg">
-                <p v-if="!cmntyIdLs.length" class="emo-sndr__none-found">
+                <p v-if="!cmtyIdLs.length" class="emo-sndr__none-found">
                     Community Emotes will appear here. Start by joining a few of them!</p>
-                <div class="emo-sndr__group" v-for="cmntyId in cmntyIdLs" :key="cmntyId">
-                    <p v-if="myEmotes[cmntyId].length" class="emo-sndr__cmnty">{{ getJoinedById(cmntyId).name }}</p>
-                    <div v-for="emote in myEmotes[cmntyId]"
+                <div class="emo-sndr__group" v-for="cmtyId in cmtyIdLs" :key="cmtyId">
+                    <p v-if="myEmotes[cmtyId].length" class="emo-sndr__cmty">{{ getJoinedById(cmtyId).name }}</p>
+                    <div v-for="emote in myEmotes[cmtyId]"
                         :key="emote.id"
                         class="emo-sndr__item glow"
                         @click="$emit('emoed', emote)"
@@ -29,7 +29,7 @@ export default {
         myEmotes() {
             return this.$store.state.reactionx.localEmotes
         },
-        cmntyIdLs() {return Object.keys(this.myEmotes)}
+        cmtyIdLs() {return Object.keys(this.myEmotes)}
     },
 }
 </script>
@@ -52,7 +52,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
 }
-.emo-sndr__cmnty {
+.emo-sndr__cmty {
     font-weight: bold;
     color: #999;
     padding: 15px 0 10px 0;

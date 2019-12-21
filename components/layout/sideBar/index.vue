@@ -8,12 +8,12 @@
 
 <script>
 import Generic from "./Generic"
-import Cmntymembers from "./CmntyMembers"
+import Cmtymembers from "./CmtyMembers"
 import Postreactors from "./PostReactors"
 export default {
     components: {
         Generic,
-        Cmntymembers,
+        Cmtymembers,
         Postreactors,
     },
     computed: {
@@ -24,7 +24,7 @@ export default {
                 case 'explore':
                     return 'generic'
                 case 'communities-id':
-                    return 'cmntymembers'
+                    return 'cmtymembers'
                 case 'post-slug':
                     return 'postreactors'
                 default:

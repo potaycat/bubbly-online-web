@@ -1,6 +1,6 @@
 <template>
     <div class="common_ls_cntainr" ref="feed">
-        <p class="side-bar__cmnty-title">{{ title }}</p>
+        <p class="side-bar__cmty-title">{{ title }}</p>
         <User
             class="side-bar__user-item"
             v-for="item in fetchedData"

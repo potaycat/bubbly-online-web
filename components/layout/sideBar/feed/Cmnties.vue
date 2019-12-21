@@ -1,8 +1,8 @@
 <template>
-    <div class="side-bar__cmnty common_ls_cntainr" ref="feed">
-        <p class="side-bar__cmnty-title">{{ title }}</p>
+    <div class="side-bar__cmty common_ls_cntainr" ref="feed">
+        <p class="side-bar__cmty-title">{{ title }}</p>
         <Community
-            class="side-bar__cmnty-item"
+            class="side-bar__cmty-item"
             v-for="item in fetchedData"
             :key="item.id"
             :community="item"
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Community from '@/components/community/list/CmntyItem'
+import Community from '@/components/community/list/CmtyItem'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 export default {
     components: { Community },
@@ -27,20 +27,20 @@ export default {
 </script>
 
 <style>
-.side-bar__cmnty-item {
+.side-bar__cmty-item {
     min-height: 75px;
-}.side-bar__cmnty-item .mbrshp__role, .side-bar__cmnty-item .mbrshp__join-btn {
+}.side-bar__cmty-item .mbrshp__role, .side-bar__cmty-item .mbrshp__join-btn {
     display: none;
-}.side-bar__cmnty-item .mbrshp__cmnty-name {
+}.side-bar__cmty-item .mbrshp__cmty-name {
     font-size: 16px;
-}.side-bar__cmnty-item .mbrshp__subtxt {
+}.side-bar__cmty-item .mbrshp__subtxt {
     font-size: 11px;
 }
-.side-bar__cmnty-item:hover {
+.side-bar__cmty-item:hover {
     box-shadow: inset 0px -120px 50px -40px rgba(0, 0, 0, 0.35);
     text-shadow: 0px 0px 6px #000;
 }
-.side-bar__cmnty-title {
+.side-bar__cmty-title {
     font-size: 14px;
     margin: 20px 20px;
     font-weight: bold;

@@ -2,7 +2,7 @@
     <div>
         <Cmnties class="side-bar__item"
             title="💪 Check out these great communities 👇"
-            :toFetch="cmntyLsUrl"
+            :toFetch="cmtyLsUrl"
         />
         <Users class="side-bar__item side-bar__item__rec-users"
             title="✨ Check out these awesome people 👇"
@@ -18,7 +18,7 @@ import Users from './feed/Users'
 export default {
     components: { Cmnties, Users },
     computed: {
-        cmntyLsUrl() {
+        cmtyLsUrl() {
             return `communities/?search=${'a'}&limit=5&`
         },
         userLsUrl() {

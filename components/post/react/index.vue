@@ -34,7 +34,7 @@ export default {
     watch: {
         emote404(boolVal) {
             if (boolVal) {
-                this.$store.dispatch("reactionx/getCmntyEmotes", this.communityId)
+                this.$store.dispatch("reactionx/getCmtyEmotes", this.communityId)
             }
         }
     },

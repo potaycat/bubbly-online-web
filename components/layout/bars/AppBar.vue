@@ -36,7 +36,7 @@ export default {
                 case 'circle':
                     return 'pfp'
                 case 'square':
-                    return 'cmnty_ico'
+                    return 'cmty_ico'
                 default:
                     return ''
             }

@@ -2,7 +2,7 @@
     <div class="the-post card box-shadow-1">
         
         <section v-if="post.allocated_to" class="p__info">
-            <img class="cmnty_ico lift" :src="post.allocated_to.icon_img"
+            <img class="cmty_ico lift" :src="post.allocated_to.icon_img"
                 @click="$router.push(`/communities/${post.allocated_to.id}`)"
             />
             <div class="p-info__text">
@@ -145,7 +145,7 @@ export default {
     margin-top: 10px;
     display: inline-flex;
 }
-.p__info .cmnty_ico {
+.p__info .cmty_ico {
     width: 28px;
     height: 28px;
 }

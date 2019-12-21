@@ -1,7 +1,7 @@
 <template>
     <div class="the_big_frame" id="mbrshp-ls">
         <div class="common_ls_cntainr --top-lev-app-bar" ref="feed">
-            <CmntyItem v-for="community in listDisplay"
+            <CmtyItem v-for="community in listDisplay"
                 :key="community.id"
                 :community="community"
             />
@@ -16,10 +16,10 @@
 <script>
 import { maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'
 import FAB from '@/components/misc/FAB'
-import CmntyItem from './list/CmntyItem'
+import CmtyItem from './list/CmtyItem'
 
 export default {
-    components: {CmntyItem, FAB},
+    components: {CmtyItem, FAB},
     mixins: [maintainScrllPos, scrlDirection],
     computed: {
         listDisplay() {

@@ -30,7 +30,7 @@
 <script>
 import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 
-import Community from '@/components/community/list/CmntyItem'
+import Community from '@/components/community/list/CmtyItem'
 import Profile from '@/components/profile/list/UserItem'
 import Post from '@/components/post/postCard/'
 import { feedingFrenzy, postFeed, maintainScrllPos, scrlDirection } from '@/mixins/feedingFrenzy'

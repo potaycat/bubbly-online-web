@@ -36,15 +36,15 @@ export default {
     // }
     computed: {
         ...mapGetters({
-            emotesByCmnty: 'reactionx/emotesByCmnty',
+            emotesByCmty: 'reactionx/emotesByCmty',
         }),
         emotes() {
-            return this.emotesByCmnty(this.communityId).filter(emo => emo.active)
+            return this.emotesByCmty(this.communityId).filter(emo => emo.active)
         }
     },
     created() {
         if (!this.emotes) {
-            this.$store.dispatch("reactionx/getCmntyEmotes", this.communityId)
+            this.$store.dispatch("reactionx/getCmtyEmotes", this.communityId)
         }
     },
     mounted() {

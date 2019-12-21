@@ -1,11 +1,11 @@
 <template>
     <div class="the_big_frame"><div class="common_ls_cntainr --top-lev-app-bar --with-tabs" ref="feed">
         <div v-for="roomCluster in fetchedData"
-            class="xplr-chat__cmnty"
+            class="xplr-chat__cmty"
             :key="roomCluster.id"
         >
-            <nuxt-link :to="`/communities/${roomCluster.id}`" class="xplr-chat__cmnty-inf glow">
-                <img class="cmnty_ico" :src="roomCluster.icon_img">
+            <nuxt-link :to="`/communities/${roomCluster.id}`" class="xplr-chat__cmty-inf glow">
+                <img class="cmty_ico" :src="roomCluster.icon_img">
                 <p>{{ roomCluster.name }}</p>
                 <i class="material-icons-round">arrow_forward</i>
             </nuxt-link>
@@ -39,29 +39,29 @@ export default {
 </script>
 
 <style>
-.xplr-chat__cmnty {
+.xplr-chat__cmty {
     width: 100%;
     word-wrap: break-word;
 }
 
-.xplr-chat__cmnty-inf {
+.xplr-chat__cmty-inf {
     display: flex;
     padding: 5px;
 }
-.xplr-chat__cmnty-inf .cmnty_ico {
+.xplr-chat__cmty-inf .cmty_ico {
     height: 35px;
     width: 35px;
     
     margin: 0 10px;
 }
-.xplr-chat__cmnty-inf > p {
+.xplr-chat__cmty-inf > p {
     word-spacing: 0;
     margin: auto;
     margin-left: 3px;
     font-weight: bold;
     /* font-size: 15px; */
 }
-.xplr-chat__cmnty-inf .material-icons-round {
+.xplr-chat__cmty-inf .material-icons-round {
     margin: 9px 6px 0 0;
     font-size: 19px;
     color: #777;

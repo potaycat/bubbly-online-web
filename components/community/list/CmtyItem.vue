@@ -4,9 +4,9 @@
         :style="`background-image:url(${community.cover_img})`"
         @click="goToCommunity"
     >
-        <img class="cmnty_ico" :src="community.icon_img"/>
-        <div class="mbrshp__cmnty-txt">
-            <p class="mbrshp__cmnty-name">{{ community.name }}</p>
+        <img class="cmty_ico" :src="community.icon_img"/>
+        <div class="mbrshp__cmty-txt">
+            <p class="mbrshp__cmty-name">{{ community.name }}</p>
             <div class="mbrshp__subtxt">
                 <p v-if="community.moto">{{ community.moto }}</p>
             </div>
@@ -62,25 +62,25 @@ export default {
     background-size: cover;
 }
 
-.mbrshp-block .cmnty_ico {
+.mbrshp-block .cmty_ico {
     width: 45px;
     height: 45px;
 }
 
-.mbrshp-block .mbrshp__cmnty-txt {
+.mbrshp-block .mbrshp__cmty-txt {
     color: #fff;
     display: flex;
     flex-direction: column;
     margin-left: 12px;
 }
-.mbrshp__cmnty-txt .mbrshp__cmnty-name {
+.mbrshp__cmty-txt .mbrshp__cmty-name {
     /* font-weight: bold; */
     font-size: 20px;
     max-height: 59px;
     overflow: hidden;
     /* font-weight: bold; */
 }
-.mbrshp__cmnty-txt .mbrshp__subtxt {
+.mbrshp__cmty-txt .mbrshp__subtxt {
     font-size: 12px;
     color: #ccc;
     margin-right: 10px;

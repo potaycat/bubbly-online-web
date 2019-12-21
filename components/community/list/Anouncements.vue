@@ -1,6 +1,6 @@
 <template>
     <div class="common_ls_wrapper" style="padding:0 8px">
-        <div class="cmnty-ancmnt" v-for="anoucemnt in fetchedData"
+        <div class="cmty-ancmnt" v-for="anoucemnt in fetchedData"
             :key="anoucemnt.id"
         >
             <BubblyMarkdownParse :text="anoucemnt.text" :attachments="anoucemnt.attachments" />
@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style>
-.cmnty-ancmnt {
+.cmty-ancmnt {
     /* border: solid 1px red; */
     margin-bottom: 20px;
 }

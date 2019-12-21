@@ -16,7 +16,7 @@
             <BubblyMarkdownParse :text="post.text" :attachments="post.attachments||post.attachments_preview.attchs" />
 
             <nuxt-link :to="`/communities/${post.allocated_to.id}`" class="pf__where glow">
-                <img class="cmnty_ico" :src=" post.allocated_to.icon_img">
+                <img class="cmty_ico" :src=" post.allocated_to.icon_img">
                 <p>Được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
             </nuxt-link>
 
@@ -165,7 +165,7 @@ export default {
     align-items: center;
     margin: 20px 0 20px;
 }
-.pf__where .cmnty_ico {
+.pf__where .cmty_ico {
     height: 26px;
     width: 26px;
 }

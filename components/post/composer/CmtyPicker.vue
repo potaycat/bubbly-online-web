@@ -1,12 +1,12 @@
 <template>
-    <div :class="['cmnty-picker', launchLs?'cmnty-picker--picking':null,
-        pinboard?'cmnty-picker--pinboard':null, attention?'--over-here':null
+    <div :class="['cmty-picker', launchLs?'cmty-picker--picking':null,
+        pinboard?'cmty-picker--pinboard':null, attention?'--over-here':null
     ]">
         <div class="pickr-main-bar box-shadow-1" @click="launchLs=true">
-            <div v-if="!community.icon_img" class="cmnty_ico pickr--blank-ico" />
-            <img v-else :src="community.icon_img" class="cmnty_ico">
+            <div v-if="!community.icon_img" class="cmty_ico pickr--blank-ico" />
+            <img v-else :src="community.icon_img" class="cmty_ico">
             <i class="material-icons-outlined pmb-i">search</i>
-            <input class="pickr__cmnty-name no-bg"
+            <input class="pickr__cmty-name no-bg"
                 :value="nameInput" placeholder="Pick a community"
                 @input="nameInput=$event.target.value"
             >
@@ -16,18 +16,18 @@
             <!-- TODO refactor this animation -->
             <section v-if="launchLs" class="total_darkness no-bg" @click.self="launchLs=false">
                 <transition name="zoom_in_fade" appear>
-                    <div class="cmnty-pickr-drpdwn shiny-white-bg box-shadow-2">
+                    <div class="cmty-pickr-drpdwn shiny-white-bg box-shadow-2">
                         <p v-if="!filtered.length" class="drpdwn__empty">No results</p>
-                        <div v-for="cmnty in filtered"
-                            :key="cmnty.id"
-                            class="cmnty-drpdwn__item glow"
-                            @click="$router.replace({query: {to: cmnty.id}});
+                        <div v-for="cmty in filtered"
+                            :key="cmty.id"
+                            class="cmty-drpdwn__item glow"
+                            @click="$router.replace({query: {to: cmty.id}});
                                 launchLs = false;
-                                nameInput = getJoinedById(cmnty.id).name
+                                nameInput = getJoinedById(cmty.id).name
                             "
                         >
-                            <img :src="cmnty.icon_img" class="cmnty_ico">
-                            <p class="drpdwn__cmnty-name">{{cmnty.name}}</p>
+                            <img :src="cmty.icon_img" class="cmty_ico">
+                            <p class="drpdwn__cmty-name">{{cmty.name}}</p>
                         </div>
                     </div>
                 </transition>
@@ -102,16 +102,16 @@ export default {
     border-radius: 10px;
     position: relative;
 }
-.pickr-main-bar, .cmnty-drpdwn__item {
+.pickr-main-bar, .cmty-drpdwn__item {
     padding: 4px;
     display: flex;
     align-items: center;
 }
-.cmnty-drpdwn__item {
+.cmty-drpdwn__item {
     padding: 5px 3px;
 }
 
-.pickr-main-bar .cmnty_ico, .cmnty-drpdwn__item .cmnty_ico {
+.pickr-main-bar .cmty_ico, .cmty-drpdwn__item .cmty_ico {
     height: 30px;
     min-width: 30px;
     max-width: 30px;
@@ -119,7 +119,7 @@ export default {
 .pickr--blank-ico {
     border: dashed 1px #aaa;
 }
-.pickr__cmnty-name, .drpdwn__cmnty-name {
+.pickr__cmty-name, .drpdwn__cmty-name {
     margin-right: auto;
 }
 
@@ -130,7 +130,7 @@ export default {
     transition: .5s;
     opacity: 0;
 }
-.pickr__cmnty-name {
+.pickr__cmty-name {
     font-size: 18px;
     border-width: 1px;
     border-color: #00000000;
@@ -140,7 +140,7 @@ export default {
     transition: .2s;
 }
 
-.cmnty-pickr-drpdwn {
+.cmty-pickr-drpdwn {
     max-height: 60vh;
     overflow: auto;
     width: 95%;
@@ -148,36 +148,36 @@ export default {
     border-radius: 5px;
 
 }
-.drpdwn__cmnty-name, .cmnty-pickr-drpdwn .cmnty_ico {
+.drpdwn__cmty-name, .cmty-pickr-drpdwn .cmty_ico {
     margin-left: 10px;
 }
 
-.cmnty-picker .total_darkness {
+.cmty-picker .total_darkness {
     align-items: flex-start;
     /* height: calc(100vh - 96px);
     top: 96px; */
 }
 
 
-.cmnty-picker--picking .pickr-main-bar {
+.cmty-picker--picking .pickr-main-bar {
     z-index: 99999999;
 }
-.cmnty-picker--picking .pmb-i {
+.cmty-picker--picking .pmb-i {
     opacity: 1;
 }
-.cmnty-picker--picking .pickr__cmnty-name {
+.cmty-picker--picking .pickr__cmty-name {
     border-bottom: solid 1px var(--primary-color) !important;
 }
 
-.cmnty-picker--pinboard {
+.cmty-picker--pinboard {
     pointer-events: none;
 }
-.cmnty-picker--pinboard i:last-child {
+.cmty-picker--pinboard i:last-child {
     display: none;
 }
-.cmnty-picker.--over-here .pickr__cmnty-name {
+.cmty-picker.--over-here .pickr__cmty-name {
     border-bottom: solid 1px red;
-}.cmnty-picker.--over-here .pickr__cmnty-name::placeholder {
+}.cmty-picker.--over-here .pickr__cmty-name::placeholder {
     color: red;
 }
 .drpdwn__empty {

@@ -1,22 +1,22 @@
 <template>
     <div style="width:100%">
         <transition name="fade" appear>
-            <div class="cmnty-info card box-shadow-3">
-                <img class="cmnty-inf__cover" :src="community.cover_img" />
-                <img class="cmnty_ico" :src="community.icon_img" />
-                <section class="cmnty-inf__txt-ctn">
-                    <div class="cmnty-inf__txt__smol">
+            <div class="cmty-info card box-shadow-3">
+                <img class="cmty-inf__cover" :src="community.cover_img" />
+                <img class="cmty_ico" :src="community.icon_img" />
+                <section class="cmty-inf__txt-ctn">
+                    <div class="cmty-inf__txt__smol">
                         {{ community.visibility }} • 
-                        <span class="glow" style="color:gray;text-transform:none" @click="toCmntyMembers">
+                        <span class="glow" style="color:gray;text-transform:none" @click="toCmtyMembers">
                             <strong>{{community.total_members}}</strong> members
                         </span>
                     </div>
-                    <div class="cmnty-inf__name">
+                    <div class="cmty-inf__name">
                         {{ community.name }}
                     </div>
-                    <div class="cmnty-inf__moto">{{ community.moto }}</div>
+                    <div class="cmty-inf__moto">{{ community.moto }}</div>
                     <div v-if="isBanned">You are banned from this community</div>
-                    <div v-else class="cmnty-inf__actions">
+                    <div v-else class="cmty-inf__actions">
                         <Button v-if="roleDisplay" @clicked="onRoleButtonClick" :text="roleDisplay" :padding="['5px', '0']" 
                             :colorScnd="`#${community.theme_color}`" fill/>
                         <Button v-else @clicked="makeJoin" text="Join" :padding="['5px', '0']"
@@ -76,7 +76,7 @@ export default {
                 this.$router.push(`/communities/${this.$route.params.id}/manage`)
             }
         },
-        toCmntyMembers() {
+        toCmtyMembers() {
             this.$store.commit('appBar/loadText', `Members of ${this.community.name}`)  // TODO mixin
             this.$store.commit('appBar/loadPic', {
                 src: this.community.icon_img,
@@ -103,12 +103,12 @@ export default {
 </script>
 
 <style>
-.cmnty-info {
+.cmty-info {
     max-width: 950px;
     margin: 0 8px;
 }
 
-.cmnty-info .cmnty-inf__cover {
+.cmty-info .cmty-inf__cover {
     border-radius: 15px 15px 0 0;
     /*box-shadow: inset 0 0 10px #000;*/
     /* top: 0; */
@@ -117,10 +117,10 @@ export default {
     height: 250px;
     z-index: -1;
 }
-.cmnty-inf__txt-ctn {
+.cmty-inf__txt-ctn {
     padding: 0 16px;
 }
-.cmnty-info .cmnty_ico {
+.cmty-info .cmty_ico {
     border: 3px solid #fff;
     position: relative;
     left: 11px;
@@ -128,25 +128,25 @@ export default {
     width: 100px;
     height: 100px;
 }
-.cmnty-info .cmnty-inf__txt__smol {
+.cmty-info .cmty-inf__txt__smol {
     text-transform: capitalize;
     color: gray;
     /* text-align: right; */
     margin: -27px 0 7px 105px;
     font-size: 14px;
 }
-.cmnty-info .cmnty-inf__name {
+.cmty-info .cmty-inf__name {
     margin: 5px 0 2px;
     font-weight: bold;
     font-size: 23px;
 }
-.cmnty-info .cmnty-inf__moto {
+.cmty-info .cmty-inf__moto {
     padding: 10px 0;
     font-size: 14px;
     /* text-align: center; */
 }
 
-.cmnty-inf__actions {
+.cmty-inf__actions {
     padding: 8px 0 20px;
     width: 100%;
 }

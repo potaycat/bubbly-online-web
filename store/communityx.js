@@ -3,9 +3,9 @@ export const state = () => ({
 })
 
 export const mutations = {
-    save(state, cmntyArr) {
-        state.joined = cmntyArr
-        localStorage.setItem('joined', JSON.stringify(cmntyArr))
+    save(state, cmtyArr) {
+        state.joined = cmtyArr
+        localStorage.setItem('joined', JSON.stringify(cmtyArr))
     },
 }
 
@@ -25,10 +25,10 @@ export const actions = {
 
 export const getters = {
     getJoinedById: (state) => (id) => {
-        return state.joined.find(cmnty => cmnty.id == id) ||{}
+        return state.joined.find(cmty => cmty.id == id) ||{}
     },
     isMod: (state) => (id) => {
-        return state.joined.find(cmnty => cmnty.id == id &&
-            ['moderator','administrator'].includes(cmnty.role))
+        return state.joined.find(cmty => cmty.id == id &&
+            ['moderator','administrator'].includes(cmty.role))
     },
 }

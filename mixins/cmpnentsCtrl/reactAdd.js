@@ -48,7 +48,7 @@ export const reactAdd = {
                 })
                 .catch((error) => {
                     this.post.my_react = fallBack
-                    this.$store.dispatch("reactionx/getCmntyEmotes", this.post.allocated_to.id)
+                    this.$store.dispatch("reactionx/getCmtyEmotes", this.post.allocated_to.id)
                     // console.error("CAUGHT: "+error)
                 })
             this.closeEmoteSelector()
