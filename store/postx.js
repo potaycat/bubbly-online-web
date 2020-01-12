@@ -4,17 +4,17 @@ export const state = () => ({
 })
 
 export const mutations = {
-    loadPost(state, postObj) {
+    LOAD_POST(state, postObj) {
         state.currentPost = postObj
     },
-    loadToEdit(state, obj){
+    LOAD_TO_EDIT(state, obj){
         state.contentToEdit = obj
     },
 }
 
 export const actions = {
-    goAndEdit(state, contentObj) {
-        this.commit('postx/loadToEdit', contentObj)
+    goAndEdit({commit}, contentObj) {
+        commit('LOAD_TO_EDIT', contentObj)
         this.$router.push('/post/compose?mode=edit')
     }
 }

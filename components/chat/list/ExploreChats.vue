@@ -11,7 +11,7 @@
             </nuxt-link>
 
             <div v-for="room in roomCluster.recently_active"
-                class="pblc-chats box-shadow-2 bg lift"
+                :class="['pblc-chats box-shadow-2 bg lift', $route.query.room==room.id?'--active':null]"
                 @click="$store.dispatch('chatx/toChat', room)"
                 :key="room.id"
                 :style="`background:url(${room.bg_img || roomCluster.cover_img}) center`"
@@ -73,6 +73,11 @@ export default {
     border-radius: 25px;
     display: flex;
     flex-direction: column;
+}
+.pblc-chats.--active {
+    pointer-events: none;
+    border: solid 6px var(--primary-color);
+    box-shadow: none;
 }
 .pblc-chats .pblc-chats__inf {
     color: #fff;

@@ -4,7 +4,8 @@ export const state = () => ({
 })
 
 export const mutations = {
-    loadChat(state, thread) {
+    LOAD_THREAD(state, thread) {
+        // this and life cycle hooks really hate each other
         if (!thread) {
             state.currentChat = state.queued
             state.queued = null
@@ -14,15 +15,15 @@ export const mutations = {
             ...thread,
         }
     },
-    preloadChat(state, thread) {
+    PRELOAD_THRD(state, thread) {
         state.queued = thread
     },
     
-    bellUpdate(state, boolval) {
+    BELL_STATE(state, boolval) {
         state.currentChat.roommate_info.enable_noti = boolval
     },
 
-    updateLastMsg(state, newMsg) {
+    UPDATE_LAST_MSG(state, newMsg) {
         try {
             state.currentChat.last_msg = newMsg
             state.currentChat.roommate_info.last_seen = newMsg.timestamp
@@ -31,12 +32,13 @@ export const mutations = {
 }
 
 export const actions = {
-    toChat(state, room) {
-        this.commit('chatx/preloadChat', room)
+    toChat({commit}, room) {
+        commit('PRELOAD_THRD', room)
         if (window.innerWidth >= 750) {
             if (this.$router.currentRoute.query.room) this.$router.replace(`/chat?room=${room.id}`)
             else this.$router.push(`/chat?room=${room.id}`)
         } else {
+            commit('LOAD_THREAD', null)
             this.$router.push(`/chat/t/${room.id}`)
         }
     },

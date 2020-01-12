@@ -1,19 +1,19 @@
 <template>
     <nav :class="['bottom-nav-bar', onTop?null:'--not-top']">
         <div class="bottom-nav__btn logo" >
-            <img @click="$router.push('/home')" class="push"
-                src='https://external-preview.redd.it/IBiNEmUN7c7tvqBlqTHXBBxXmnc2FyTqTN0JGQnEz1o.jpg?width=640&height=428&crop=smart&auto=webp&s=d0caa2833dd076019c423bb29a9b0dcbdc43448c'>
+            <img @click="$router.push('/home')" class="push" src="~assets/logo.png">
         </div>
         <div v-for="icon in topLevelDestinLs" :key="icon.toRoute"
             @click="$router.push(icon.toRoute)"
-            :class="['push lift bottom-nav__btn',
+            :class="['lift bottom-nav__btn',
                 icon.toRoute==$route.path ? '--nav__btn--active' : null]"
         >
             <i class="material-icons-round">{{icon.icon}}</i>
             <p>{{ icon.lable }}</p>
+            <div v-if="showDot[icon.dot]" class="nav__btn__dot"></div>
         </div>
         <div @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"
-            :class="['push lift bottom-nav__btn nav__btn__profile',
+            :class="['lift bottom-nav__btn nav__btn__profile',
                 $route.path==`/user/${$store.state.auth.my_profile.username}` ?'--nav__btn--active': null]"
         >
             <img class="pfp" :src="$store.state.auth.my_profile.profile_pic">
@@ -44,18 +44,27 @@ export default {
             {
                 icon: "chat_bubble",
                 toRoute: "/chat",
-                lable: "Chat"
+                lable: "Chat",
+                dot: 'chat'
             },
             {
                 icon: "notifications",
                 toRoute: "/notifications",
-                lable: "Notifications"
+                lable: "Notifications",
+                dot: 'notification'
             },
         ]
     }),
     computed: {
         onTop() {
             return ['home', 'explore', 'communities', 'chat', 'notifications'].includes(this.$route.name)
+        },
+        showDot() {
+            const state = this.$store.state
+            return {
+                chat: state.hasUnreadMsg,
+                notification: new Date(state.lastRead) < new Date(state.lastest)
+            }
         }
     }
 }
@@ -80,6 +89,7 @@ export default {
     border-radius: 100px;
     display: flex;
     align-items: center;
+    position: relative;
 }
 .bottom-nav__btn > i {
     font-size: 27px;
@@ -93,6 +103,16 @@ export default {
 .--nav__btn--active .pfp {
     border: solid 2px var(--primary-color);
 }
+.nav__btn__dot {
+    position: absolute;
+    top: 5px;
+    left: 39px;
+    height: 9px;
+    width: 9px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    opacity: 0.95;
+}
 
 @media only screen and (min-width: 500px) {
     .--not-top, .logo, .nav__btn__profile {
@@ -101,11 +121,11 @@ export default {
     .logo {
         height: 52px;
         width: 100%;
-        padding: 11px;
+        padding: 12.5px;
         background: none !important;
     } .logo > img {
-        width: 35px;
-        height: 35px;
+        width: 30px;
+        height: 30px;
     }
     .nav__btn__profile > .pfp {
         width: 31px;
@@ -135,12 +155,14 @@ export default {
         text-align: center;
         margin: 5px 0;
 
-        background: linear-gradient(120deg, #777, #666 50%, white 50%);
+        background: linear-gradient(120deg, #777, #777 49%, white 51%);
         background-size: 230%;
         background-position: right bottom;
     }
     .bottom-nav__btn:hover {
         background-position: left bottom;
+        background: #777;
+        transition: .15s;
     }
 }
 @media only screen and (min-width: 1200px) {
@@ -148,7 +170,6 @@ export default {
         width: unset;
         align-items: flex-start;
         position: relative;
-        margin-right: 28px;
         overflow-y: auto;
     }
     .bottom-nav__btn {

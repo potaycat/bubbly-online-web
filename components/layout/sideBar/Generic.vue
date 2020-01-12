@@ -19,10 +19,12 @@ export default {
     components: { Cmnties, Users },
     computed: {
         cmtyLsUrl() {
-            return `communities/?search=${'a'}&limit=5&`
+            const rdmChar = Math.random().toString(36).substring(2,4).replace(/[0-9]/g, '')
+            return `communities/?search=${rdmChar}&limit=5&`
         },
         userLsUrl() {
-            return `accounts/?search=${'l'}&limit=5&`
+            const rdmChar = Math.random().toString(36).substring(2,4).replace(/[0-9]/g, '')
+            return `accounts/?search=${rdmChar}&limit=5&`
         }
     }
 }

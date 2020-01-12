@@ -10,11 +10,14 @@
 import ActivityView from '@/components/layout/ActivityView'
 import PostFullView from '@/components/post/fullView/'
 export default {
+    meta: {
+        useAppBar: true,
+    },
     components: {ActivityView, PostFullView},
     asyncData({ $axios, store, params }) {
         const stored = store.state.postx.currentPost
         if (!stored) {
-            return $axios.get(`posts/${params.slug}`, store.state.authHeader)
+            return $axios.get(`posts/${params.slug}`, store.state.auth.head)
                 .then(res => {
                     return {
                         post: res.data,
@@ -35,10 +38,10 @@ export default {
     activated() {
         if (!this.isSSR) {
             this.$axios.get(`posts/${this.$route.params.slug}`, 
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
-                    // this.$store.commit('postx/loadPost', res.data)
+                    // this.$store.commit('postx/LOAD_POST', res.data)
                     this.post = res.data
                 })
                 .catch(error => {
@@ -52,6 +55,8 @@ export default {
 <style>
 .post-full-view-wrapper > h2 {
     color: #333;
-    margin: 100px;
+    text-align: center;
+    margin-top: 100px;
+    color: #666;
 }
 </style>

@@ -1,9 +1,8 @@
 <template>
     <div class="the-post card box-shadow-1">
-        
         <section v-if="post.allocated_to" class="p__info">
-            <img class="cmty_ico lift" :src="post.allocated_to.icon_img"
-                @click="$router.push(`/communities/${post.allocated_to.id}`)"
+            <nuxt-link tag="img" :to="`/communities/${post.allocated_to.id}`"
+                class="cmty_ico lift" :src="post.allocated_to.icon_img"
             />
             <div class="p-info__text">
                 <strong>{{ post.allocated_to.name }}</strong>
@@ -29,7 +28,7 @@
             </div>
         </section>
 
-
+        <div v-if="post.is_nsfw" class="nsfw-post">NSFW</div>
         <div class="post__content glow" @click="toPost">
             <h4 class="p__title" :style="`border-color:#${allocated_to.theme_color}`">{{ post.title }}</h4>
             <p class="p__prview-txt">{{ post.text }}</p>
@@ -99,15 +98,16 @@ export default {
     props: ['post', 'community', 'user'],
     computed: {
         allocated_to() {
-            return this.community || this.post.allocated_to
+            return this.community || this.post.allocated_to ||
+                this.$store.getters['communityx/getJoinedById'](this.cmty_id)
         },
         author() {
             return this.user || this.post.author
-        },
+        }
     },
     methods: {
         toPost() {
-            this.$store.commit('postx/loadPost', {
+            this.$store.commit('postx/LOAD_POST', {
                 ...this.post,
                 allocated_to: this.allocated_to,
                 author: this.author,
@@ -119,7 +119,7 @@ export default {
         },
         getReactions() {
             this.$axios.get(`reacts/${this.post.id}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$set(this.post, 'reactions', res.data.reactions)
@@ -131,9 +131,6 @@ export default {
 
 <style>
 .the-post {
-    /* border: 1px;
-    border-style: solid;
-    border-color: #ccc; */
     margin-bottom: 7px;
     padding: 0 10px;
     width: 100%;
@@ -160,10 +157,21 @@ export default {
     opacity: 0.75;
 }
 
+.nsfw-post {
+    color: red;
+    border: solid 1.5px red;
+    display: inline;
+    padding: 0 5px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 12px;
+}
+.nsfw-post + .post__content img {
+    filter: blur(40px)
+}
 
 .post__content .p__title {
     border-left: solid 4px;
-    /* border-color: rgb(206, 115, 206); */
     padding: 0 6px;
     margin: 6px 0 6px -10px;
     max-height: 200vh;

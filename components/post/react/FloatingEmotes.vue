@@ -1,6 +1,5 @@
 <template>
 <transition name="fade">
-    <!-- TODO refactor -->
     <div :class="['total_darkness', 'no-bg', quickLeave&&!$options.isMobile?'react-add--leave':null]"
         oncontextmenu="return false"
         @mousedown.self="$emit('cancel')"

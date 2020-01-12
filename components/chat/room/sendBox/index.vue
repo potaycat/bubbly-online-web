@@ -53,7 +53,7 @@ export default {
             }
         },
         performSend() {
-            if(this.inputNotBlank) {
+            if(this.inputNotBlank || this.immediateFocus) {
                 this.$emit('textOutbox', this.input)
 
                 this.signalable = true

@@ -1,9 +1,7 @@
 <template>
 <transition name="fade" appear>
     <div v-if="lockable||locked" class="lockable-tab-ctnr" ref="tabCtnr">
-        <div id="tabs-round"
-            :class="lockTabs ? 'locked-tabs': 'unlocked-tabs'"
-        >
+        <div :class="['tabs-round', lockTabs ? 'locked-tabs': 'unlocked-tabs']">
             <!-- COPY -->
             <button v-for="(tab, index) in tabs" 
                 :key="index"
@@ -14,9 +12,9 @@
         </div>
     </div>
 
-    <div v-else id="tabs-round" 
-        :class="contractless?null:['top-lev-tabs', $store.state.scrollinUp?null:'top-lev-contract']"
-    >
+    <div v-else :class="['tabs-round', 
+        contractless?null:['top-lev-tabs', $store.state.scrollinUp?null:'top-lev-contract']
+    ]">
         <!-- PASTE -->
         <button v-for="(tab, index) in tabs"
             :key="index"
@@ -30,13 +28,13 @@
 
 <script>
 export default {
-    props: [
-        'tabs',
-        'currentTab',
-        'lockable',
-        'locked',
-        'contractless'
-    ],
+    props: {
+        tabs: Array,
+        currentTab: Number,
+        lockable: Boolean,
+        locked: Boolean,
+        contractless: Boolean,
+    },
     data() {
         return {
             lockTabs: false,
@@ -97,7 +95,7 @@ export default {
 }
 
 
-#tabs-round {
+.tabs-round {
     left: 0;
     right: 0;
     display: flex;
@@ -108,7 +106,7 @@ export default {
         rgba(0, 0, 0, 0) 100%);
     overflow: auto;
 }
-#tabs-round button{
+.tabs-round button{
     margin: auto;
     border-radius: 100px; /* breaks transitions, be careful */
     padding: 5.5px;
@@ -119,11 +117,16 @@ export default {
     color: #00000055;
     white-space: nowrap;
 }
-#tabs-round #focusing {
+.tabs-round #focusing {
     background: #ddd;
     color: #000;
 }
-#tabs-round button:active {
-    background: #eee;
+@media (hover: hover) {
+    .tabs-round button:hover {
+       background: #eee;
+    }
+}
+.tabs-round button:active {
+    background: #e5e5e5;
 }
 </style>

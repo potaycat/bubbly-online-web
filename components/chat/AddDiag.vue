@@ -1,21 +1,19 @@
 <template>
 <transition appear name="zoom_fade">
     <div class="total_darkness is-fixed">
-        <div id="add-container" class="box-shadow-4">
+        <div class="add-container box-shadow-4">
             <div class="add__btn-ctnr">
-                <button class="add__btn" @click="$parent.openAddDiag=false">Cancel</button>
-                <button class="add__btn" style="margin-left:auto" @click="hahayes()">
+                <button class="add__btn nopaque" @click="$parent.openAddDiag=false">Cancel</button>
+                <button class="add__btn nopaque" style="margin-left:auto" @click="hahayes()">
                     <div v-if="roomId">Add</div>
                     <div v-else>Enter room</div>
                 </button>
             </div>
             
-            <div class="_added-peep no-bg">
-                <strong v-if="selected_peeps.length" style="margin:4px 5px">Selected: </strong>
+            <div class="added-peep no-bg">
                 <div v-for="person in selected_peeps"
                     :key="person.username"
-                    class="_slctd"
-                    :id="[deleting == person.username ? '_added__del' : null]"
+                    :class="['added-person', deleting==person.username ? '--confirm-rmval' :null]"
                     @click="toRemove(person)"
                 >
                     <img v-if="deleting != person.username" class="pfp" :src="person.profile_pic">
@@ -33,16 +31,15 @@
                 >
             </div>
             
-            <Tabs
-                contractless=1
+            <Tabs contractless
                 class="add-diag__tabs"
                 :tabs="['FOLLOWINGS', 'FOLLOWERS']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
             />
             
-            <div id="_peep-ls-ctn" ref="feed">
-                <div class="_peep-list">
+            <div class="peep-ls-ctn" ref="feed">
+                <div class="peep-list">
                     <transition-group name="fade">
                         <div v-for="person in fetchedData"
                             :key="person.username"
@@ -88,6 +85,7 @@ export default {
     },
     watch: {
         feedUrl() {
+            this.fetchedData = []
             this.firstFetch()
         },
     },
@@ -128,7 +126,7 @@ export default {
                 this.$axios.post(
                     `chat/${this.roomId || '__new_or_direct'}/add`,
                     {participants: parti},
-                    this.$store.state.authHeader
+                    this.$store.state.auth.head
                 )
                     .then(res => {
                         if (this.roomId) {
@@ -145,7 +143,7 @@ export default {
 </script>
 
 <style>
-#add-container {
+.add-container {
     background: #fff;
     z-index: 999;
     border-radius: 20px;
@@ -153,7 +151,7 @@ export default {
     width: 600px;
     position: relative;
 }
-#add-container .add__btn-ctnr {
+.add-container .add__btn-ctnr {
     display: flex;
     padding: 14px 10px;
 }
@@ -161,18 +159,15 @@ export default {
     color: var(--primary-color);
     font-weight: bold;
 }
-.add__btn:active {
-    opacity: 0.7;
-}
 
-._added-peep {
+.added-peep {
     padding: 0 10px;
     max-height: 120px;
     overflow: auto;
     display: flex;
     flex-wrap: wrap;
 }
-._added-peep ._slctd {
+.added-peep .added-person {
     font-size: 14px;
     display: inline-flex;
     overflow: hidden;
@@ -181,18 +176,18 @@ export default {
     padding: 3px;
     margin: 3px 4px;
 }
-._slctd .pfp {
+.added-person .pfp {
     height: 22px;
     width: 22px;
 }
-._slctd p {
+.added-person > p {
     margin: 0 5px;
 }
-._added-peep #_added__del {
+.added-person.--confirm-rmval {
     background: #00000055;
 }
 
-._added-peep > input {
+.added-peep > input {
     font-size: 15px;
     border: none;
     outline: none;
@@ -201,16 +196,16 @@ export default {
     padding: 5px;
 }
 
-#_peep-ls-ctn {
+.peep-ls-ctn {
     height: calc(100% - 74px);
     border-radius: 0 0 20px 20px;
     overflow: hidden;
 }
-._peep-list {
+.peep-list {
     overflow: auto;
     padding-top: 50px;
 }
-._peep-list .peep-ls__item{
+.peep-list .peep-ls__item{
     /* border-radius: 10px; */
     display: flex;
     align-items: center;
@@ -226,7 +221,7 @@ export default {
     font-weight: bold;
     font-size: 14px;
 }
-._peep-list .checkbox {
+.peep-list .checkbox {
     transition: .5s;
     border-radius: 100px;
     width: 20px;
@@ -234,7 +229,7 @@ export default {
     margin-right: 10px;
     border: 2px solid #00000077;
 }
-._peep-list .checked {
+.peep-list .checked {
     background: var(--primary-color);
     border: none;
     background-image: url("~assets/ding.png");
@@ -244,7 +239,6 @@ export default {
 .add-diag__tabs {
     position: absolute;
     width: 100%;
-    /* margin: 0 2.5%; */
     background: linear-gradient(180deg, #fff 0%, #ffffffdd 60%, #ffffff00 100%);
 }
 </style>

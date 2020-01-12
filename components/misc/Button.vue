@@ -22,10 +22,10 @@ import Spinner from './Spinner'
 export default {
     components: { Spinner },
     props: {
-        text: { type: String },
-        fill: { type: Boolean },
-        lite: { type: Boolean },
-        wait: { type: Boolean },
+        text: String,
+        fill: Boolean,
+        lite: Boolean,
+        wait: Boolean,
         padding: {
             type: Array,
             default:() => ['3px', '20px']
@@ -39,7 +39,7 @@ export default {
         },
         colorScnd: {
             type: String,
-            default:() => 'var(--secondary-color)'
+            default: 'var(--secondary-color)'
         },
     }
 };
@@ -71,7 +71,7 @@ export default {
     font-size: 14px;
 }
 .my-btn--wait {
-    opacity: 0.5;
+    opacity: 0.55;
     pointer-events: none;
 }
 </style>

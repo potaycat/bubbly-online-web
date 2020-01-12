@@ -14,7 +14,6 @@
             icon= "add"
             actionName= "Write a post"
         />
-        <!-- <button style="position:fixed;top:50%;right:150px;z-index:99999" @click="DEBUG()">DEBUG</button> -->
     </div>
 </template>
 
@@ -24,23 +23,7 @@ import FAB from '@/components/misc/FAB'
 import JoinedCmtyFeed from './JoinedCmtyFeed'
 
 export default {
-    components: {
-        FAB,
-        JoinedCmtyFeed,
-    },
-    mixins: [
-        tabs,
-    ],
-    methods: {
-        DEBUG() {
-            this.$axios.post('posts/1/comments/create',
-            {text:"bruhhhh"}
-            , this.$store.state.authHeader)
-                .then(res => {
-                    console.log(res);
-                    
-                })
-        }
-    }
+    components: { FAB, JoinedCmtyFeed },
+    mixins: [ tabs ],
 }
 </script>

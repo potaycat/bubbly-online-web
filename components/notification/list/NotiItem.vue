@@ -32,10 +32,10 @@ export default {
                 const targetPreview = n.target.title||n.target.text||n.target.preview
                 if (this.isReact) {
                     strBuild += ` :${n.action_object.name}: on ${
-                        n.target.type}: "${targetPreview}"`
+                        n.target.type} "${targetPreview}"`
                 } else if (this.isComment) {
                     strBuild += ` "${n.action_object.preview}" on ${
-                        n.target.type}: "${targetPreview}"`
+                        n.target.type} "${targetPreview}"`
                 }
             }
             return strBuild
@@ -66,7 +66,7 @@ export default {
 <style>
 .noti-item-ctnr {
     margin: 5px 0;
-    padding: 7px 10px;
+    padding: 7px 12px;
     display: flex;
     width: 100%;
 }
@@ -74,7 +74,7 @@ export default {
     height: 48px;
     min-width: 48px;
     max-width: 48px;
-    margin-left: 10px;
+    margin-left: 7px;
 }
 .noti-item__txt {
     font-size: 14px;
@@ -82,7 +82,7 @@ export default {
     word-break: break-word;
 }
 .noti-item__timestmp {
-    font-size: 13px;
+    font-size: 12px;
     margin-top: 5px;
     color: #555;
 }

@@ -3,10 +3,10 @@
         <p v-if="msg_type==1" class="m-ct__txt">{{ content }}</p>
 
         <div v-else-if="msg_type==3" class="m-ct__yt-embed">
-            <iframe width="276" height="155" :src="ytLink" frameborder="0"
+            <iframe :src="`https://www.youtube-nocookie.com/embed/${content}`"
+                width="276" height="155" frameborder="0" allowfullscreen
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen>
-            </iframe>
+            ></iframe>
         </div>
 
         <div v-else-if="[2, 11].includes(msg_type)" :class="['msg-ct--img-ctn', msg_type==11?'--emote-ctn':null]">
@@ -39,12 +39,7 @@ export default {
         'msg_type',
         'content',
         'sending'
-    ],
-    computed: {
-        ytLink() { 
-            return `https://www.youtube-nocookie.com/embed/${this.content}`
-        },
-    }
+    ]
 }
 </script>
 

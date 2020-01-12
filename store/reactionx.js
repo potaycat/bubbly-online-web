@@ -15,7 +15,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-    handleMultiCmtyRes(state, cmtyLs) {
+    HANDLE_MULTI_CMTY_RES(state, cmtyLs) {
         const newEmotes = {}
         for (const cmty of cmtyLs) {
             newEmotes[cmty.id] = cmty.icons
@@ -25,44 +25,44 @@ export const mutations = {
             ...state.emotes
         }
     },
-    handleEmotesRes(state, payload) {
+    HANDLE_EMOTES_RES(state, payload) {
         // payload = {communityId, iconArray}
         Vue.set(state.emotes, payload.cmtyId, payload.iconList)
     },
-    toLocal(state) {
+    EMOTES_TO_LOCAL(state) {
         localStorage.setItem('lcl_emos', JSON.stringify({
             ...state.localEmotes,
             ...state.emotes,
         }))
     },
-    clearLocal() {
+    CLEAR_LOCAL_EMOTES() {
         localStorage.removeItem('lcl_emos')
     },
 }
 
 export const actions = {
-    getMyEmotes({ rootState }) {
+    getMyEmotes({ rootState, commit }) {
         this.$axios.get('reacts/icons/all/',
-            rootState.authHeader
+            rootState.auth.head
         )
             .then((res) => {
-                this.commit('reactionx/handleMultiCmtyRes', res.data)
-                this.commit('reactionx/toLocal')
+                commit('HANDLE_MULTI_CMTY_RES', res.data)
+                commit('EMOTES_TO_LOCAL')
             })
             // .catch((error) => {
             //     console.error("CAUGHT: "+error)
             // })
     },
-    getCmtyEmotes({ rootState }, cmtyId) {
+    getCmtyEmotes({ rootState, commit }, cmtyId) {
         this.$axios.get(`communities/${cmtyId}/icons/`,
-            rootState.authHeader
+            rootState.auth.head
         )
             .then((res) => {
-                this.commit('reactionx/handleEmotesRes', {
+                commit('HANDLE_EMOTES_RES', {
                     cmtyId: cmtyId,
                     iconList: res.data
                 })
-                this.commit('reactionx/toLocal')
+                commit('EMOTES_TO_LOCAL')
             })
             .catch((error) => {
                 console.error("CAUGHT: "+error)

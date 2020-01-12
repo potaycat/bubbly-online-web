@@ -31,7 +31,7 @@ export const feedingFrenzy = {
         fetch(url=this.urlConstruct, resAction=this.fillFeeder) {
             this.loading4More = true
             this.$axios.get(url,
-                this.$store.state.authHeader)
+                this.$store.state.auth.head)
                 .then(res => {
                     if (res.data.length == 0) this.reachedEnd = true
                     resAction(res.data)
@@ -39,7 +39,7 @@ export const feedingFrenzy = {
                 })
         },
         fillFeeder(data) {this.fetchedData.push(...data)},
-        firstFetch() {
+        firstFetch() { // careful as it may duplicated requests
             const replace = (data) => this.fetchedData = data
             this.fetch(this.feedUrl, replace)
             this.reachedEnd = false
@@ -79,10 +79,10 @@ export const postFeed = {
         if (update) {
             const post = this.fetchedData.find(post => post.id == update.id)
             if (post && update.reactions) {
-                Object.keys(update).forEach(field => {
+                for (const field in update) {
                     this.$set(post, field, update[field])
-                })
-                this.$store.commit('postx/loadPost', null)
+                }
+                this.$store.commit('postx/LOAD_POST', null)
             }
         }
     },
@@ -90,7 +90,9 @@ export const postFeed = {
 
 export const refreshFrenzy = {
     activated() {
-        this.firstFetch()
+        if (this.fetchedData.length) {
+            this.firstFetch()
+        }
     },
 }
 
@@ -105,14 +107,14 @@ export const scrlDirection = {
         },
         scrollCtnr() { return this.$refs.feed },
     },
-    activated() { if (!this.scrolling_up) this.$store.commit('toggleScrDir') },
+    activated() { if (!this.scrolling_up) this.$store.commit('TOGGLE_SCRL_DIR') },
     mounted() {
         const scrllable = this.scrollCtnr
         scrllable.scrollTop = this.lastScrollPosition
         scrllable.addEventListener('scroll', () => {
             if (scrllable.scrollTop > this.$options.prevScrTp) {
-                if (this.scrolling_up) this.$store.commit('toggleScrDir')
-            } else if (!this.scrolling_up) this.$store.commit('toggleScrDir')
+                if (this.scrolling_up) this.$store.commit('TOGGLE_SCRL_DIR')
+            } else if (!this.scrolling_up) this.$store.commit('TOGGLE_SCRL_DIR')
             this.$options.prevScrTp = scrllable.scrollTop
         }, {
             capture: false,
@@ -138,7 +140,7 @@ export const maintainScrllPos = {
             this.$nextTick(() => {
                 setTimeout(() => { // TODO fix
                     this.scrollCtnr.scrollTop = scroll
-                }, 100)
+                }, 90)
             })
         });
     }

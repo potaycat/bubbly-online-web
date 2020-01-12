@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="err__container">
         <h1 v-if="error.statusCode === 404">
             Page not found
         </h1>
@@ -7,10 +7,13 @@
             Something failed to work
         </h1>
         <p>Sorry for the inconvenience</p>
-        <div>
-            <NuxtLink to="/" style="margin-left:10px;color:#0000ff">
+        <div class="err__links-ctnr">
+            <nuxt-link to="/home" class="err__links hoverline">
                 Home
-            </NuxtLink>
+            </nuxt-link>
+            <a @click="$router.go()" class="err__links hoverline">
+                Refresh
+            </a>
         </div>
     </div>
 </template>
@@ -22,11 +25,18 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.err__container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+}
+.err__links-ctnr {
+    margin-top: 10px;
+}
+.err__links {
+    margin-left: 10px;
+    color: var(--primary-color);
+    display: inline;
 }
 </style>

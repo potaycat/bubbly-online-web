@@ -8,7 +8,6 @@ export const profilePeak = {
     }),
     methods: {
         performDisplay(profile) { // zoom_from_click mixin
-            console.log(profile);
             this.peakingAt = profile
         },
         onClose(didSomething) {

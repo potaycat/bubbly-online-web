@@ -1,9 +1,10 @@
 <template>
     <div class="feeding-status-ctnr">
-        <h3 class="empty-fetchedLs" v-if="!isFetching && !listLen && headsup">
+        <Spinner v-if="isFetching" class="feeding-status__spinner"/>
+        <div v-else-if="listLen" class="reached-end">•</div>
+        <h3 v-else-if="!listLen && headsup" class="empty-fetchedLs">
             {{ headsup }}
         </h3>
-        <Spinner class="feeding-status__spinner" v-if="isFetching" />
     </div>
 </template>
 
@@ -12,8 +13,8 @@ import Spinner from '@/components/misc/Spinner'
 export default {
     components: {Spinner},
     props: {
-        isFetching: {},
-        listLen: {},
+        listLen: Number,
+        isFetching: Boolean,
         headsup: {
             type: String,
             default: "Nothing to see here... yet."
@@ -35,5 +36,9 @@ export default {
     color: #999;
     margin: 30px;
     text-align: center;
+}
+.reached-end {
+    color: #ccc;
+    font-size: 39px;
 }
 </style>

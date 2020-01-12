@@ -49,7 +49,7 @@ export default {
             this.$axios.post(
                 `moderation/${this.community.id}/chat`,
                 {description: val},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.firstFetch()

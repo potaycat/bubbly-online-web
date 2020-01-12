@@ -50,7 +50,7 @@ export default {
         onUnfollowHandle() {this.profile.you_follow = false},
         onPerformFollow() {this.profile.you_follow = true},
         onFollowFailHandle(e) {
-            console.log(e)
+            console.error("CATCHED follow fail: "+e)
             this.profile.you_follow = false
         },
 

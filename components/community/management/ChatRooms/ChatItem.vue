@@ -7,19 +7,17 @@
                 <strong>{{ displayName }}</strong>
                 <p>{{ room.description }}</p>
             </div>
-            <i class="material-icons-round glow" @click="performDrop">more_vert</i>
+            <i class="material-icons-round nopaque" @click="performDrop">more_vert</i>
         </div>
         <Dropdown v-if="touchPos"
             :position="{y:touchPos.y, x:touchPos.x}"
             :options="[
-                ...[
-                    {action:'confirm_changeDesc', label:'Change Description'},
-                    {action:'confirm_swap', label:'Swap Ordering'},
-                ],
+                {action:'confirm_changeDesc', label:'Change Description'},
+                {action:'confirm_swap', label:'Swap Ordering'},
                 ...isAdmin ? [
                     {action:'confirm_delete', label:'Delete'}
-                ] : null
-            ].filter(x => x)"
+                ] : []
+            ]"
         />
         <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
@@ -64,7 +62,7 @@ export default {
                 {
                     description: val
                 },
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('mutated')
@@ -81,7 +79,7 @@ export default {
                     first: toSwap,
                     second: this.room.id,
                 },
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('mutated')
@@ -90,7 +88,7 @@ export default {
         },
         perform_delete() {
             this.$axios.delete(`moderation/${this.community.id}/chat/${this.room.id}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('mutated')

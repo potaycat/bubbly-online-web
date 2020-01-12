@@ -10,10 +10,8 @@
 
 
 <script>
-import { disableHamburger } from '@/mixins/appBarStuff'
 export default {
     props: ['customCmds'],
-    mixins: [disableHamburger],
 }
 </script>
 

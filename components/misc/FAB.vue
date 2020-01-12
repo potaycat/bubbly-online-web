@@ -21,10 +21,10 @@
 
 <script>
 export default {
-    props: [
-        'actionName',
-        'icon',
-    ],
+    props: {
+        actionName: String,
+        icon: String,
+    },
     data() {
         return {
             topLev: ['home', 'explore', 'communities', 'chat', 'notifications'].includes(this.$route.name),
@@ -96,8 +96,6 @@ export default {
             height: 54px;
             text-align: center;
             box-shadow: none;
-        }.FAB:hover {
-            filter: brightness(1.3);
         }
         .FAB > span {
             display: none;
@@ -106,7 +104,7 @@ export default {
     @media only screen and (min-width: 1200px) {
         .FAB {
             position: absolute;
-            left: -248px;
+            left: -275px;
             padding: 0;
             height: 50px;
             width: 200px;

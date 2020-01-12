@@ -2,44 +2,58 @@ import jwt_decode from 'jwt-decode'
 
 export const state = () => ({
     jwt: localStorage.getItem('t'),
+    head: localStorage.getItem('t') ?
+        {headers: {Authorization: "JWT "+localStorage.getItem('t')}} : null,
     my_profile: JSON.parse(localStorage.getItem('p')) || {},
-    error: null
+    loggedInTo: null,
 })
 
 export const mutations = {
-    storeAuthUser(state, profile_obj) {
+    STORE_AUTH_USR(state, profile_obj) {
         if (profile_obj.constructor === Object) {
             state.my_profile = profile_obj
             localStorage.setItem('p', JSON.stringify(profile_obj))
         }
     },
-    updateToken(state, newToken) {
-        state.jwt = newToken // because localStorage is not reactive
+    UPDATE_TOKEN(state, newToken) {
+        // because localStorage is not reactive. TODO refactor. axios config headers
+        state.jwt = newToken
+        state.head = {headers: {Authorization: "JWT "+newToken}}
         localStorage.setItem('t', newToken)
     },
-    removeToken(state) {
+    REMOVE_TOKEN(state) {
         state.jwt = null
         localStorage.removeItem('t')
     },
-    throwServerErr(state, data) {
-        state.error = data
+    LOG_IN_TO(state, path) {
+        state.loggedInTo = path
     }
 }
 
 export const actions = {
-    login(state, credential) {
-        this.$axios.post('accounts/get-jwt', credential)
+    logInToDoThat({commit, getters}) {
+        if (!getters.loggedIn) {
+            commit('LOG_IN_TO', this.$router.currentRoute.fullPath)
+            this.$router.push('/auth/register')
+        }
+    },
+    login({state, commit}, credential) {
+        return new Promise((resolve, reject) => {
+            this.$axios.post('accounts/get-jwt', credential)
             .then((res) => {
-                this.commit('auth/updateToken', res.data.token)
+                commit('UPDATE_TOKEN', res.data.token)
                 this.$axios.get(`accounts/${credential.username}`)
-                    .then((res) => {
-                        this.commit('auth/storeAuthUser', res.data)
-                        this.$router.go()
-                    })
+                .then((res) => {
+                    commit('STORE_AUTH_USR', res.data)
+                    this.$router.push(state.loggedInTo || '/home')
+                    commit('LOG_IN_TO', null)
+                    resolve()
+                })
             })
             .catch((error) => {
-                this.commit('auth/throwServerErr', error.response.data)
+                reject(error)
             })
+        })
     },
     refreshToken() {
         const payload = {
@@ -47,7 +61,7 @@ export const actions = {
         }
         this.$axios.post('accounts/refresh-jwt', payload)
             .then((res) => {
-                this.commit('auth/updateToken', res.data.token)
+                this.commit('auth/UPDATE_TOKEN', res.data.token)
             })
             .catch((error) => {
                 console.error("CAUGHT: "+error)
@@ -71,4 +85,7 @@ export const actions = {
 }
 
 export const getters = {
+    loggedIn: (state) => {
+        return Object.entries(state.my_profile).length
+    },
 }

@@ -7,7 +7,7 @@
             :key="item.id"
             :profile="item"
         />
-        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
+        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length" headsup="Empty"/>
     </div>
 </template>
 
@@ -28,8 +28,10 @@ export default {
     },
     methods: {
         simulateDisableKeepAlive() {
-            this.fetchedData = []
-            this.firstFetch()
+            if (this.fetchedData.length) {
+                this.fetchedData = []
+                this.firstFetch()
+            }
         }
     }
 }
@@ -52,12 +54,5 @@ export default {
 }.side-bar__user-item .usr-blck__role {
     top: 42px;
     font-size: 9px;
-}
-
-.side-bar__user-item{
-    transition: .4s;
-}
-.side-bar__user-item:hover {
-    background: #ddd;
 }
 </style>

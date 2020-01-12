@@ -31,16 +31,10 @@ export default {
             feedUrl: 'notifications/all/',
         }
     },
-    watch: {
-        fetchedData() {
-            console.log(this.fetchedData);
-            
-        }
-    },
     methods: {
         clearAll() {
             this.$axios.delete('notifications/all/',
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.fetchedData = []

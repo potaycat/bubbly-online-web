@@ -12,6 +12,10 @@ export default {
     head:() => ({
         title: "Create a Bubbly Community",
     }),
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+    },
     components: {
         ActivityView,
         Create,

@@ -10,11 +10,11 @@ export const formValidate = {
         Requesting: false,
     }),
     computed: {
-        validated() {
+        rules() {
             return {}
         },
         formValidated() {
-            const obj = this.validated
+            const obj = this.rules
             return Object.keys(obj).every(k => obj[k])
         }
     },
@@ -28,14 +28,14 @@ export const formValidate = {
     },
     methods: {
         notValidated(field) {
-            return !this.validated[field] && this.submitedOnce
+            return !this.rules[field] && this.submitedOnce
         },
-        validateAnd(performAction, payload) {
+        validateThen(performAction, payload) {
             this.Requesting = true
             // TODO payload not working
             if (this.formValidated) {
-                // performAction.apply(this, arguments)
-                performAction(payload)
+                performAction.apply(this, payload)
+                // this.error = null
             } else {
                 this.submitedOnce = true
                 this.Requesting = false
@@ -43,6 +43,7 @@ export const formValidate = {
         },
         serverErrRes(data) {
             this.error = data
+            this.Requesting = false
         }
     }
 }

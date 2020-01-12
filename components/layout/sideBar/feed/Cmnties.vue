@@ -1,5 +1,6 @@
 <template>
-    <div class="side-bar__cmty common_ls_cntainr" ref="feed">
+    <div :style="fetchedData.length?null:'display:none'"
+        class="side-bar__cmty common_ls_cntainr" ref="feed">
         <p class="side-bar__cmty-title">{{ title }}</p>
         <Community
             class="side-bar__cmty-item"
@@ -7,7 +8,7 @@
             :key="item.id"
             :community="item"
         />
-        <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"/>
+        <StatusIndicator :isFetching="loading4More" :listLen="1"/>
     </div>
 </template>
 
@@ -35,10 +36,6 @@ export default {
     font-size: 16px;
 }.side-bar__cmty-item .mbrshp__subtxt {
     font-size: 11px;
-}
-.side-bar__cmty-item:hover {
-    box-shadow: inset 0px -120px 50px -40px rgba(0, 0, 0, 0.35);
-    text-shadow: 0px 0px 6px #000;
 }
 .side-bar__cmty-title {
     font-size: 14px;

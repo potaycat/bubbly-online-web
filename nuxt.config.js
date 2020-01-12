@@ -41,6 +41,7 @@ module.exports = {
     baseURL: 'http://localhost:8000',
   },
   oneSignal: {
+    cdn: true,
     async: true,
     init: {
       appId: "4378f3a9-be31-4736-9064-f81654754711",
@@ -69,7 +70,6 @@ module.exports = {
           strategyOptions: {cacheableResponse: {statuses: [0, 200]}}
         },
       ],
-      offlinePage: '/offline.html'
     },
     meta: {
       nativeUI: true,
@@ -93,5 +93,7 @@ module.exports = {
     }
   },
   
-  router: {}
+  router: {
+    middleware: ['requireAuth', 'appBar'],
+  }
 }

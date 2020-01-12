@@ -1,0 +1,11 @@
+.doc-content {
+    margin: 0 12px;
+    user-select: text;
+}
+.doc-content p {
+    margin: 5px 0 30px 20px;
+}
+.doc-content a {
+    user-select: text;
+    color: var(--primary-color);
+}

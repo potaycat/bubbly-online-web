@@ -11,7 +11,8 @@
 
             <div class="diag__content" v-if="toDisplay.input_desc">
                 <div class="form__group">
-                    <input  id="uip" v-model="user_input" class="form__field" v-on:keyup.enter="inputted(user_input)" placeholder="_">
+                    <input id="uip" class="form__field" autocomplete="off" placeholder="_"
+                        v-model="user_input" @keyup.enter="inputted(user_input)">
                     <label for="uip" class="form__label">{{ toDisplay.input_desc }}</label>
                 </div>
             </div>
@@ -32,14 +33,10 @@
 
 <script>
 export default {
-    props: [
-        'toDisplay',
-    ],
-    data() {
-        return {
-            user_input: true,
-        }
-    },
+    props: ['toDisplay'],
+    data:() => ({
+        user_input: true,
+    }),
     methods: {
         inputted(val) {
             if (val!=="") {
@@ -47,8 +44,8 @@ export default {
             }
         },
     },
-    mounted() {
-        if (this.toDisplay.input_desc) { this.user_input="" }
+    created() {
+        if (this.toDisplay.input_desc) this.user_input=""
     },
 }
 </script>

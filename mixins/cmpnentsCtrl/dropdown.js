@@ -22,8 +22,7 @@ export const dropdown = {
             this.touchPos = null
         },
         performDrop(evt) {
-            console.log(evt);
-            
+            // console.log(evt)
             this.touchPos = {x: evt.clientX, y: evt.clientY}
         }
     }

@@ -6,7 +6,7 @@
             :customCmds="[
                 {action: 'update', icon: 'done'},
             ]"
-            @update="validateAnd(performUpdate)"
+            @update="validateThen(performUpdate)"
         />
         <section class="form__fields-wrapper">
             <Form v-for="field in editableFields" :key="field.vmodel"
@@ -23,17 +23,20 @@
 <script>
 import ActivityView from '@/components/layout/ActivityView'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
-import { appBarTitle } from '@/mixins/appBarStuff'
 import { formValidate } from '@/mixins/formValidate'
 export default {
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Change email"
+    },
     components: {ActivityView, AppBarCustomBtn},
-    mixins: [appBarTitle, formValidate],
+    mixins: [formValidate],
     data:() => ({
         formData: {
             email: '',
             old_password: '',
         },
-        appBarDisplayTitle: "Change email"
     }),
     computed: {
         editableFields() {
@@ -42,7 +45,7 @@ export default {
                 {type: 'password', label: "Your password", vmodel: 'old_password', validateInfo: "Double check your password please"},
             ]
         },
-        validated() {
+        rules() {
             const reEmail = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             return {
                 email: reEmail.test(this.formData.email.toLowerCase()),
@@ -51,7 +54,7 @@ export default {
     },
     created() {
         this.$axios.get('accounts/__self/update-email',
-            this.$store.state.authHeader
+            this.$store.state.auth.head
         )
             .then(res => {
                 this.formData.email = res.data.email
@@ -65,7 +68,7 @@ export default {
             }
             this.$axios.put('accounts/__self/update-email',
                 data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$router.go()

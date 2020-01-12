@@ -1,6 +1,6 @@
 <template>
     <div>
-        <FloatingSaveButton v-if="hasUnsaved" :wait="Requesting" :color="formData.theme_color" @clicked="validateAnd(finised)"/>
+        <FloatingSaveButton v-if="hasUnsaved" :wait="Requesting" :color="formData.theme_color" @clicked="validateThen(finised)"/>
         <div class="prfl-edit__cover-pic">
             <img :src="formData.coverInput.preview || community.cover_img">
             <label class="prfl-edit__upload-btn glow">
@@ -17,32 +17,49 @@
         </div>
         
         <section class="form__fields-wrapper">
-            <Form v-for="field in editableFields" :key="field.vmodel"
+            <Form v-for="field in formTemplate" :key="field.id"
                 :fld="field"
-                v-model="formData[field.vmodel]"
-                :notValidated="notValidated(field.vmodel)"
+                v-model="formData[field.id]"
+                :invalidMsg="invalidFields[field.id]"
             />
         </section>
+        <p v-if="formData.isRequireCode && formData.invite_code" class="form-code-inform">
+            Keep this invite link somewhere safe:<br>
+            <a>{{inviteUrl}}</a><span class="glow form-code-inform__copy" @click="copyInviteLink">Copy</span>
+        </p>
     </div>
 </template>
 
 <script>
 import FloatingSaveButton from './FloatingSaveButton'
-import { formValidate } from '@/mixins/formValidate'
+import { formValidate } from '@/mixins/form'
 export default {
     components: {FloatingSaveButton},
     mixins: [formValidate],
     props: ['community', 'isAdmin'],
     data() {
+        const cmty = this.community
         return {
+            dynFormTemplate: [
+                { type: 'text', label: "Name", id: 'name', rules: this.$options.commonRules.cmtyNameRules },
+                { type: 'text', label: "Tag line", id: 'moto', rules: [
+                    {
+                        check:(val) => { return val.length < 240 },
+                        onFailWarn: "Please be more concise"
+                    },
+                ]},
+                { type: 'color', label: "Theme color:", id: 'theme_color', rules: this.$options.commonRules.themeColorRules},
+                { type: 'toggler', label: "Visible to public", id: 'isPublic' },
+                { type: 'toggler', label: "Invite code required to join", id: 'isRequireCode' },
+            ],
             formData: {
-                name: this.community.name,
-                moto: this.community.moto || '',
-                theme_color: '#'+this.community.theme_color,
-                invite_code: "",
+                name: cmty.name,
+                moto: cmty.moto || '',
+                theme_color: '#'+cmty.theme_color,
 
-                isPublic: ['public','closed'].includes(this.community.visibility),
-                requireCode: "",
+                isPublic: ['public','closed'].includes(cmty.visibility),
+                isRequireCode: ['closed','secret'].includes(cmty.visibility),
+                invite_code: "",
 
                 pfpInput: {},
                 coverInput: {},
@@ -50,30 +67,24 @@ export default {
         }
     },
     computed: {
-        editableFields() {
-            return [
-                {type: 'text', label: "Name", vmodel: 'name', validateInfo: "Name shouldn't be longer than 30 characters"},
-                {type: 'text', label: "Tag line", vmodel: 'moto', validateInfo: "Please be more concise"},
-                
-                {type: 'color', label: "Theme color:", vmodel: 'theme_color', validateInfo: "Try a color that doesn't too much resemble white"},
-                
-                {type: 'toggler', label: "Visible to public", vmodel: 'isPublic'},
-                {type: 'toggler', label: "Invite code required to join", vmodel: 'requireCode'},
-                this.formData.requireCode ? 
-                    {type: 'text', label: "Create New Invite Code", vmodel: 'invite_code', validateInfo: "Field required with current settings"} : null,
-            ].filter(x => x)
+        formTemplate() {
+            return this.formData.isRequireCode ?
+                [
+                    ...this.dynFormTemplate,
+                    {type: 'text', label: "New invite code (blank to keep old code)", id: 'invite_code', rules:
+                        this.$options.commonRules.inviteCodeRules}
+                ] : this.dynFormTemplate
         },
-        validated() {
-            const form = this.formData
-            return {
-                name: form.name.length > 2 && form.name.length < 100,
-                moto: form.moto.length < 255,
-                theme_color: form.theme_color != '#ffffff',
-                requireCode: form.requireCode.length <= 8
-            }
-        },
+        inviteUrl() {
+            return encodeURI(
+                `${window.location.origin}/communities/${this.community.id}/join/${this.formData.invite_code}`
+            )
+        }
     },
     methods: {
+        copyInviteLink() {
+            navigator.clipboard.writeText(this.inviteUrl)
+        },
         onCoverChange() {
             const file = this.$refs.cover_input.files[0]
             if (file && file.type.startsWith("image/")) {
@@ -97,34 +108,31 @@ export default {
             const form = this.formData
             const pics = [form.pfpInput.file, form.coverInput.file].filter(x => x)
             this.batchCompressUpload(pics, uploadedUrls => {
-                const extraFlds = {}
-                if (form.pfpInput.file) extraFlds.icon_img = uploadedUrls.shift()
-                if (form.coverInput.file) extraFlds.cover_img = uploadedUrls.shift()
-                if (form.requireCode) {
-                    if (form.invite_code) {
-                        extraFlds.invite_code = form.invite_code
-                    }
-                } else {
-                    extraFlds.invite_code = ""
-                }
                 const data = {
                     name: form.name,
                     moto: form.moto,
                     theme_color: form.theme_color.substr(1), // removes '#'
-                    is_secret: !form.isPublic,
-                    ...extraFlds
+                    is_secret: !form.isPublic
                 }
-                this.performUpdateProfile(data)
+                
+                if (form.pfpInput.file) data.icon_img = uploadedUrls.shift()
+                if (form.coverInput.file) data.cover_img = uploadedUrls.shift()
+                if (form.isRequireCode) {
+                    if (form.invite_code) {
+                        data.invite_code = form.invite_code
+                    }
+                } else {
+                    data.invite_code = ""
+                }
+                
+                this.$axios.patch(`/communities/${this.community.id}`,
+                    data,
+                    this.$store.state.auth.head
+                )
+                    .then(res => {
+                        this.$router.go()
+                    })
             })
-        },
-        performUpdateProfile(data) {
-            this.$axios.patch(`/communities/${this.community.id}`,
-                data,
-                this.$store.state.authHeader
-            )
-                .then(res => {
-                    this.$router.go()
-                })
         }
     },
 }
@@ -161,4 +169,17 @@ export default {
     justify-content: center;
 }
 
+.form-code-inform {
+    margin: 5px 20px;
+    color: #666;
+}
+.form-code-inform > a {
+    user-select: text;
+    word-break: break-all;
+    background: #eee;
+}
+.form-code-inform__copy {
+    color: var(--primary-color);
+    margin-left: 10px;
+}
 </style>

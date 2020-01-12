@@ -7,17 +7,17 @@ export const state = () => ({
 })
 
 export const mutations = {
-  loadText(state, text2display) {
+  LOAD_TITLE(state, text2display) {
     state.text = text2display
   },
-  loadPic(state, {src, style}) {
+  LOAD_ICON(state, {src, style}) {
     state.picSrc = src
     state.picStyle = style
   },
-  burgerState(state, boolval) {
+  BURGER_STATE(state, boolval) {
     state.moring = boolval
   },
-  reset(state) {
+  APP_BAR_RESET(state) {
     state.text = null
     state.picSrc = null
     state.picStyle = null

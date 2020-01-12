@@ -47,8 +47,8 @@ export default {
     // },
     data:() => ({
         kw: "",
-        exploreType: '',
-        feedUrlPrefix: '',
+        exploreType: 'community',
+        feedUrlPrefix: 'communities/',
     }),
     computed: {
         feedUrl() {
@@ -59,27 +59,24 @@ export default {
         feedUrl() {
             this.firstFetch()
         },
-        currentTab: {
-            immediate: true,
-            handler(val) {
-                this.fetchedData = []
-                this.$options.offsetProp = 'id'
-                switch (val) {
-                    case 0:
-                        this.exploreType = 'community'
-                        this.feedUrlPrefix = 'communities/'
-                        break
-                    case 2:
-                        this.exploreType = 'post'
-                        this.feedUrlPrefix = 'posts/search/'
-                        break
-                    case 1:
-                        this.exploreType = 'profile'
-                        this.feedUrlPrefix = 'accounts/'
-                        this.$options.offsetProp = 'username'
-                }
+        currentTab(val) {
+            this.fetchedData = []
+            this.$options.offsetProp = 'id'
+            switch (val) {
+                case 0:
+                    this.exploreType = 'community'
+                    this.feedUrlPrefix = 'communities/'
+                    break
+                case 2:
+                    this.exploreType = 'post'
+                    this.feedUrlPrefix = 'posts/search/'
+                    break
+                case 1:
+                    this.exploreType = 'profile'
+                    this.feedUrlPrefix = 'accounts/'
+                    this.$options.offsetProp = 'username'
             }
-        },
+        }
     },
     methods: {
         debounceSearch(evt) {
@@ -107,7 +104,7 @@ export default {
     align-items: center;
     border: solid 1px #ccc;
     border-radius: 100px;
-    margin: 14px 15px;
+    margin: 13px 15px;
     background: #eee;
 }
 

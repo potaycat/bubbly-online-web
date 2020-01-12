@@ -1,8 +1,7 @@
 <template>
     <div class="the_big_frame">
         <div class="cmty-mngmnt common_ls_cntainr --with-tabs" ref="feed">
-            <Tabs
-                locked=1
+            <Tabs locked
                 :tabs="['GENERAL', 'MEMBERS', 'EMOTES', 'PINBOARD', 'CHAT ROOMS']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
@@ -20,8 +19,6 @@
 </template>
 
 <script>
-import { appBarTitle } from '@/mixins/appBarStuff'
-import { disableHamburger } from '@/mixins/appBarStuff'
 import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import { scrlDirection } from '@/mixins/feedingFrenzy'
 
@@ -32,9 +29,8 @@ import Pinboard from './Pinboard/'
 import Chatrooms from './ChatRooms/'
 export default {
     components: {General, Members, Emotes, Pinboard, Chatrooms},
-    mixins: [appBarTitle, disableHamburger, scrlDirection, tabs],
+    mixins: [scrlDirection, tabs],
     data:() => ({
-        appBarDisplayTitle: "Community Management",
         community: null
     }),
     computed: {
@@ -51,7 +47,7 @@ export default {
     },
     created() {
         this.$axios.get(`communities/${this.$route.params.id}`, 
-            this.$store.state.authHeader)
+            this.$store.state.auth.head)
             .then(res => {
                 if (res.data.membership_info.role) {
                     this.community = res.data
@@ -65,7 +61,7 @@ export default {
 .cmty-mngmnt {
     padding-bottom: 150px;
 }
-.material-icons-round.glow {
+.material-icons-round.nopaque {
     color: var(--primary-color);
 }
 </style>

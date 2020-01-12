@@ -90,7 +90,7 @@ export default {
         this.nameInput = this.community.name // keep-alive bruh
     },
     created() {
-        this.$store.dispatch("communityx/getJoinedCmnties")
+        this.$store.dispatch("communityx/getJoinedCmties")
     }
 }
 </script>

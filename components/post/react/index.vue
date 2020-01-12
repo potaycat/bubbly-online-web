@@ -15,10 +15,10 @@
             />
         </transition-group>
         <div class="reacts-ls__actions">
-            <i v-if="!diableAdd" :class="['react-toggle-btn push material-icons-round', size]"
+            <i v-if="!diableAdd" :class="['material-icons-round react-toggle-btn nopaque', size]"
                 @click="$emit('toggleAdd', $event)"
             >insert_emoticon</i>
-            <span v-if="size=='react-icon--smol'" class="cmt__reply-btn glow" @click="$emit('reply')"
+            <span v-if="size=='react-icon--smol'" class="cmt__reply-btn hoverline" @click="$emit('reply')"
                 >Reply</span>
         </div>
     </div>
@@ -51,8 +51,6 @@ export default {
             if (this.myReact == emoteId) {
                 this.$emit('deleteReact', emoteId)
             } else {
-                console.log(emoteId);
-                
                 this.$emit('emoteChose', emoteId)
             }
         }

@@ -1,16 +1,37 @@
-.glow, .lift, .push, .nopaque {
+.glow, .lift, .push, .nopaque, .hoverline {
     cursor: pointer;
+}
+
+@media (hover: hover) {
+    .nopaque:hover {
+        opacity: 0.6;
+    }.nopaque.--lite:hover {
+        opacity: 1;
+    }
+    .glow:hover {
+        transition: .15s !important;
+        background: rgba(0, 0, 0, 0.07);
+    }
+    .lift:hover {
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        opacity: 0.9;
+    }
+    .hoverline:hover {
+        text-decoration: underline;
+    }
 }
 
 .nopaque:active {
     transition: .1s !important;
-    opacity: 0.8;
+    opacity: 0.4;
 }.nopaque:not(:active) {
     transition: .3s;
 }
+.nopaque.--lite:active {
+    opacity: 0.8;
+}
 
 .glow:active {
-    transition: .15s !important;
     background: rgba(0, 0, 0, 0.12);
 }.glow:not(:active) {
     transition: .5s;
@@ -19,9 +40,9 @@
 .lift:active {
     transition: .2s !important;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.6) !important;
-    opacity: 0.85;
+    opacity: 0.8;
 }.lift:not(:active) {
-    transition: .5s;
+    transition: .3s;
 }
 
 .push:active {
@@ -29,4 +50,8 @@
     transform: scale(0.9)
 }.push:not(:active) {
     transition: .3s;
+}
+
+.hoverline:active {
+    text-decoration: underline;
 }

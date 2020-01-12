@@ -14,19 +14,17 @@
 </template>
 
 <script>
-import { disableHamburger } from '@/mixins/appBarStuff'
 import Button from "@/components/misc/Button"
 export default {
     data: () => ({
         error: null
     }),
     components: {Button},
-    mixins: [disableHamburger],
     methods: {
         performJoin() {
             this.$axios.post(`communities/${this.$route.params.id}/members/__self`,
                 {invite_code: this.$route.params.code},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$router.replace(`/communities/${this.$route.params.id}`)
@@ -42,7 +40,8 @@ export default {
 <style>
 .join-prcdr {
     z-index: 1;
-    animation: colorchange 50s;
+    height: 100vh;
+    animation: colorchange 50s infinite;
 }@keyframes colorchange {
     0%, 100% {background: rgba(0, 0, 255, 0.1);}
     50%  {background: rgba(0, 255, 0, 0.1);}

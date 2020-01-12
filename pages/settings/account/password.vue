@@ -6,7 +6,7 @@
             :customCmds="[
                 {action: 'update', icon: 'done'},
             ]"
-            @update="validateAnd(performUpdate)"
+            @update="validateThen(performUpdate)"
         />
         <section class="form__fields-wrapper">
             <Form v-for="field in editableFields" :key="field.vmodel"
@@ -23,18 +23,21 @@
 <script>
 import ActivityView from '@/components/layout/ActivityView'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
-import { appBarTitle } from '@/mixins/appBarStuff'
 import { formValidate } from '@/mixins/formValidate'
 export default {
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Change password"
+    },
     components: {ActivityView, AppBarCustomBtn},
-    mixins: [appBarTitle, formValidate],
+    mixins: [formValidate],
     data:() => ({
         formData: {
             old_password: '',
             password: '',
             confirm_pw: '',
         },
-        appBarDisplayTitle: "Change password"
     }),
     computed: {
         editableFields() {
@@ -46,7 +49,7 @@ export default {
                 {type: 'password', label: "Confirm password", vmodel: 'confirm_pw', validateInfo: "Password does not match"},
             ]
         },
-        validated() {
+        rules() {
             return {
                 password: /^[\x00-\x7F]*$/.test(this.formData.password) && this.formData.password.length >= 6 && this.formData.password.length <= 30,
                 confirm_pw: this.formData.password == this.formData.confirm_pw
@@ -61,7 +64,7 @@ export default {
             }
             this.$axios.put('accounts/__self/update-pw',
                 data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$router.back()

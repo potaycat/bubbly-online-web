@@ -18,7 +18,7 @@ export const sendingHandler = {
         wsSend(pseudoId, msgType, msgContent) {
             try {
                 this.$socket.sendObj({
-                    c__id: pseudoId,
+                    nonce: pseudoId,
                     c__msg_type: msgType,
                     c__content: msgContent,
                 })
@@ -30,7 +30,7 @@ export const sendingHandler = {
             this.scroll2Bottom()
             this.fetchedData.unshift({ 
                 author: this.$store.state.auth.my_profile,
-                id: pseudoId,
+                pseudoId: pseudoId,
                 msg_type: msgType,
                 content: msgContent,
                 timestamp: "sndng",
@@ -44,9 +44,13 @@ export const sendingHandler = {
                     const match = url.match(regExp)
                     return (match && !/\s/.test(url) && match[1].length==11) ? match[1] : false
                 }
-                const youTube = (youtubeParser(content))
+                const youTube = youtubeParser(content)
                 if (youTube) {
                     return [3, youTube]                    
+                }
+                if (/([a-z\-_0-9\/\:\.]*\.(jpg|jpeg|png|gif))/i.test(content)) {
+                    // message is image URL
+                    return [2, content]                    
                 }
                 return [1, content]
             }
@@ -72,8 +76,6 @@ export const sendingHandler = {
             this.toPreview(...idNType, URL.createObjectURL(files[0]))
 
             this.batchCompressUpload(files, uploadedUrls => {
-                console.log(uploadedUrls);
-                
                 this.wsSend(...idNType, uploadedUrls[0])
             })
         }

@@ -27,7 +27,7 @@ export default {
         },
     },
     created() {
-        this.$store.dispatch("communityx/getJoinedCmnties")
+        this.$store.dispatch("communityx/getJoinedCmties")
     },
 }
 </script>

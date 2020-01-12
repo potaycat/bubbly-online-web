@@ -5,12 +5,9 @@
 import InputDialog from '@/components/misc/InputDialog'
 export const inputDiag = {
     components: {InputDialog},
-    data() {
-        return {
-            openDiag: null,
-            diagHndlFun: null,
-        }
-    },
+    data:() => ({
+        openDiag: null
+    }),
     methods: {
         // confirmMethod() {
         //     this.openDiag = {
@@ -22,9 +19,9 @@ export const inputDiag = {
         //     console.log("OK")
         // },
         onDiagClose(emmtdVal) {
-            if (this.diagHndlFun && emmtdVal) this.diagHndlFun(emmtdVal)
+            const diagHndlFun = this.openDiag.hndlFun || this.diagHndlFun
+            if (diagHndlFun && emmtdVal) diagHndlFun(emmtdVal)
             this.openDiag = null
-            this.diagHndlFun = null
         },
     }
 }

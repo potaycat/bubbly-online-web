@@ -1,26 +1,28 @@
 <template>
     <div class="create-procedure-form">
+        <p v-if="$store.state.auth.loggedInTo && step==0" class="requiresAuth-headsup">
+            🙌 An account is required to do that. After logging in, you will be taken back to where you left off</p>
         <h2 class="create-form__title">Create account</h2>
         <transition-group :name="slide_drction" >
             <div class="form__fields-wrapper create-form-wrapper" :key="step">
                 <p class="register-headsup" v-if="step==1">You will use this credential to log in. We recomend using a password manager (the
                     one that asks if you want to save your password in a following step)</p>
-                <Form v-for="field in editingFields[step]" :key="field.vmodel"
+                <Form v-for="field in formTemplate" :key="field.id"
                     :fld="field"
-                    v-model="formData[field.vmodel]"
-                    :notValidated="notValidated(field.vmodel)"
+                    v-model="formData[field.id]"
+                    :invalidMsg="invalidFields[field.id]"
                 />
                 <Button :wait="Requesting" class="create-form__btn" fill :text="step==2?'Finish!':'Next'"
-                    @clicked="resetErr();validateAnd(step==2?performRegister:goToNextStep)"/>
+                    @clicked="validateThen(step==2?performRegister:goToNextStep)"/>
             </div>
         </transition-group>
-        <p v-if="step==0" @click="$router.replace('login')" class="auth-form__redirct glow">Have an account? <strong>Login</strong></p>
+        <p v-if="step==0" @click="$router.replace('login')" class="auth-form__redirct hoverline">Have an account? <strong>Login</strong></p>
     </div>
 </template>
 
 <script>
 import Button from '@/components/misc/Button'
-import { formValidate } from '@/mixins/formValidate'
+import { formValidate } from '@/mixins/form'
 export default {
     components: { Button },
     mixins: [formValidate],
@@ -31,6 +33,28 @@ export default {
             } return c
         }
         return {
+            formTemplateByStep: [
+                [
+                    { type: 'text', label: "Email", id: 'email', rules: [
+                        this.$options.commonRules.lengthNotEmptyRule,
+                        this.$options.commonRules.emailRule
+                    ]},
+                ],
+                [
+                    { type: 'text', label: "Username", id: 'username', rules: [this.$options.commonRules.lengthNotEmptyRule] },
+                    { type: 'password', label: "Password", id: 'password', rules: this.$options.commonRules.passwordRules },
+                    { type: 'password', label: "Confirm password", id: 'cnfrmPassword', rules: [
+                        {
+                            check:(val) => { return val == this.formData.password },
+                            onFailWarn: "Password does not match"
+                        },
+                    ]},
+                ],
+                [
+                    { type: 'text', label: "Display name", id: 'alias', rules: [this.$options.commonRules.lengthNotEmptyRule] },
+                    { type: 'color', label: "Favorite color: ", id: 'color', rules: this.$options.commonRules.themeColorRules },
+                ],
+            ],
             formData: {
                 email: "",
 
@@ -42,58 +66,14 @@ export default {
                 color: initRndm(''),
             },
             slide_drction: "slide_left",
-            error: {
-                email: [null],
-                username: [null]
-            }
         }
     },
     computed: {
-        validated() {
-            const reIsNumber = /^-{0,1}\d+$/
-            const reEmail = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            const form = this.formData
-            if (this.step == 0) {
-                return {
-                    email: reEmail.test(form.email.toLowerCase()) && !this.error.email[0]
-                }
-            }
-            if (this.step == 1) {
-                return {
-                    username: /^[\x00-\x7F]*$/.test(form.username) && form.username.length > 5  && !this.error.username[0],
-                    password: /^[\x00-\x7F]*$/.test(form.password) && form.password.length >= 6 && form.password.length <= 30,
-                    cnfrmPassword: form.cnfrmPassword == form.password
-                }
-            }
-            if (this.step == 2) {
-                return {
-                    alias: form.alias.length > 2,
-                    color: form.color != '#ffffff'
-                }
-            }
-        },
         step() {
             return Number(this.$route.query.step) || 0
         },
-        editingFields() {
-            return [
-                [
-                    {type: 'text', label: "Email", vmodel: 'email',
-                        validateInfo: this.error.email[0] || "A valid email please" },
-                ],
-                [
-                    {type: 'text', label: "Username", vmodel: 'username',
-                        validateInfo: this.error.username[0] || "An username should contains 6 to 30 ASCII characters and without spaces"},
-                    {type: 'password', label: "Password", vmodel: 'password', validateInfo: `
-                        Password must be 6 to 30 ASCII characters
-                    `},
-                    {type: 'password', label: "Confirm password", vmodel: 'cnfrmPassword', validateInfo: "Password does not match"},
-                ],
-                [
-                    {type: 'text', label: "Display name", vmodel: 'alias', validateInfo: "Try another name please"},
-                    {type: 'color', label: "Favorite color: ", vmodel: 'color', validateInfo: "Try a color that doesn't too much resemble white"},
-                ]
-            ]
+        formTemplate() {
+            return this.formTemplateByStep[this.step]
         }
     },
     watch: {
@@ -104,7 +84,6 @@ export default {
         }
     },
     methods: {
-        resetErr() { this.error = {email:[null],username:[null]} },
         goToNextStep() {
             // TODO refactor
             let params = null
@@ -121,11 +100,11 @@ export default {
                 .then(res => {
                     this.Requesting = false
                     if (res.data.presence) {
-                        this.submitedOnce = true
-                        this.error.email = ["Email has been used"]
-                        this.error.username = ["Username has been taken. Please try another one"]
+                        this.invalidFields = {
+                            email: "Email has been used",
+                            username: "Username has been taken. Please try another one"
+                        }
                     } else {
-                        this.submitedOnce = false
                         this.$router.push({query: { step: this.step+1 }})
                     }
                 })
@@ -138,7 +117,7 @@ export default {
                 alias: form.alias,
                 email: form.email,
                 password: form.password,
-                fave_color: form.color.replace("#","")
+                fave_color: form.color.replace("#", "")
             }
             this.$axios.post('accounts/register', data)
                 .then(res => {
@@ -157,5 +136,10 @@ export default {
     font-size: 13px;
     color: #888;
     margin-bottom: 20px;
+}
+.requiresAuth-headsup {
+    font-size: 14px;
+    color: rgb(73, 73, 73);
+    margin-bottom: 25px;
 }
 </style>

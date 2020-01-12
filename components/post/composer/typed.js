@@ -18,11 +18,11 @@ export const comment = {
             }
             this.$axios.patch(
                 `posts/${this.post.id}/edit`, data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.uploading = false
-                    this.$store.commit('postx/loadPost', null)
+                    this.$store.commit('postx/LOAD_POST', null)
                     this.$router.back()
                 })
         },
@@ -35,7 +35,7 @@ export const pinboard = {
     },
     activated() {
         if (this.isPinboard) {
-            this.$store.commit('appBar/loadText', "Write to Pinboard")
+            this.$store.commit('appBar/LOAD_TITLE', "Write to Pinboard")
         }
     },
     methods: {
@@ -46,7 +46,7 @@ export const pinboard = {
             }
             this.$axios.post(
                 `moderation/${this.$route.query.to}/anouncements`, data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.uploading = false

@@ -39,12 +39,12 @@ export default {
                     {icon: "gavel", lable: "Ban an account", action: 'cnfrmBan'},
                     {icon: "_", lable: "Revoke ban an account", action: 'cnfrmUnban'},
                 ],
-                true ? [
+                this.isAdmin ? [
                     {icon: "star_border", lable: "Promote to Moderator", action: 'cnfrmPromoteMod'},
                     {icon: "star", lable: "Promote to Administrator", action: 'cnfrmPromoteAdmin'},
                     {icon: "_", lable: "Demote a Mod/Admin", action: 'cnfrmDemote'},
-                ] : null
-            ].filter(x => x)
+                ] : []
+            ]
         },
     },
     methods: {
@@ -105,7 +105,7 @@ export default {
             this.loading = true
             this.$axios.patch(`moderation/${this.$route.params.id}/members/${this.getUsername(usn)}`,
                 {role: roleVal},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.firstFetch()

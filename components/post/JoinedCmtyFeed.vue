@@ -18,17 +18,18 @@ import PostCard from './postCard/'
 export default {
     components: {PostCard},
     mixins: [feedingFrenzy, postFeed, maintainScrllPos, scrlDirection],
-    data() {
-        return {
-            feedUrl: 'posts/feed/',
-        }
+    data:() => ({
+        feedUrl: 'posts/feed/',
+        updatePending: false,
+    }),
+    computed: {
+        joinedCount() {
+            return this.$store.state.communityx.joined.length
+        },
     },
     watch: {
         "fetchedData.length"(val) {
-            if (!val && !this.loading4More) {
-                this.$router.push('/explore')
-            }
-            if (val && val < 50) {
+            if (val && val < 50 && this.$OneSignal) {
                 this.$OneSignal.isPushNotificationsEnabled(yes => {
                     if (!yes) {
                         this.$OneSignal.showSlidedownPrompt()
@@ -38,7 +39,21 @@ export default {
                     }
                 })
             }
+        },
+        joinedCount() {
+            this.updatePending = true
+        },
+        loading4More(boolVal) {
+            if (!boolVal && !this.fetchedData.length) {
+                this.$router.push('/explore')
+            }
         }
     },
+    activated() {
+        if (this.updatePending) {
+            this.updatePending = false
+            this.firstFetch()
+        }
+    }
 }
 </script>

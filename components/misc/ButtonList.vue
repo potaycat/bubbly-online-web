@@ -1,7 +1,7 @@
 <template>
     <div style="width:100%">
-        <div v-for="cmdGroup in allCommands" class="generic-btn-ls__group" :key="cmdGroup[0].icon+'_'">
-            <div v-for="cmd in cmdGroup" :key="cmd.icon"
+        <div v-for="(cmdGroup, i) in allCommands" class="generic-btn-ls__group" :key="i">
+            <div v-for="(cmd, j) in cmdGroup" :key="j"
                 class="generic-btn-ls__btn glow" :style="cmd.style"
                 @click="$parent[cmd.action]()"
             >

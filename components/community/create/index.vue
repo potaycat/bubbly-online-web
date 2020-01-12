@@ -3,14 +3,13 @@
         <h2 class="create-form__title">Create your community</h2>
         <transition-group :name="slide_drction" >
             <div class="form__fields-wrapper create-form-wrapper" :key="step">
-                <Form v-for="field in editingFields[step]" :key="field.vmodel"
+                <Form v-for="field in formTemplate" :key="field.id"
                     :fld="field"
-                    v-model="formData[field.vmodel]"
-                    :notValidated="notValidated(field.vmodel)"
+                    v-model="formData[field.id]"
+                    :invalidMsg="invalidFields[field.id]"
                 />
                 <Button :wait="Requesting" class="create-form__btn" :colorScnd="formData.color" fill
-                    :text="step==1?'Create!':'Next'" @clicked="validateAnd(step==1?performCreate:goToNextStep)"/>
-                <p>{{error}}</p>
+                    :text="step==1?'Create!':'Next'" @clicked="validateThen(step==1?performCreate:goToNextStep)"/>
             </div>
         </transition-group>
     </div>
@@ -18,11 +17,10 @@
 
 <script>
 import Button from '@/components/misc/Button'
-import { formValidate } from '@/mixins/formValidate'
-import { disableHamburger } from '@/mixins/appBarStuff'
+import { formValidate } from '@/mixins/form'
 export default {
     components: { Button },
-    mixins: [formValidate, disableHamburger],
+    mixins: [formValidate],
     data() {
         const initRndm = c => {
             while (c.length!=7) {
@@ -30,56 +28,47 @@ export default {
             } return c
         }
         return {
+            formTemplateByStep: [
+                [
+                    { type: 'text', label: "Name", id: 'name', rules: this.$options.commonRules.cmtyNameRules },
+                    { type: 'text', label: "Tag line (optional)", id: 'moto', rules: [
+                        {
+                            check:(val) => { return val.length < 240 },
+                            onFailWarn: "Please be concise. There are tools to tell the story of your community later on ;)"
+                        },
+                    ]},
+                    { type: 'color', label: "Theme color:", id: 'color', rules: this.$options.commonRules.themeColorRules},
+                ],
+                [
+                    { type: 'text', label: "Custom ID (optional)", id: 'id', rules: [
+                        {
+                            check:(val) => { return /^[\x00-\x7F]*$/.test(val) },
+                            onFailWarn: "  "
+                        },
+                    ]},
+                    { type: 'toggler', label: "Visible to public", id: 'isVisible2Public' },
+                    { type: 'text', label: "Require invitation code (optional)", id: 'invite_code', rules:
+                        this.$options.commonRules.inviteCodeRules },
+                ],
+            ],
             formData: {
                 name: "",
                 moto: "",
                 color: initRndm(''),
                 
-                custom_id: "",
+                id: "",
                 isVisible2Public: true,
-                inviteCode: "",
+                invite_code: "",
             },
             slide_drction: "slide_left",
         }
     },
     computed: {
-        validated() {
-            switch (this.step) {
-                case 0:
-                    return {
-                        name: this.formData.name.length > 2 && this.formData.name.length < 100,
-                        moto: this.formData.moto.length < 255,
-                        color: this.formData.color != '#ffffff'
-                    }
-                case 1:
-                    return {
-                        custom_id: /^[\x00-\x7F]*$/.test(this.formData.custom_id),
-                        inviteCode: this.formData.inviteCode.length <= 8
-                    }
-                default:
-                    return {}
-            }
-        },
         step() {
             return Number(this.$route.query.step) || 0
         },
-        editingFields() {
-            return [
-                [
-                    {type: 'text', label: "Name", vmodel: 'name', validateInfo: "Try another name please"},
-                    {type: 'text', label: "Tag line (optional)", vmodel: 'moto', validateInfo: `
-                        Please be concise. There are tools to tell the story of your community later on ;)
-                    `},
-                    {type: 'color', label: "Theme color: ", vmodel: 'color', validateInfo: "Try a color that doesn't too much resemble white"},
-                ],
-                [
-                    {type: 'text', label: "Custom ID (optional)", vmodel: 'custom_id', validateInfo: "Lowercase, numbers and underscores only"},
-                    {type: 'toggler', label: "Visible to public", vmodel: 'isVisible2Public'},
-                    {type: 'text', label: "Require invitation code (optional)", vmodel: 'inviteCode', validateInfo: `
-                        Code should be less than or equal to 8 characters
-                    `},
-                ]
-            ]
+        formTemplate() {
+            return this.formTemplateByStep[this.step]
         }
     },
     watch: {
@@ -96,25 +85,26 @@ export default {
             this.$router.push({query: { step: this.step+1 }}) 
         },
         performCreate() {
+            const frm = this.formData
             let data = {
-                id: this.formData.custom_id,
-                name: this.formData.name,
-                moto: this.formData.moto,
-                theme_color: this.formData.color.replace("#",""),
+                id: frm.id,
+                name: frm.name,
+                moto: frm.moto,
+                theme_color: frm.color.replace("#",""),
                 cover_img: "",
                 background_img: "",
-                is_secret: !this.formData.isVisible2Public,
-                invite_code: this.formData.inviteCode,
+                is_secret: !frm.isVisible2Public,
+                invite_code: frm.invite_code,
             }
             Object.keys(data).forEach(key => !data[key] && delete data[key])
 
             this.$axios.post('communities/create', data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             ).then(res => {
                 this.Requesting = false
                 this.$router.replace(`/communities/${res.data.id}`)
             }).catch(error => {
-                this.serverErrRes(error.response.data)
+                this.fromSubmissionRejected(error.response.data)
             })
         }
     }

@@ -41,15 +41,15 @@ export default {
         confirmNewChat() {
             this.openDiag = {
                 title: "New public chat room",
-                input_desc: "Enter description"
+                input_desc: "Enter description",
+                hndlFun: this.performNewChat
             }
-            this.diagHndlFun = this.performNewChat
         },
         performNewChat(val) {
             this.$axios.post(
                 `moderation/${this.community.id}/chat`,
                 {description: val},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.firstFetch()

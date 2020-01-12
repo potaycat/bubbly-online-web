@@ -1,7 +1,7 @@
 <template>
     <div class="the_big_frame">
     <div class="common_ls_cntainr --dtail-app-bar">
-        <FloatingSaveButton v-if="hasUnsaved" :wait="Requesting" :color="formData.fave_color" @clicked="validateAnd(finised)"/>
+        <FloatingSaveButton v-if="hasUnsaved" :wait="Requesting" :color="formData.fave_color" @clicked="validateThen(finised)"/>
 
         <div class="prfl-edit__cover-pic">
             <img :src="formData.coverInput.preview || profile.cover_photo">
@@ -19,10 +19,10 @@
         </div>
         
         <section class="form__fields-wrapper">
-            <Form v-for="field in $options.editableFields" :key="field.vmodel"
+            <Form v-for="field in formTemplate" :key="field.id"
                 :fld="field"
-                v-model="formData[field.vmodel]"
-                :notValidated="notValidated(field.vmodel)"
+                v-model="formData[field.id]"
+                :invalidMsg="invalidFields[field.id]"
             />
         </section>
     </div>
@@ -30,48 +30,41 @@
 </template>
 
 <script>
-import { disableHamburger } from '@/mixins/appBarStuff'
-import { appBarTitle } from '@/mixins/appBarStuff'
-import { formValidate } from '@/mixins/formValidate'
+import { formValidate } from '@/mixins/form'
 import FloatingSaveButton from '@/components/community/management/FloatingSaveButton'
 export default {
     components: {FloatingSaveButton},
-    mixins: [disableHamburger, appBarTitle, formValidate],
+    mixins: [formValidate],
     data() {
+        const profile = this.$store.state.auth.my_profile
         return {
+            profile: profile,
+            formTemplate: [
+                { type: 'text', label: "Alias", id: 'alias', rules: this.$options.commonRules.aliasRules },
+                { type: 'text', label: "Short Bio", id: 'bio', rules: [
+                    {
+                        check:(val) => { return val.length < 240 },
+                        onFailWarn: "Please be more concise"
+                    },
+                ]},
+                { type: 'text', label: "Location", id: 'location', rules: [
+                    {
+                        check:(val) => { return val.length < 90 },
+                        onFailWarn: "Please be more concise"
+                    },
+                ]},
+                { type: 'color', label: "Favorite Color:", id: 'fave_color', rules: this.$options.commonRules.themeColorRules}
+            ],
             formData: {
-                alias: this.$store.state.auth.my_profile.alias,
-                fave_color: '#'+this.$store.state.auth.my_profile.fave_color,
-                bio: this.$store.state.auth.my_profile.bio,
-                location: this.$store.state.auth.my_profile.location,
+                alias: profile.alias,
+                fave_color: '#'+profile.fave_color,
+                bio: profile.bio,
+                location: profile.location,
 
                 pfpInput: {},
                 coverInput: {},
             },
-            appBarDisplayTitle: "Profile edit"
         }
-    },
-    //consts {
-        editableFields: [
-            {type: 'text', label: "Alias", vmodel: 'alias', validateInfo: "Name should be between 3 and 40 characters"},
-            {type: 'text', label: "Short Bio", vmodel: 'bio', validateInfo: "More concise please"},
-            {type: 'text', label: "Location", vmodel: 'location', validateInfo: "More concise please"},
-            {type: 'color', label: "Favorite Color: ", vmodel: 'fave_color', validateInfo: "Try a color that doesn't too much resemble white"},
-        ],
-    //}
-    computed: {
-        profile() {
-            return this.$store.state.auth.my_profile
-        },
-        validated() {
-            const form = this.formData
-            return {
-                alias: 3 < form.alias.length && form.alias.length <= 40,
-                bio: form.bio.length < 240,
-                location: form.location.length < 90,
-                fave_color: form.fave_color != '#ffffff'
-            }
-        },
     },
     methods: {
         onCoverChange() {
@@ -97,31 +90,27 @@ export default {
             const form = this.formData
             const pics = [form.pfpInput.file, form.coverInput.file].filter(x => x)
             this.batchCompressUpload(pics, uploadedUrls => {
-                const imgs = {}
-                if (form.pfpInput.file) imgs.profile_pic = uploadedUrls.shift()
-                if (form.coverInput.file) imgs.cover_photo = uploadedUrls.shift()
                 const data = {
                     alias: form.alias,
                     fave_color: form.fave_color.substr(1), // removes '#'
                     bio: form.bio,
-                    location: form.location,
-                    ...imgs
+                    location: form.location
                 }
-                this.performUpdateProfile(data)
-            })
-        },
-        performUpdateProfile(data) {
-            this.$axios.patch(`accounts/${this.profile.username}`,
-                data,
-                this.$store.state.authHeader
-            )
-                .then(res => {
-                    this.$store.commit('auth/storeAuthUser', {
-                        ...this.$store.state.auth.my_profile,
-                        ...res.data 
+                if (form.pfpInput.file) data.profile_pic = uploadedUrls.shift()
+                if (form.coverInput.file) data.cover_photo = uploadedUrls.shift()
+                
+                this.$axios.patch(`accounts/${this.profile.username}`,
+                    data,
+                    this.$store.state.auth.head
+                )
+                    .then(res => {
+                        this.$store.commit('auth/STORE_AUTH_USR', {
+                            ...this.profile,
+                            ...res.data 
+                        })
+                        this.$router.go()
                     })
-                    this.$router.go()
-                })
+            })
         }
     },
 }

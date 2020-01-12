@@ -11,6 +11,11 @@
                 enableNoti,
             ].filter(x => x),
             [
+                {icon: '_', lable: 'About and FAQs', action: 'goToFAQ', scndIcon: 'chevron_right'},
+                {icon: '_', lable: 'Legal stuff', action: 'goToLegalStuff', scndIcon: 'chevron_right'},
+                {icon: '_', lable: '🤗 Donate/Get involved', action: 'goToCntrbt', scndIcon: 'chevron_right'},
+            ],
+            [
                 {icon: '_', lable: 'Log out', action: 'performLogout', style: 'color:red'},
             ]
         ]"/>
@@ -18,40 +23,48 @@
 </template>
 
 <script>
-import { appBarTitle } from '@/mixins/appBarStuff'
-import { disableHamburger } from '@/mixins/appBarStuff'
 import ButtonList from '@/components/misc/ButtonList'
 export default {
     components: {ButtonList},
-    mixins: [appBarTitle, disableHamburger],
     data:() => ({
-        appBarDisplayTitle: "Settings",
         enableNoti: null
     }),
     created() {
-        this.$OneSignal.isPushNotificationsEnabled(yes => {
-            this.enableNoti = {icon: 'notifications', lable: 'Enable push notification', action: 'performEnablePush', scndIcon:"_"}
-            if (yes) {
-                this.enableNoti.scndIcon = 'done'
-            }
-        })
+        if (this.$OneSignal) {
+            this.$OneSignal.isPushNotificationsEnabled(yes => {
+                this.enableNoti = {icon: 'notifications', lable: 'Enable push notification', action: 'performEnablePush', scndIcon:'_'}
+                if (yes) {
+                    this.enableNoti.scndIcon = 'done'
+                }
+            })
+        }
     },
     methods: {
         goToEmail() { this.$router.push('/settings/account/email') },
         goToPassword() { this.$router.push('/settings/account/password') },
+
         goToLanguage() { this.$router.push('/settings/app/language') },
-        goToInstallInstruct() { this.$router.push('/settings/app/install') },
         performEnablePush() {
             this.$OneSignal.showNativePrompt()
             .then(res => {
                 this.myOneSignalInit()
             })
         },
+        goToInstallInstruct() {},
+
+        goToFAQ() { this.$router.push('/docs/faq') },
+        goToLegalStuff() { this.$router.push('/docs/legal') },
+        goToCntrbt() { this.$router.push('/docs/contribute') },
+
         performLogout() {
-            this.$store.commit('auth/storeAuthUser', {})
-            this.$store.commit('auth/removeToken')
-            this.myOneSignalInit()
-            this.$router.go()
+            if (this.confirmLogOut) {
+                this.$store.commit('auth/STORE_AUTH_USR', {})
+                this.$store.commit('auth/REMOVE_TOKEN')
+                this.myOneSignalInit()
+                this.$router.push('/')
+            } else {
+                this.confirmLogOut = 1
+            }
         }
     }
 }

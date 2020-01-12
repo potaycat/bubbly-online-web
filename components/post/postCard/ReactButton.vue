@@ -39,13 +39,10 @@ export default {
         }),
         myReactIcon() {
             try {
-                const a =  this.emoteById(this.communityId, this.myReact) || {
+                return this.emoteById(this.communityId, this.myReact) || {
                     img_src: require('@/assets/smile.png'),
                     name: "Reacted"
                 }
-                // console.log(a);
-                return a
-                
             } catch (error) {
                 console.error("CATCHED: My React not found! " + error)
                 return {}

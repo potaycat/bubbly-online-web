@@ -3,6 +3,11 @@ import Vue from "vue"
 Vue.mixin({
     methods: {
         compress(input, callback) {
+            if (['image/gif', 'image/png'].includes(input.type)) {
+                if (input.size < 256 * 1024) { // 256kB
+                    return callback(input)
+                }
+            }
             const maxW = 960
             const maxH = 960
             const reader = new FileReader()
@@ -38,7 +43,7 @@ Vue.mixin({
         performUpload(file, callback) {
             this.$axios.get(`storage-layer/get-upload-url?file=${
                 encodeURI(file.name)}&type=${file.type}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     const toPost = res.data.presigned

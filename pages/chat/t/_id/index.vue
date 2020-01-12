@@ -8,8 +8,11 @@
 <script>
 import ActivityView from '@/components/layout/ActivityView'
 import ChatRoom from '@/components/chat/room/'
-
 export default {
+    meta: {
+        useAppBar: true,
+        requiresAuth: true
+    },
     components: {ActivityView, ChatRoom,},
     beforeCreate() {
         if (window.innerWidth >= 750) {

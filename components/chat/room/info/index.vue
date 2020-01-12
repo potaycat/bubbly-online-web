@@ -68,7 +68,7 @@ export default {
                     [
                         {icon: "group_work", lable: `Go to ${this.spcfcTypdData.community.name}`, action: 'toCommunity', scndIcon: "arrow_forward"},
                     ] :
-                null,
+                [],
                 [
                     this.isAdmin && this.type != 'direct' ?
                         {icon: "text_fields", lable: "Change Chat Name", action: 'cnfrm_ChngeName'} :null,
@@ -85,8 +85,8 @@ export default {
                     [
                         {icon: "exit_to_app", lable: "Leave conversation", action: 'cnfrm_Leave', style: 'color:red'},
                     ] :
-                null,
-            ].filter(x => x)
+                [],
+            ]
         },
         isAdmin() {
             if (this.roommateInfo) { // public rooms may not have roommate_info
@@ -99,16 +99,16 @@ export default {
             if (this.type == 'direct') {
                 return this.spcfcTypdData
             }
-            console.log("Room type is not direct!")
+            console.error("Room type is not direct!")
             return null
         }
     },
     methods: {
         cnfrm_ChngeName() {
             this.openDiag = {
-                input_desc: "New Chat Name"
+                input_desc: "New Chat Name",
+                hndlFun: this.performChngeName
             }
-            this.diagHndlFun = this.performChngeName
         },
         pickBgPic() {
             this.$refs.img_input.click()
@@ -116,15 +116,15 @@ export default {
         cnfrm_Leave() {
             this.openDiag = {
                 title: "Leave this chat?",
+                hndlFun: this.performLeave
             }
-            this.diagHndlFun = this.performLeave
         },
         cnfrm_AddPblcRoom() {
             this.openDiag = {
                 title: "Save this public chat room?",
-                description: "It will appear in your chat list and you will recieve notifications"
+                description: "It will appear in your chat list and you will recieve notifications",
+                hndlFun: this.performAddPblcRoom
             }
-            this.diagHndlFun = this.performAddPblcRoom
         },
         showRoomates() {this.more_members = !this.more_members},
         turnNotiOn() {this.turnNoti(true)},
@@ -139,12 +139,11 @@ export default {
             }
         },
 
-        // TODO put all these POST in a unified place
         performChngeName(value){
             this.loading = true
             this.$axios.patch(`chat/${this.threadInfo.id}`,
                 {name: value},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.loading = false
@@ -153,10 +152,11 @@ export default {
         performChangeBg(file_evt) {
             this.loading = true
             const files = file_evt.target.files
+            this.$refs.img_input.value=null
             this.batchCompressUpload(files, uploadedUrls => {
                 this.$axios.patch(`chat/${this.threadInfo.id}`,
                     {bg_img: uploadedUrls[0]},
-                    this.$store.state.authHeader
+                    this.$store.state.auth.head
                 )
                     .then(res => {
                         this.loading = false
@@ -168,11 +168,11 @@ export default {
             this.$axios.post(`chat/${this.threadInfo.id}/save-public${
                 this.$store.getters['communityx/isMod'](this.spcfcTypdData.community.id) ?
                     '?as-mod=1' : ''}`, null,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.loading = false
-                    this.$store.commit('chatx/loadChat', {
+                    this.$store.commit('chatx/LOAD_THREAD', {
                         roommate_info: res.data
                     })
                 })
@@ -181,17 +181,17 @@ export default {
             this.loading = true
             this.$axios.patch(`chat/${this.threadInfo.id}/roommates/__self`,
                 {enable_noti: boolval},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.loading = false
-                    this.$store.commit('chatx/bellUpdate', res.data.enable_noti)
+                    this.$store.commit('chatx/BELL_STATE', res.data.enable_noti)
                 })
         },
         performLeave() {
             this.loading = true
             this.$axios.delete(`chat/${this.threadInfo.id}/roommates/__self`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.onBlockHandle()
@@ -199,15 +199,15 @@ export default {
         },
         onPerformBlock() {this.loading = true},
         onBlockHandle() {
-            this.$store.commit('chatx/loadChat',
-                {roommate_info: null}
+            this.$store.commit('chatx/LOAD_THREAD',
+                {roommate_info: {}}
             )
             this.loading = false
             this.$router.back()
         },
     },
     destroyed() {
-        this.$store.commit('appBar/burgerState', false)
+        this.$store.commit('appBar/BURGER_STATE', false)
     }
 }
 </script>

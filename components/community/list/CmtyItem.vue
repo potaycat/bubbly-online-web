@@ -75,7 +75,7 @@ export default {
 }
 .mbrshp__cmty-txt .mbrshp__cmty-name {
     /* font-weight: bold; */
-    font-size: 20px;
+    font-size: 18px;
     max-height: 59px;
     overflow: hidden;
     /* font-weight: bold; */
@@ -90,6 +90,11 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+.mbrshp-block:hover {
+    box-shadow: inset 0px -120px 50px -40px rgba(0, 0, 0, 0.3);
+    text-shadow: 0px 0px 6px #000;
+    transition: .2s;
 }
 
 .mbrshp__join-btn, .mbrshp__role {

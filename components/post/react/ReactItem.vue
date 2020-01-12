@@ -1,5 +1,5 @@
 <template>
-    <div :class="['push glow _react ', size, isMine?'--mine box-shadow-1':null]">
+    <div :class="['react_ push glow', size, isMine?'--mine box-shadow-1':null]">
         <img :src="sauce">
         <div> {{ react.count }} </div>
     </div>
@@ -20,7 +20,7 @@ export default {
         }),
         sauce() {
             switch (this.react.img_src) {
-                case '_':
+                case "_":
                     return require('@/assets/heart.png')
                 default:
                     return this.react.img_src || this.emote.img_src
@@ -40,7 +40,7 @@ export default {
 </script>
 
 <style>
-._react {
+.react_ {
     display: inline-flex;
     align-items: center;
     font-size: 12px;
@@ -50,50 +50,55 @@ export default {
     margin-right: 4px;
 }
 
-._react.--mine {
+.react_.--mine {
     background: var(--primary-color-low-opacity);
 }
-._react.--mine > div {
+.react_.--mine > div {
     color: var(--primary-color);
 }
 
-._react > img {
+.react_ > img {
     width: 20px;
     height: 20px;
     margin: 0 2.5px;
 }
-._react > div {
+.react_ > div {
     color: #555;
     font-weight: bold;
     margin: 0 3px;
 }
 
-._react.react-icon--big {
+.react_.react-icon--big {
     margin: 5px 0;
     padding: 3px 6px;
     border-radius: 6px;
     margin-right: 6px;
 }
-._react.react-icon--big > img {
+.react_.react-icon--big > img {
     width: 24px;
     height: 24px;
 }
-._react.react-icon--big > div {
+.react_.react-icon--big > div {
     font-size: 15px;
 }
 
-._react.react-icon--smol {
+.react_.react-icon--smol {
     margin: 2px 0;
     margin-right: 4px;
     padding: 1.75px 2px;
 }
-._react.react-icon--smol > img {
+.react_.react-icon--smol > img {
     height: 16px;
     width: 16px;
 }
-._react.react-icon--smol > div {
+.react_.react-icon--smol > div {
     font-size: 10px;
     margin-left: 2px;
 }
 
+@media (hover: hover) {
+    .react_: {
+        color: white !important;
+    }
+}
 </style>

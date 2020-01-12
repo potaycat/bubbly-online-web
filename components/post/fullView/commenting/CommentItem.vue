@@ -1,13 +1,15 @@
 <template>
     <div class="le-cmt">
-        <nuxt-link :to="'/user/' + comment.author.username">
-            <img class="pfp lift" :src="comment.author.profile_pic">
-        </nuxt-link>
+        <nuxt-link tag="img" :to="'/user/'+comment.author.username"
+            class="pfp lift" :src="comment.author.profile_pic"
+        />
         <div class="cmt-content">
             <div class="cmt-info">
                 <div class="cmt-inf__author-name"> {{comment.author.alias}}&nbsp;</div>
-                <div class="cmt-inf__timestmp">• {{comment.timestamp | timeAgo}}</div>
-                <i @click="performDrop" class="material-icons-round glow">more_horiz</i>
+                <div class="cmt-inf__timestmp">• {{comment.timestamp | timeAgo}}
+                    <span v-if="comment.edited"> • Edited</span>
+                </div>
+                <i @click="performDrop" class="material-icons-round nopaque">more_horiz</i>
             </div>
             <p> {{comment.text}} </p>
             
@@ -29,9 +31,11 @@
                     @reply="$emit('reply');$router.push(`/comment/${comment.id}`)"
                 />
             </div>
-            <div v-if="comment.reply_count" class="cmt__replies-count glow" @click="$router.push(`/comment/${comment.id}`)">
+            <nuxt-link tag="div" v-if="comment.reply_count" :to="`/comment/${comment.id}`"
+                class="cmt__replies-count glow" :src="comment.author.profile_pic"
+            >
                 {{comment.reply_count}} replies <span>></span>
-            </div>
+            </nuxt-link>
         </div>
         <FloatingEmotes v-if="reacting"
             :position="reacting"

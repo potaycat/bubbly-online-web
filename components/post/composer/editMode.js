@@ -7,8 +7,8 @@ export const editMode = {
     },
     activated() {
         if (this.editMode) {
-            this.appBarDisplayTitle = `Edit ${this.content.title ||
-                this.content.text.substring(0,22)+'...' }`
+            this.$store.commit('appBar/LOAD_TITLE', `Edit ${this.content.title ||
+                this.content.text.substring(0,22)+'...' }`)
             this.body = this.content.text
         }
     },
@@ -19,11 +19,11 @@ export const editMode = {
             }
             this.$axios.patch(
                 `posts/${this.content.id}/edit`, data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.uploading = false
-                    this.$store.commit('postx/loadToEdit', res.data)
+                    this.$store.commit('postx/LOAD_TO_EDIT', res.data)
                     this.$router.back()
                 })
         },

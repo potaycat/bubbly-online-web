@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div class="mnge__emo-item ">
+        <div class="mnge__emo-item">
             <img :src="emote.img_src">
             <p>{{ emote.name }}</p>
             <span>{{ emote.active ? "Active" : "Disabled" }}</span>
-            <i class="material-icons-round glow" @click="performDrop">more_vert</i>
+            <i class="material-icons-round nopaque" @click="performDrop">more_vert</i>
         </div>
         <Dropdown v-if="touchPos"
             :position="{y:touchPos.y, x:touchPos.x}"
@@ -12,7 +12,7 @@
                 {action:'confirmRen', label:'Rename'},
                 emote.active ? {action:'confirmDisable', label:'Disable'} : 
                     {action:'confirmEnable', label:'Re-enable'},
-            ].filter(x => x) : [{action:'', label:'Only admins can change this'}]"
+            ] : [{action:'n', label:'Only admins can change this'}]"
         />
         <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
@@ -25,6 +25,7 @@ export default {
     props: ['emote', 'community', 'isAdmin'],
     mixins: [dropdown, inputDiag],
     methods: {
+        n(){}, // nullifying function
         confirmRen() {
             this.openDiag = {
                 title: `Rename "${this.emote.name}"`,
@@ -60,7 +61,7 @@ export default {
         performPatchEmote(data) {
             this.$axios.patch(`moderation/${this.community.id}/icons/${this.emote.id}`,
                 data,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('mutated')

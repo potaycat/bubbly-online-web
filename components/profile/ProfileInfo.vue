@@ -29,10 +29,10 @@
                         {{ profile.location }}
                     </p>
                     <div class="prfl-inf__follows">
-                        <span class="glow" @click="viewFollowings">
+                        <span class="hoverline" @click="viewFollowings">
                             <strong>{{ profile.following_count }}</strong> Followings
                         </span>
-                        <span class="glow" @click="viewFollowers">
+                        <span class="hoverline" @click="viewFollowers">
                             <strong>{{ profile.follower_count }}</strong> Followers
                         </span>
                     </div>
@@ -41,12 +41,14 @@
         </transition>
         <Dropdown v-if="moring" 
             :options="[
-                profile.you_follow ? {action:'confirmUnfollow', label:'Unfollow'} :
-                    {action:'makeFollow', label:'Follow'},
+                ...(isSelf?[]:[
+                    profile.you_follow ? {action:'confirmUnfollow', label:'Unfollow'} :
+                        {action:'makeFollow', label:'Follow'},
+                    profile.you_block ? {action:'makeUnblock', label:'Unblock'} :
+                        {action:'confirmBlock', label:'Block'},
+                    {action:'confirm_userReport', label:'Report'},
+                ]),
                 {action:'copyUserUrl', label:'Copy profile URL'},
-                profile.you_block ? {action:'makeUnblock', label:'Unblock'} :
-                    {action:'confirmBlock', label:'Block'},
-                {action:'confirm_userReport', label:'Report'},
             ]"
         />
         <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
@@ -73,7 +75,7 @@ export default {
     },
     methods: {
         onDropDownPick() {
-            this.$store.commit('appBar/burgerState', false)
+            this.$store.commit('appBar/BURGER_STATE', false)
         },
         onUnfollowHandle() {this.$emit('unfollowed')},
         onPerformFollow() {this.$emit('followed')},

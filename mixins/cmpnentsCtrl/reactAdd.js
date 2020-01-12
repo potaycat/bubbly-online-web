@@ -1,13 +1,12 @@
-//
 // <FloatingEmotes v-if="reacting"   
 //     :community="allocated_to"
 //     :position="reacting"
 //     @closeAdd="reacting=null"
 // />
-//
 
 import React from '@/components/post/react/'
 import FloatingEmotes from '@/components/post/react/FloatingEmotes'
+
 export const reactAdd = {
     components: {React, FloatingEmotes},
     data:() => ({
@@ -42,7 +41,7 @@ export const reactAdd = {
             const fallBack = this.post.my_react
             this.post.my_react = iconId
             this.$axios.post(`reacts/${this.post.id}`, iconId!=1? {icon: iconId} :null,
-                this.$store.state.authHeader)
+                this.$store.state.auth.head)
                 .then(res => {
                     this.$set(this.post, 'reactions', res.data.reactions)
                 })
@@ -50,6 +49,7 @@ export const reactAdd = {
                     this.post.my_react = fallBack
                     this.$store.dispatch("reactionx/getCmtyEmotes", this.post.allocated_to.id)
                     // console.error("CAUGHT: "+error)
+                    this.$store.dispatch("auth/logInToDoThat")
                 })
             this.closeEmoteSelector()
         },
@@ -58,7 +58,7 @@ export const reactAdd = {
             this.post.my_react = null
             
             this.$axios.delete(`reacts/${this.post.id}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     const reactLs = this.post.reactions

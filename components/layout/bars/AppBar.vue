@@ -2,7 +2,7 @@
     <nav class="app-bar detail-view"
         :style="$store.state.appBar.text ? {'box-shadow':'0 0 15px #ccc'} :null">
         
-        <button @click="bacc" class="dtail-bar__btn push">
+        <button @click="bacc" class="dtail-bar__btn nopaque">
             <i class="material-icons-round">arrow_back</i>
         </button>
 
@@ -19,7 +19,7 @@
         </transition>
 
         <button v-if="!moring && moring!=null" @click="openInfo"
-            class="dtail-bar__btn push"
+            class="dtail-bar__btn nopaque"
         >
             <i class="material-icons-round">more_vert</i>
         </button>
@@ -42,19 +42,13 @@ export default {
             }
         },
     },
-    activated() {
-        this.$store.commit('appBar/reset')
-    },
-    created() {
-        this.$store.commit('appBar/reset')
-    },
     methods: {
         openInfo() {
-            this.$store.commit('appBar/burgerState', true)
+            this.$store.commit('appBar/BURGER_STATE', true)
         },
         bacc() {
             if (this.moring) {
-                this.$store.commit('appBar/burgerState', false)
+                this.$store.commit('appBar/BURGER_STATE', false)
             } else {
                 this.$router.back()
             }

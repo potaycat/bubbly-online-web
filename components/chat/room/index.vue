@@ -15,7 +15,7 @@
                     :color="roomBackground=='#fefefe'?'#888':'#fff'"/>
                 
                 <Bubble v-for="(message, index) in conversation"
-                    :key="message.id"
+                    :key="message.pseudoId || message.id"
                     :message="message"
                     :prev="conversation[index-1]"
                     @peak="popItUp($event.pos);performDisplay($event.profile)"
@@ -25,7 +25,7 @@
                 <div ref="sndBxLev" style="transition:.2s"/>
             </div>
             <transition name="just_slide_up" >
-                <button class="chat__s2b-btn shiny-white-bg box-shadow-2 nopaque" v-if="!atBottom"
+                <button class="chat__s2b-btn shiny-white-bg box-shadow-2 nopaque --lite" v-if="!atBottom"
                     @click="scroll2Bottom">Jump to present</button>
             </transition>
             <SendBox
@@ -131,8 +131,8 @@ export default {
         roomTitle: {
             immediate: true,
             handler(newVal, oldVal) {
-                this.$store.commit('appBar/loadPic', newVal[0])
-                this.$store.commit('appBar/loadText', newVal[1])
+                this.$store.commit('appBar/LOAD_ICON', newVal[0])
+                this.$store.commit('appBar/LOAD_TITLE', newVal[1])
             },
         },
     },
@@ -153,39 +153,41 @@ export default {
         scroll2Bottom() {
             this.atBottom = true
             const ctnr = this.$refs.scrollCtn
-            if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop > 500) {
+            if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop > 500 || !ctnr.scrollTo) {
                 ctnr.scrollTop = ctnr.scrollHeight
             } else {
-                ctnr.scrollTo(
-                    this.fetchedData.length < 31 ? // just opened
-                    {top: ctnr.scrollHeight, behavior: 'smooth'} : {top: ctnr.scrollHeight}
-                )
+                ctnr.scrollTo({
+                    top: ctnr.scrollHeight,
+                    behavior: this.fetchedData.length<31?'smooth':null
+                })
             }
         },
         updateSeen() {
             if (this.fullyLoaded) {
                 if (this.threadInfo.roommate_info) {
                     this.$axios.put(`chat/${this.roomId}/roommates/__self`, null,
-                        this.$store.state.authHeader)
+                        this.$store.state.auth.head)
+                        .catch(err => console.error("CATCHED: "+err))
                 }
                 if (this.threadInfo.last_msg) {
-                    this.$store.commit('chatx/updateLastMsg', this.threadInfo.last_msg)
+                    this.$store.commit('chatx/UPDATE_LAST_MSG', this.threadInfo.last_msg)
                 }
             }
         },
     },
     created() {
         this.$axios.get(`chat/${this.roomId}`, 
-            this.$store.state.authHeader)
+            this.$store.state.auth.head)
             .then(res => {
-                this.$store.commit('chatx/loadChat', res.data)
+                this.$store.commit('chatx/LOAD_THREAD', res.data)
                 this.fullyLoaded = true
                 this.updateSeen()
             })
         this.$connect(`${this.$store.state.wsBase}ws/chat/${this.roomId}?token=${this.$store.state.auth.jwt}`)
             this.$options.sockets.onmessage = (res) => { // collasp for easier skimming
                 const recived = JSON.parse(res.data)
-                if (recived.type == 'tpng') { // typing signal
+                if (recived.type == 'tpng') {
+                    // typing signal
                     if (recived.user.username != this.$store.state.auth.my_profile.username) {
                         const i = this.typing.findIndex(x => x.user.username==recived.user.username)
                         if (i == -1) {
@@ -207,15 +209,15 @@ export default {
                 // }
                 else {
                     const msg = recived.msg_data
-                    this.$store.commit('chatx/updateLastMsg', msg)
+                    this.$store.commit('chatx/UPDATE_LAST_MSG', msg)
                     if (this.$options.safeMsgTypes.includes(msg.msg_type)) {
                         this.fetchedData.unshift(msg)
                     }
                     if (msg.msg_type == 6) {
-                        this.$store.commit('chatx/loadChat', { name: msg.content })
-                        this.$store.commit('appBar/loadText', msg.content)
+                        this.$store.commit('chatx/LOAD_THREAD', { name: msg.content })
+                        this.$store.commit('appBar/LOAD_TITLE', msg.content)
                     } else if (msg.msg_type == 7) {
-                        this.$store.commit('chatx/loadChat', { bg_img: msg.content })
+                        this.$store.commit('chatx/LOAD_THREAD', { bg_img: msg.content })
                     }
                     else if (msg.author.username != this.$store.state.auth.my_profile.username) {
                         // remove "typing" status
@@ -225,12 +227,12 @@ export default {
                             this.typing.splice(i, 1)
                         }
                         this.fetchedData.unshift(msg)
-                    } else { // update my message
-                        const index = this.fetchedData.findIndex(x => x.id==recived.c__id)
+                    } else {
+                        // update my message
+                        const index = this.fetchedData.findIndex(x => x.pseudoId==recived.nonce)
                         if (index != -1) {
-                            const changeThis = this.fetchedData[index]
-                            changeThis.timestamp = msg.timestamp
-                            changeThis.serverId = msg.id // fix auto re-render
+                            for (const key in msg)
+                                this.fetchedData[index][key] = msg[key]
                         } else {
                             this.fetchedData.unshift(msg)
                         }
@@ -247,7 +249,7 @@ export default {
     beforeDestroy() {
         this.updateSeen()
         this.$disconnect()
-        this.$store.commit('chatx/loadChat', null)
+        this.$store.commit('chatx/LOAD_THREAD', null)
         this.$emit('cleansed')
     },
 }

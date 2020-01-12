@@ -11,7 +11,6 @@
                 ['moderator','administrator'].includes(community.membership_info.role)"
             icon= "post_add"
             actionName= "Add to pinboard"
-            style="top:calc(100vh - 80px)"
         />
     </div>
 </template>

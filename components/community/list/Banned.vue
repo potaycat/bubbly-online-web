@@ -11,18 +11,14 @@
 </template>
 
 <script>
-import { appBarTitle } from '@/mixins/appBarStuff'
 import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
-import { disableHamburger } from '@/mixins/appBarStuff'
-
 import UserItem from '@/components/profile/list/UserItem'
 
 export default {
     components: { UserItem },
-    mixins: [feedingFrenzy, maintainScrllPos, disableHamburger, appBarTitle],
+    mixins: [feedingFrenzy, maintainScrllPos],
     data() {return {
         feedUrl: `communities/${this.$route.params.id}/members/?filter_by=banned`,
-        appBarDisplayTitle: "Banned",
     }},
     // const: {
         offsetProp: 'username',

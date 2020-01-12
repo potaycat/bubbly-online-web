@@ -48,7 +48,6 @@ export default {
         position: relative;
         left: unset;
         width: 310px;
-        margin-left: 30px;
     }
 }
 

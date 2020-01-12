@@ -9,8 +9,7 @@
                 @unblocked="profile.you_block=false"
             />
 
-            <Tabs
-                lockable=1
+            <Tabs lockable
                 :tabs="['POSTS', 'COMMUNITIES']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
@@ -40,7 +39,7 @@ export default {
     mixins: [tabs],
     props: ['profile'],
     created() {
-        if (this.isSelf) this.$store.commit('auth/storeAuthUser', {
+        if (this.isSelf) this.$store.commit('auth/STORE_AUTH_USR', {
             ...this.$store.state.auth.my_profile, ...this.profile 
         })
     },
@@ -48,13 +47,13 @@ export default {
         const scroll = this.$refs.feed
         scroll.addEventListener('scroll', evt => {
             if (scroll.scrollTop > 310) {
-                this.$store.commit('appBar/loadText', this.profile.alias)
-                this.$store.commit('appBar/loadPic', {
+                this.$store.commit('appBar/LOAD_TITLE', this.profile.alias)
+                this.$store.commit('appBar/LOAD_ICON', {
                     src: this.profile.profile_pic,
                     style:'circle'
                 })
             } else {
-                this.$store.commit('appBar/reset')
+                this.$store.commit('appBar/APP_BAR_RESET')
             }
         }, {
             capture: true,

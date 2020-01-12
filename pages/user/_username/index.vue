@@ -1,7 +1,7 @@
 <template>
     <div>
         <ActivityView />
-        <LeProfile :profile="profile"/>
+        <LeProfile v-if="profile" :profile="profile"/>
     </div>
 </template>
 
@@ -9,14 +9,23 @@
 import ActivityView from '@/components/layout/ActivityView'
 import LeProfile from '@/components/profile/'
 export default {
+    meta: {
+        useAppBar: true,
+    },
     components: {ActivityView, LeProfile},
-    async asyncData ({ $axios, params, store }) {
-        const profileRes = await $axios.$get(`/accounts/${params.username}`, store.state.authHeader)
-        // let membershipsRes = await $axios.$get(`/memberships/of_member?format=json&user=${profileRes.id}`)
-        return {
-            profile: profileRes,
-            // membershipsRes,
-        }
+    data:() => ({
+        profile: null,
+    }),
+    activated() {
+        this.$axios.get(`/accounts/${this.$route.params.username}`, 
+            this.$store.state.auth.head
+        )
+            .then(res => {
+                this.profile = res.data
+            })
+            .catch(error => {
+                this.$router.replace('/auth/register')
+            })
     },
 }
 </script>

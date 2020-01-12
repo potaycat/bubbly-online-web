@@ -12,6 +12,19 @@
     </div>
 </template>
 
+<script>
+export default {
+    created() {
+        if (
+            ['index', 'auth-login', 'auth-register'].includes(this.$route.name) &&
+            this.$store.getters['auth/loggedIn']
+        ) {
+            this.$router.replace("/home")
+        }
+    }
+}
+</script>
+
 <style>
 .blank-layout-ctnr {
     display: flex;

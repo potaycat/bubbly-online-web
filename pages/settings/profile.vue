@@ -9,6 +9,12 @@
 import ActivityView from '@/components/layout/ActivityView'
 import ProfileSettings from '@/components/profile/Settings'
 export default {
-    components: {ActivityView, ProfileSettings}
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Profile edit"
+    },
+    components: {ActivityView, ProfileSettings},
+    deactivated() { this.$destroy() }
 }
 </script>

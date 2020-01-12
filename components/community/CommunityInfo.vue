@@ -7,7 +7,7 @@
                 <section class="cmty-inf__txt-ctn">
                     <div class="cmty-inf__txt__smol">
                         {{ community.visibility }} • 
-                        <span class="glow" style="color:gray;text-transform:none" @click="toCmtyMembers">
+                        <span class="hoverline" style="color:gray;text-transform:none" @click="toCmtyMembers">
                             <strong>{{community.total_members}}</strong> members
                         </span>
                     </div>
@@ -30,7 +30,7 @@
             :options="[
                 {action:'copyUrl', label:'Copy Community URL'},
                 {action:'confirm_report', label:'Report Community'},
-            ].filter(x=>x)"
+            ]"
         />
     </div>
 </template>
@@ -67,7 +67,7 @@ export default {
     },
     methods: {
         onDropDownPick() {
-            this.$store.commit('appBar/burgerState', false)
+            this.$store.commit('appBar/BURGER_STATE', false)
         },
         onRoleButtonClick() {
             if (this.isMember) {
@@ -77,15 +77,11 @@ export default {
             }
         },
         toCmtyMembers() {
-            this.$store.commit('appBar/loadText', `Members of ${this.community.name}`)  // TODO mixin
-            this.$store.commit('appBar/loadPic', {
-                src: this.community.icon_img,
-                style:'square'
-            })
             this.$router.push(`/communities/${this.$route.params.id}/members`)
         },
         onLeaveHandle() {
             this.community.membership_info = null
+            this.$store.dispatch("communityx/getJoinedCmties")
         },
 
         confirm_report() {

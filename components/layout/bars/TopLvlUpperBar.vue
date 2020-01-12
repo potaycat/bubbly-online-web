@@ -6,7 +6,7 @@
                 @click="$router.push(`/user/${$store.state.auth.my_profile.username}`)"/>
             <!-- </button> -->
             <p>{{ destiName }}</p>
-            <i @click="$router.push('/settings')" class="top-nav__btn material-icons-round push"
+            <i @click="$router.push('/settings')" class="top-nav__btn material-icons-round nopaque"
                 >settings</i>
         </div>
     </nav>

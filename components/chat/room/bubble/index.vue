@@ -10,7 +10,7 @@
             <div class="_budd__alias">{{ message.author.alias }}</div>
             <span class='msg__timestmp'>{{ message.timestamp | tiemstamp }}</span>
         </div>
-        <ShowContent class="msg__content nopaque"
+        <ShowContent class="msg__content nopaque --lite"
             :isMe="isMe"
             :msg_type="message.msg_type"
             :content="message.content"
@@ -23,13 +23,8 @@
 <script>
 import ShowContent from './BubbleContent'
 export default {
-    components: {
-        ShowContent,
-    },
-    props: [
-        'message',
-        'prev',
-    ],
+    components: { ShowContent },
+    props: [ 'message', 'prev' ],
     computed: {
         isMe() { // tod o optimize?
             return this.message.author.username == this.$store.state.auth.my_profile.username
@@ -38,16 +33,18 @@ export default {
             return this.message.timestamp == "sndng"
         },
         consecutive() {
-            if (this.prev) {
-                if (this.prev.author.username==this.message.author.username) {
-                    let p = new Date(this.prev.timestamp)
-                    let d = new Date(this.message.timestamp)
-                    if (d - p < 600000 || (
-                        this.sending )//&& new Date() - p < 600000)
-                    ) return true
-                }
-            }
-            return false
+            if (this.sending) return true
+            
+            if (!this.prev) return false
+
+            if (this.prev.author.username!=this.message.author.username)
+                return false
+                
+            const p = new Date(this.prev.timestamp)
+            const n = new Date(this.message.timestamp)
+            if (n - p > 600000) return false
+
+            return true
         },
     },
 }

@@ -20,13 +20,19 @@
 
 <script>
 export default {
-    props: [
-        'options', // [{action, icon, title}]
-        'position', // {x: "_px", y: "_px"}
-    ],
+    props: {
+        options: {
+            type: Array,
+            default:() => [{action:"", icon:"", title:""}]
+        },
+        position: {
+            type: Object,
+            default:() => ({}) // {x: "_px", y: "_px"}
+        }
+    },
     mounted() {
         const drpdwn = this.$refs.drpdwn
-        const pos = this.position || {}
+        const pos = this.position
         drpdwn.style.top = `${pos.y || 20}px`
         drpdwn.style.right = `${pos.x ? window.innerWidth-pos.x : window.innerWidth/3-110}px`
     },

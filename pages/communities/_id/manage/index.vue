@@ -9,9 +9,14 @@
 import ActivityView from '@/components/layout/ActivityView'
 import Management from '@/components/community/management/'
 export default {
-    components: {ActivityView, Management},
     head:() => ({
         title: "Community management"
     }),
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Community Management"
+    },
+    components: {ActivityView, Management},
 };
 </script>

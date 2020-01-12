@@ -9,18 +9,20 @@
 import ActivityView from '@/components/layout/ActivityView'
 import SingleCommentView from '@/components/comment/'
 export default {
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Comment"
+    },
     components: {ActivityView, SingleCommentView},
     data:() => ({
         comment: null
     }),
-    created() {
+    activated() {
         this.$axios.get(`posts/comment/${this.$route.params.id}`, 
-            this.$store.state.authHeader
+            this.$store.state.auth.head
         )
             .then(res => {
-                console.log("AAAAAAAAAAaa");
-                console.log(res.data);
-                
                 this.comment = res.data
             })
             .catch(error => {

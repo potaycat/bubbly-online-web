@@ -9,12 +9,12 @@ export const performEdit = {
         confirm_delete() {
             this.openDiag = {
                 title: `Delete ${this.post.title || this.post.text.slice(0, 10)+"..."}?`,
+                hndlFun: this.perform_delete
             }
-            this.diagHndlFun = this.perform_delete
         },
         perform_delete() {
             this.$axios.delete(`posts/${this.post.id}/edit`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$router.go()
@@ -24,13 +24,13 @@ export const performEdit = {
         confirm_modDelete() {
             this.openDiag = {
                 title: `Delete ${this.post.title || this.post.text.slice(0, 10)+"..."}?`,
-                description: "Thank you for keeping the community safe"
+                description: "Thank you for keeping the community safe",
+                hndlFun: this.perform_modDel
             }
-            this.diagHndlFun = this.perform_modDel
         },
         perform_modDel() {
             this.$axios.delete(`moderation/${this.post.allocated_to.id}/posts/${this.post.id}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$router.go()
@@ -46,7 +46,7 @@ export const performEdit = {
         },
 
         goToReactions() {
-            this.$store.commit('postx/loadPost', this.post)
+            this.$store.commit('postx/LOAD_POST', this.post)
             this.$router.push(`/post/${this.post.id}/reactions`)
         },
     },

@@ -7,7 +7,7 @@
                 {action: 'done', icon: 'send'},
             ]"
             @togglePreview="previewing=true"
-            @done="validateAnd(done)"
+            @done="validateThen(done)"
         />
         <CmtyPicker v-if="!editMode&&!isComment" :pinboard="isPinboard" :attention="notValidated('cmty')"/>
         <div v-if="!editMode">
@@ -16,11 +16,13 @@
                 v-model="title"
                 placeholder="Title"
             />
-            <section class="extra-content-bar box-shadow-3 shiny-white-bg">
-                <label class="pstedit__file-input bttm-bar__btn glow">
+            <section class="pstedit__toolbar box-shadow-3 shiny-white-bg">
+                <label class="toolbar__btn --file-btn glow">
                     <i class="material-icons-round">add_photo_alternate</i>
                     <input type="file" accept="image/*" multiple @change="onFileChange" ref="img_input" style="display:none">
                 </label>
+                <div :class="['toolbar__btn --nsfw-on-btn glow',isNsfw?'--nsfw-btn--on':'--nsfw-btn--off']"
+                    @click="isNsfw=!isNsfw">NSFW</div>
             </section>
         </div>
 
@@ -30,7 +32,7 @@
         />
 
         <transition-group name="zoom_in_fade">
-            <div v-for="(attch, index) in previews" :key="attch.name"
+            <div v-for="(attch, index) in previews" :key="attch.file.name"
                 class="attch-prvw__itm"
             >
                 <div class="attch-prvw__x box-shadow-1 push" @click="previews.splice(index, 1)">x</div>
@@ -51,16 +53,12 @@
 </template>
 
 <script>
-import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
-import { appBarTitle } from '@/mixins/appBarStuff'
-
-import { textareaAutoResize } from '@/mixins/commonFuncs'
-import BubblyMarkdownParse from '../mdParse'
-
 import CmtyPicker from './CmtyPicker'
 import { editMode } from './editMode'
 import { comment, pinboard } from './typed'
 
+import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
+import BubblyMarkdownParse from '../mdParse'
 import Spinner from '@/components/misc/Spinner'
 import { formValidate } from '@/mixins/formValidate'
 
@@ -71,19 +69,18 @@ export default {
         CmtyPicker,
         Spinner,
     },
-    mixins: [editMode,comment,pinboard, appBarTitle, formValidate],
+    mixins: [editMode,comment,pinboard, formValidate],
     data:() => ({
-        appBarDisplayTitle: "Write a post",
-
         title: "",
         body: "",
+        isNsfw: false,
 
         previews: [],
         uploading: false,
         previewing: false,
     }),
     computed: {
-        validated() {
+        rules() {
             let toValidate = {}
             toValidate.body = this.body.length || this.previews.length
             if (!this.editMode) {
@@ -114,7 +111,6 @@ export default {
         },
     },
     activated() {
-        this.appBarDisplayTitle = "Write a post"
         const init = this.$route.query.init; if (init) {
             this.body = init
         }
@@ -122,19 +118,21 @@ export default {
     methods: {
         onFileChange(evt) {
             const input = this.$refs.img_input
-            const mapped = this.previews.map(item => { return item.name })
+            const mapped = this.previews.map(item => item.file.name)
             Array.from(input.files).forEach(file => {
-                if ( !mapped.some(itemName => { return itemName == file.name }) ) {
-                    this.previews.push({
-                        name: file.name,
-                        blobUrl: URL.createObjectURL(file),
-                        file: file
-                    })
-                }
+                if (!file.type.startsWith("image/"))
+                    return
+                if (mapped.some(name => name==file.name))
+                    return
+                this.previews.push({
+                    blobUrl: URL.createObjectURL(file),
+                    file: file
+                })
             })
             input.value= null
             this.$nextTick(() => {
-                window.scrollTo(0, document.body.scrollHeight)
+                const ctnr = document.querySelector(".post-editor-ctnr")
+                    ctnr.scrollTop = ctnr.scrollHeight
             })
         },
 
@@ -146,35 +144,31 @@ export default {
             else this.performPost()
         },
         performPost() {
-            const attachmentsList = [
-                {
-                    type: 2,
-                    content: "https://preview.redd.it/4daqv3k8qh441.jpg?width=640&height=644&crop=smart&auto=webp&s=9e8a2e4cdf1701b83e77e84e66e2f7580911a0dc",
-                    order: 1
-                },
-            ]
-
-            // this.performUpload(this.previews[0].file)
-
-            this.batchCompressUpload([this.previews[0].file, this.previews[1].file], uploadedUrls => {
-                console.log(uploadedUrls)
-            })
-            
-            return
-            const data = {
-                // attachments: attachmentsList,
-                text: this.body,
-                title: this.title
-            }
-            Object.keys(data).forEach((key)=> !data[key] &&delete data[key])
-            this.$axios.post(
-                `communities/${this.$route.query.to}/posts/create`, data,
-                this.$store.state.authHeader
-            )
-                .then(res => {
-                    this.uploading = false
-                    this.$router.push(`/post/${res.data.id}`)
+            const fileArr = this.previews.map(obj => obj.file)
+            this.batchCompressUpload(fileArr, uploadedUrls => {
+                let attchArr = []
+                uploadedUrls.forEach((url, index) => {
+                    attchArr.push({
+                        type: 2,
+                        content: url,
+                        order: index+1
+                    })
                 })
+                const data = {
+                    attachments: attchArr,
+                    text: this.body,
+                    title: this.title
+                }
+                Object.keys(data).forEach((key)=> !data[key] &&delete data[key])
+                this.$axios.post(
+                    `communities/${this.$route.query.to}/posts/create`, data,
+                    this.$store.state.auth.head
+                )
+                    .then(res => {
+                        this.uploading = false
+                        this.$router.push(`/post/${res.data.id}`)
+                    })
+            })
         }
     }
 }
@@ -254,7 +248,7 @@ export default {
 }
 
 
-.post-editor-ctnr .extra-content-bar {
+.post-editor-ctnr .pstedit__toolbar {
     position: fixed;
     height: 40px;
     top: calc(100vh - 40px);
@@ -262,15 +256,23 @@ export default {
     width: 100%;
     display: flex;
 }
-.bttm-bar__btn {
-    height: 100%;
-    width: 50px;
-}
-
-.pstedit__file-input {
+.toolbar__btn {
     color: var(--primary-color);
+    height: 100%;
+    min-width: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.--file-btn + .toolbar__btn {
+    margin-left: 55px;
+}
+.--nsfw-btn--off {
+    color: var(--primary-color-reduced-opacity);
+    text-decoration: line-through;
+}
+.--nsfw-btn--on {
+    color: red;
+    font-weight: bold;
 }
 </style>

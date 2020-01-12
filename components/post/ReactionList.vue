@@ -1,8 +1,7 @@
 <template>
     <div class="the_big_frame">
         <div class="react-ls common_ls_cntainr --with-tabs" ref="feed">
-            <Tabs
-                locked=1
+            <Tabs locked
                 :tabs="['ALL', ...nameLs]"
                 :currentTab="currentTab"
                 @switchTo="newTab"
@@ -21,16 +20,14 @@
 <script>
 import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
-import { disableHamburger, appBarTitle } from '@/mixins/appBarStuff'
 import UserItem from '@/components/profile/list/UserItem'
 
 import { mapGetters } from "vuex"
 export default {
     components: { UserItem },
-    mixins: [tabs, feedingFrenzy, disableHamburger, appBarTitle],
+    mixins: [tabs, feedingFrenzy],
     data:() => ({
         reactsAggregate: [],
-        appBarDisplayTitle: "Reactions",
     }),
     computed: {
         ...mapGetters({
@@ -62,7 +59,7 @@ export default {
         this.$axios.get(
             // `reacts/${this.$route.params.slug}`,
             `posts/${this.$route.query.comment==1?'comment/':''}${this.$route.params.slug}`,
-            this.$store.state.authHeader
+            this.$store.state.auth.head
         )
             .then(res => {
                 this.reactsAggregate = res.data.reactions

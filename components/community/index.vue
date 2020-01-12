@@ -2,8 +2,7 @@
     <div class="the_big_frame">
         <div class="common_ls_cntainr --dtail-app-bar" ref="feed">
             <CommunityInfo :community="community" />
-            <Tabs
-                lockable=1
+            <Tabs lockable
                 :tabs="['POSTS', 'CHAT ROOMS', 'PINBOARD']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
@@ -40,13 +39,13 @@ export default {
         const scroll = this.$refs.feed
         scroll.addEventListener('scroll', () => {
             if (scroll.scrollTop > 350) {
-                this.$store.commit('appBar/loadText', this.community.name)
-                this.$store.commit('appBar/loadPic', {
+                this.$store.commit('appBar/LOAD_TITLE', this.community.name)
+                this.$store.commit('appBar/LOAD_ICON', {
                     src: this.community.icon_img,
                     style:'square'
                 })
             } else {
-                this.$store.commit('appBar/reset')
+                this.$store.commit('appBar/APP_BAR_RESET')
             }
         }, {
             capture: true,

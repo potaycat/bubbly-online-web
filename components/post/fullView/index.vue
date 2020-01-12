@@ -8,8 +8,10 @@
             <nuxt-link class="pf-author" :to="'/user/' + post.author.username">
                 <img class="pfp lift" :src="post.author.profile_pic"/>
                 <div class="pf-text-info">
-                    <p class="glow" :style="'color:#'+post.author.fave_color">{{ post.author.alias }}</p>
-                    <div class="pf-timestamp">{{ post.timestamp | timeAgo }}</div>
+                    <p class="hoverline" :style="'color:#'+post.author.fave_color">{{ post.author.alias }}</p>
+                    <div class="pf-timestamp">{{ post.timestamp | timeAgo }}
+                        <span v-if="post.edited"> • Edited</span>
+                    </div>
                 </div>
             </nuxt-link>
 
@@ -17,11 +19,11 @@
 
             <nuxt-link :to="`/communities/${post.allocated_to.id}`" class="pf__where glow">
                 <img class="cmty_ico" :src=" post.allocated_to.icon_img">
-                <p>Được đăng ở <strong>{{ post.allocated_to.name }}</strong> trên <strong>tên mxh của long</strong></p>
+                <p>Posted to <strong>{{post.allocated_to.name}}</strong> on <strong> Bubbly </strong></p>
             </nuxt-link>
 
             <section >
-                <p class="pf__react-label glow">Reactions ({{post.total_reacts}})</p> 
+                <p class="pf__react-label">Reactions ({{post.total_reacts}})</p> 
                 <div class="pf-reactions">
                     <React v-if="post.reactions"
                         :reacts="reactionsLsSorted"
@@ -75,10 +77,7 @@ export default {
         }),
         profile() {return this.post.author}, // to work with performFollow mixin
         bannerText() {
-            if (this.post.title) {
-                return this.post.title
-            }
-            return "Bài viết của "+ this.post.author.alias
+            return this.post.title || `Post by ${this.post.author.alias}`
         },
         hamburgerOptions() {
             const vbName = this.profile.alias
@@ -102,16 +101,16 @@ export default {
         }
     },
     deactivated() {
-        this.$store.commit('postx/loadPost', this.post)
+        this.$store.commit('postx/LOAD_POST', this.post)
     },
     mounted() {
         const tt = this.$refs.title
         const container = this.$refs.feed
         container.addEventListener('scroll', () => {
             if (container.scrollTop > tt.offsetTop) {
-                this.$store.commit('appBar/loadText', this.bannerText)
+                this.$store.commit('appBar/LOAD_TITLE', this.bannerText)
             } else {
-                this.$store.commit('appBar/reset')
+                this.$store.commit('appBar/LOAD_TITLE', null)
             }
         }, {
             capture: true,
@@ -119,7 +118,7 @@ export default {
     },
     methods: {
         onDropDownPick() {
-            this.$store.commit('appBar/burgerState', false)
+            this.$store.commit('appBar/BURGER_STATE', false)
         },
         goToShare() {
             this.popItUp({clientX:400})
@@ -140,6 +139,7 @@ export default {
     padding-bottom: 10px;
     width: 100%;
     border-bottom: solid 1px #eee;
+    user-select: text;
 }
 
 .pf-author {
@@ -185,7 +185,6 @@ export default {
     max-height: 120px;
     overflow: auto;
 }
-
 
 
 .unused-attchs {

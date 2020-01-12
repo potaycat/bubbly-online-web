@@ -4,7 +4,7 @@
         <ActivityView />
         <ButtonList :allCommands="[
             [
-                {lable: 'Tiếng Việt (sắp có)', scndIcon: '', action: 'performToVN'},
+                {lable: 'Tiếng Việt (sẽ có)', scndIcon: '', action: 'performToVN'},
                 {lable: 'English', scndIcon: 'done', action: 'performToEN'},
             ]
         ]"/>
@@ -14,15 +14,14 @@
 
 <script>
 import ActivityView from '@/components/layout/ActivityView'
-import { appBarTitle } from '@/mixins/appBarStuff'
-import { disableHamburger } from '@/mixins/appBarStuff'
 import ButtonList from '@/components/misc/ButtonList'
 export default {
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Change Language"
+    },
     components: {ActivityView, ButtonList},
-    mixins: [appBarTitle, disableHamburger],
-    data:() => ({
-        appBarDisplayTitle: "Change Language",
-    }),
     methods: {
         performToVN() {
         },

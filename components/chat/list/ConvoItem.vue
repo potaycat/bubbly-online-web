@@ -1,12 +1,12 @@
 <template>
     <div :class="['thrd glow', isActive?'room--active': null]"
         @click="$store.dispatch('chatx/toChat', room)">
-        <img :class="isPublic?'cmty_ico':'pfp'" :src="dsplPicSrc">
+        <img :class="isPublic?'cmty_ico':'pfp'" :src="roomPic">
         <div v-if="isUnread" class="thrd__dot"></div>
         <div class="thread-txt">
             <div class="thrd__top-txt">
                 <p class="thrd__top__title" :style="[room.room_type=='direct' ? {'color':'#'+room.room_type_data.fave_color} :null]"
-                >{{ dsplRoomTtle }}</p>
+                >{{ roomTitle }}</p>
                 <span>{{ room.last_msg.timestamp | tiemstamp2 }}</span>
             </div>
             <p class="thrd__last-msg" :style="isUnread? 'font-weight:bold; color:black' :null">
@@ -20,17 +20,17 @@
 export default {
     props: ['room'],
     computed: {
-        isDirect() {return this.room.room_type == 'direct'},
-        isGroup() {return this.room.room_type == 'group'},
-        isPublic() {return this.room.room_type == 'public'},
-        dsplPicSrc() {
+        isDirect() { return this.room.room_type == 'direct' },
+        isGroup() { return this.room.room_type == 'group' },
+        isPublic() { return this.room.room_type == 'public' },
+        roomPic() {
             const dat = this.room.room_type_data
             return this.isDirect ? dat.profile_pic :
                 this.room.bg_img ? this.room.bg_img :
                 this.isPublic ? dat.community.icon_img :
                 require('@/assets/group.png')
         },
-        dsplRoomTtle() {
+        roomTitle() {
             const dat = this.room.room_type_data
             return this.isDirect ? dat.alias :
                 this.room.name ? this.room.name :
@@ -51,10 +51,11 @@ export default {
 
 <style>
 .room--active {
-    background: #d3d3d3;
+    background: #d3d3d3 !important;
+    cursor: context-menu;
 }
 .thrd {
-    padding: 8px 15px;
+    padding: 7.5px 15px;
     word-wrap: break-word;
     display: flex;
     align-items: center;
@@ -107,13 +108,12 @@ export default {
 
 .thrd__dot {
     position: absolute;
-    top: 9px;
+    top: 6px;
     left: 57px;
     height: 15px;
     width: 15px;
     border-radius: 50%;
     background: var(--primary-color);
     opacity: 0.95;
-    /* box-shadow: #777 */
 }
 </style>

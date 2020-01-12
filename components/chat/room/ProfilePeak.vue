@@ -49,7 +49,7 @@ export default {
             this.loading = true
             this.$axios.patch(`chat/${this.threadInfo.id}/roommates/${this.profile.username}`,
                 {"is_admin": true},
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('close', true)
@@ -58,7 +58,7 @@ export default {
         kick() {
             this.loading = true
             this.$axios.delete(`chat/${this.threadInfo.id}/roommates/${this.profile.username}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('close', true)

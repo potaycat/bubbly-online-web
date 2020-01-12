@@ -10,6 +10,10 @@
                 :communityId="comment.allocated_to"
                 @reply="launchReplyComposer"
             />
+            <div class="cmt-add-block">
+                <img class="pfp" :src="this.$store.state.auth.my_profile.profile_pic">
+                <span class="glow" @click="launchReplyComposer">Write a reply...</span>
+            </div>
             <section class="smv-replies-ctnr">
                 <CommentItem v-for="reply in fetchedData"
                     class="smv-cmt-item"
@@ -19,39 +23,38 @@
                 />
             </section>
             <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length" headsup=""/>
-
-            <div class="single-cmt__add-block">
-                <span class="glow" @click="launchReplyComposer">Write a reply...</span>
-            </div>
         </div>
+        <ComposerAttch
+            :attachmentList="attachmentList"
+            @remove="attachmentList=[]"
+            :uploading="uploading"
+        />
         <SendBox v-if="openComposer"
             immediateFocus=1
             @textOutbox="outBoxing"
-            @picPick="imageOutBoxing"
+            @picPick="addPic"
         />
     </div>
 </template>
 
 <script>
 import CommentItem from '../post/fullView/commenting/CommentItem'
-import { feedingFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
+import { feedingFrenzy, refreshFrenzy, maintainScrllPos } from '@/mixins/feedingFrenzy'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
-import { appBarTitle } from '@/mixins/appBarStuff'
 import { sendingHandler } from './composer'
 
 export default {
     components: {CommentItem, AppBarCustomBtn},
-    mixins: [feedingFrenzy, maintainScrllPos, appBarTitle, sendingHandler],
+    mixins: [feedingFrenzy, refreshFrenzy, maintainScrllPos, sendingHandler],
     props: ['comment'],
     data() {return {
-        feedUrl: `posts/${this.$route.params.id}/comments/?is_reply=1`,
-        appBarDisplayTitle: "Comment"
+        feedUrl: `posts/${this.$route.params.id}/comments/?is_reply=1&`,
     }},
 }
 </script>
 
 <style>
-.single-cmt-view{
+.single-cmt-view {
     width: 100%;
     padding-right: 15px;
     padding-left: 15px;
@@ -71,17 +74,23 @@ export default {
     padding-left: 30px;
 }
 
-.single-cmt__add-block {
+/* CARBON COPIED */
+.cmt-add-block {
     display: flex;
-    padding: 12px 0 0 35px;
-    width: 100%;
+    padding: 12px 0;
 }
-.single-cmt__add-block > span {
+.cmt-add-block > span {
     font-size: 14px;
     color: #aaa;
     border: 1px solid #ccc;
     border-radius: 100px;
     padding: 6px 10px;
+    margin-left: 10px;
+    width: 100%;
+}
+/* END OF COPIED */
+.single-cmt-view > .cmt-add-block {
+    padding: 0 0 5px 30px;
     width: 100%;
 }
 </style>

@@ -89,3 +89,4 @@ typings/
 
 # 
 static/sw.js
+static/OneSignalSDKWorker.js

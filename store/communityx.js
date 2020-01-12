@@ -1,21 +1,21 @@
 export const state = () => ({
-    joined: JSON.parse(localStorage.getItem('joined')),
+    joined: JSON.parse(localStorage.getItem('joined')) ||[],
 })
 
 export const mutations = {
-    save(state, cmtyArr) {
-        state.joined = cmtyArr
+    SAVE_CMTIES(state, cmtyArr) {
         localStorage.setItem('joined', JSON.stringify(cmtyArr))
+        state.joined = cmtyArr
     },
 }
 
 export const actions = {
-    getJoinedCmnties({ rootState }) {
+    getJoinedCmties({ rootState, commit }) {
         this.$axios.get('accounts/__self/communities/',
-            rootState.authHeader
+            rootState.auth.head
         )
             .then((res) => {
-                this.commit('communityx/save', res.data)
+                commit('SAVE_CMTIES', res.data)
             })
             .catch((error) => {
                 console.error("CAUGHT: "+error)

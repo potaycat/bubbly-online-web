@@ -1,9 +1,7 @@
 <template>
     <div class="the_big_frame">
         <div class="common_ls_cntainr --with-tabs" ref="feed">
-            <Tabs
-                lockable=1
-                locked=1
+            <Tabs lockable locked
                 :tabs="['FOLLOWINGS', 'FOLLOWERS']"
                 :currentTab="currentTab"
                 @switchTo="newTab"
@@ -20,17 +18,14 @@
 <script>
 import { tabs } from '@/mixins/cmpnentsCtrl/tabs'
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
-import { disableHamburger, appBarTitle } from '@/mixins/appBarStuff'
-
 import UserItem from './list/UserItem'
 
 export default {
     components: { UserItem },
-    mixins: [tabs, feedingFrenzy, disableHamburger, appBarTitle],
+    mixins: [tabs, feedingFrenzy],
     data() {
         return {
             currentTab: this.$route.query.get=="followers"?1:0,
-            appBarDisplayTitle: "Follows",
         }
     },
     // const: {
@@ -54,6 +49,7 @@ export default {
             } else {
                 this.$router.replace({query: {get: 'followings'}})
             }
+            this.fetchedData = []
             this.firstFetch()
         },
     },

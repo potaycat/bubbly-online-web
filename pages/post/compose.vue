@@ -9,9 +9,14 @@
 import ActivityView from '@/components/layout/ActivityView'
 import PostComposer from '@/components/post/composer/'
 export default {
-    components: {ActivityView, PostComposer},
     head:() => ({
-        title: "Write a post",
-    })
+        title: "Composer",
+    }),
+    meta: {
+        useAppBar: true,
+        disableHamburger: true,
+        appBarTitle: "Write a post"
+    },
+    components: {ActivityView, PostComposer},
 }
 </script>

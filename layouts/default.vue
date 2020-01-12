@@ -17,6 +17,7 @@
 </template>
 
 <script>
+// I leave init codes here
 import TopLvlNavigator from "@/components/layout/bars/TopLvlNavigator"
 import SideBar from "@/components/layout/sideBar/"
 export default {
@@ -30,7 +31,7 @@ export default {
     }),
     computed: {
         userDef() {
-            return this.$store.state.auth.my_profile.fave_color || 'ee55a4'
+            return this.$store.state.auth.my_profile.fave_color || 'ee981e'
         },
         accentColor() {
             return this.userDef
@@ -38,6 +39,7 @@ export default {
     },
     watch: {
         '$route': {
+            // basically another middleware
             immediate: true,
             handler(to, from) {
                 // needs more work
@@ -55,23 +57,22 @@ export default {
                 }
                 this.currentHistory = key
 
-                if (to.name == 'chat' && from && ['communities-id', 'communities-id-manage'].includes(from.name)) {
+                if (to.name == 'chat' && from &&
+                    ['communities-id', 'user-username', 'communities-id-manage'].includes(from.name)
+                ) {
                     this.transitionName = 'fade'
-                    this.$store.commit('chatx/loadChat', null)
+                    this.$store.commit('chatx/LOAD_THREAD', null)
                 }
             }
         }
     },
     created() {
-        if (Object.entries(this.$store.state.auth.my_profile).length == 0) {
-            this.$router.push('/')
-        } else {
-            if (Object.entries(this.$store.state.reactionx.localEmotes).length == 0) {
-                this.$store.dispatch("reactionx/getMyEmotes")
+        if (this.$store.getters['auth/loggedIn']) {
+            if (!Object.entries(this.$store.state.reactionx.localEmotes).length) {
+                this.$store.dispatch('reactionx/getMyEmotes')
             }
-            if (!this.$store.state.communityx.joined) {
-                this.$store.dispatch("communityx/getJoinedCmnties")
-            }
+            this.$store.dispatch('communityx/getJoinedCmties')
+            this.$store.dispatch('getBadgeCount')
             this.myOneSignalInit()
         }
     },
@@ -112,6 +113,7 @@ export default {
     }
     .layout__content {
         margin: unset;
+        margin: 0 55px;
     }
 }
 

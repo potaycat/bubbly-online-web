@@ -16,7 +16,7 @@
                     Author: <strong>{{post.author.alias}}</strong>
                 </div>
             </div>
-            <i class="material-icons-round glow" @click="performDrop">more_vert</i>
+            <i class="material-icons-round nopaque" @click="performDrop">more_vert</i>
         </div>
         <Dropdown v-if="touchPos"
             :position="{y:touchPos.y, x:touchPos.x}"
@@ -66,7 +66,7 @@ export default {
 
         perform_delete(val) {
             this.$axios.delete(`moderation/${this.community.id}/posts/${this.post.id}`,
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('mutated')
@@ -83,7 +83,7 @@ export default {
                     first: toSwap,
                     second: this.post.id,
                 },
-                this.$store.state.authHeader
+                this.$store.state.auth.head
             )
                 .then(res => {
                     this.$emit('mutated')
