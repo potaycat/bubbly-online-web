@@ -152,7 +152,6 @@ export default {
         performChangeBg(file_evt) {
             this.loading = true
             const files = file_evt.target.files
-            this.$refs.img_input.value=null
             this.batchCompressUpload(files, uploadedUrls => {
                 this.$axios.patch(`chat/${this.threadInfo.id}`,
                     {bg_img: uploadedUrls[0]},

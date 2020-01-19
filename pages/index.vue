@@ -9,7 +9,7 @@
             </h1>
             <h2 class="subtitle">
                 You're at 
-                <strong><img class="inline-logo" src="~assets/logo.png">Bubbly</strong>
+                <img class="inline-logo" src="~assets/logo_full.png">
             </h2>
             <div class="links">
                 <Button class="auth-form__btn" style="margin-right:10px"
@@ -19,7 +19,8 @@
             </div>
         </section>
         <section class="about">
-            YAAAA
+            <h2>What's this?</h2>
+            <p><strong>Bubbly</strong> is a new social networking platform.<br> It's really cool. Give it a try :D</p>
         </section>
     </div>
 </template>
@@ -35,7 +36,7 @@ export default {
 <style>
 .first-impression {
     margin: 0 auto;
-    min-height: 85vh;
+    min-height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -44,11 +45,11 @@ export default {
 .wavy {
     background: linear-gradient(60deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     position: absolute;
-    top: 0;
+    top: 5px;
     transform:translateX(-50%);
     overflow: hidden;
     height: 120px;
-    width: calc(100vw - 10px);
+    width: calc(100vw - 12px);
     border-radius: 20px;
     border-bottom-left-radius: 50% 20%;
     border-bottom-right-radius: 50% 20%;
@@ -80,10 +81,9 @@ export default {
     align-items: center;
 }
 .inline-logo {
-    width: 40px;
-    height: 40px;
-    margin-left: 16px;
-    margin-right: 4px;
+    height: 50px;
+    margin-left: 17px;
+    margin-top: 5px;
 }
 .links {
     padding-top: 15px;
@@ -93,7 +93,8 @@ export default {
 }
 
 .about {
-    /* position: relative; */
+    padding: 0 20px;
+    color: #333;
 }
 .wavy.about {
 background: #ee55a4;

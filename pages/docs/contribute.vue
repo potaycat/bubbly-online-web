@@ -10,23 +10,24 @@
                 your help.
             </p>
             <p>
-                Consider donating by:
+                Consider donating <a class="hoverline" href="">here</a>
             </p>
             <p>
                 You can also help out the project by emailing
-                <a href="mailto:hoanglongmit@gmail.com?subject=I want Bubbly endorsement"
-                    class="hoverline">hoanglongmit@gmail.com</a>
+                <a :href="`mailto:${email}?subject=I want Bubbly endorsement`"
+                    class="hoverline">{{email}}</a>
             </p>
             <p style="font-family:monospace,monospace;font-size:10px">
                 <br>-----------<br>
                 // TODO<br>
-                - ranked posts (sort by hot)<br>
+                - ranked posts (sort by hotness)<br>
                 - password reset sequence<br>
                 - multilang<br>
-                - async notification (performance boost)<br>
                 - VIP accounts<br>
                 - OAuth login with Facebook/Google<br>
-                - prettier logo<br>
+                - async database<br>
+                - scalable database (most chalenging)<br>
+                - ...<br>
             </p>
         </section>
     </div>
@@ -40,6 +41,9 @@ export default {
         disableHamburger: true,
         appBarTitle: "Donate/Get involved"
     },
-    components: {ActivityView}
+    components: {ActivityView},
+    data:() => ({
+        email: process.env.GENERAL_EMAIL
+    })
 }
 </script>

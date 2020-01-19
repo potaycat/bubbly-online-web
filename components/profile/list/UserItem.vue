@@ -14,8 +14,6 @@
                 <p v-if="profile.reputation_point!=undefined" class="usr-blck__rep">
                     <strong>{{profile.reputation_point}}</strong> reputation
                 </p>
-                <!-- <p class="_pop">1350 members</p> -->
-                <!--p class="_description">{{ community.intro }} </p-->
             </div>
         </div>
         

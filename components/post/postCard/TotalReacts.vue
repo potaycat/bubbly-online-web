@@ -10,8 +10,8 @@
         </div>
         <!-- <span>{{total}} react{{total>1?"s":""}}</span> -->
         <span>{{ total }}</span>
-        <span v-if="replyCount!=undefined" class="p__reply-count"
-            >{{ replyCount }} comment{{total>1?"s":""}}</span>
+        <span v-if="replyCount" class="p__reply-count"
+            >{{replyCount}} comment{{replyCount>1?"s":""}}</span>
     </div>
 </template>
 
@@ -65,9 +65,9 @@ export default {
     align-items: center;
 }
 .total-reacts-ctn span {
-    font-size: 13px;
+    font-size: 12.5px;
     color: #333;
-    margin-left: 6px;
+    margin-left: 7px;
 }
 
 .emo-preview-ctn__ani {

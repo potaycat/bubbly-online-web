@@ -88,7 +88,7 @@ export default {
             this.openDiag = {
                 alert: true,
                 title: "If you believe this Community has violated Bubbly's ToS, follow these steps to report",
-                description: "Copy the Community's URL and send it to support@email.com.\nThank you for keeping Bubbly safe"
+                description: `Copy the Community's URL and send it to ${process.env.GENERAL_EMAIL}.\nThank you for keeping Bubbly safe`
             }
         },
         copyUrl() {

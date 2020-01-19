@@ -68,10 +68,8 @@ export default {
 <style>
 .FAB {
     position: fixed;
-    /* bottom: 70px; */
-    /* to work with keep-alive page transition for some reason */
-    top: calc(100vh - 80px);
     right: 20px;
+    bottom: 20px;
     border-radius: 100px;
     display: flex;
     align-items: center;
@@ -82,7 +80,7 @@ export default {
 }
 @media only screen and (max-width: 500px) {
     .--fab-top-lev {
-        top: calc(100vh - 123px);
+        bottom: 70px;
     }
 }
 
@@ -91,7 +89,7 @@ export default {
         .FAB {
             position: fixed;
             right: unset;
-            top: 465px;
+            top: 462px;
             left: 4%;
             height: 54px;
             text-align: center;

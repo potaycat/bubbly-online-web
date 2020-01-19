@@ -27,7 +27,7 @@ Vue.mixin({
                     ctx.drawImage(img, 0, 0, scaledW, scaledH)
                     ctx.canvas.toBlob(blob => {
                         const now = Date.now()
-                        const exported = new File([blob], `${input.name}_${now}_compressed.jpeg`, {
+                        const exported = new File([blob], `${input.name}_${now}cmprssd.jpeg`, {
                             type: 'image/jpeg',
                             lastModified: now
                         })

@@ -79,9 +79,8 @@ export const postFeed = {
         if (update) {
             const post = this.fetchedData.find(post => post.id == update.id)
             if (post && update.reactions) {
-                for (const field in update) {
-                    this.$set(post, field, update[field])
-                }
+                post.my_react = update.my_react
+                this.$set(post, 'reactions', update.reactions)
                 this.$store.commit('postx/LOAD_POST', null)
             }
         }

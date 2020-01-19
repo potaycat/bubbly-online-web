@@ -1,7 +1,7 @@
 <template>
     <nav :class="['bottom-nav-bar', onTop?null:'--not-top']">
         <div class="bottom-nav__btn logo" >
-            <img @click="$router.push('/home')" class="push" src="~assets/logo.png">
+            <img @click="$router.push('/home')" class="push" src="~assets/logo_full.png">
         </div>
         <div v-for="icon in topLevelDestinLs" :key="icon.toRoute"
             @click="$router.push(icon.toRoute)"
@@ -119,12 +119,9 @@ export default {
         display: flex;
     }
     .logo {
-        height: 52px;
-        width: 100%;
-        padding: 12.5px;
+        padding: 18px 0 5px 15px;
         background: none !important;
     } .logo > img {
-        width: 30px;
         height: 30px;
     }
     .nav__btn__profile > .pfp {

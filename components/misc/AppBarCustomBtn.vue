@@ -18,8 +18,8 @@ export default {
 <style>
 .app-bar-custom-actions {
     position: absolute;
-    top: 2px;
-    right: 3px;
+    top: 4px;
+    right: 4px;
     z-index: 9999999;
 }
 .app-bar-custom-actions > i {

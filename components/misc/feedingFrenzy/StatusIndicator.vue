@@ -39,6 +39,6 @@ export default {
 }
 .reached-end {
     color: #ccc;
-    font-size: 39px;
+    font-size: 31px;
 }
 </style>

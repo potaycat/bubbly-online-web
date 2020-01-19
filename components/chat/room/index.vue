@@ -263,7 +263,7 @@ export default {
 }
 #inside-chat-room .chat-bg {
     z-index: -9;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     position: absolute;
     background-size: cover;

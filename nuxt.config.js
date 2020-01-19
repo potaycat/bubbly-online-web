@@ -80,6 +80,7 @@ module.exports = {
       nativeUI: true,
       mobileApp: true,
       mobileAppIOS: true,
+      name: 'Bubbly',
       // lang: 
     },
     manifest: {

@@ -70,8 +70,10 @@ export default {
 .dtail-bar__btn {
     color: var(--primary-color);
     height: 100%;
-    min-width: 45px;
-    max-width: 45px;
+}
+.dtail-bar__btn > i {
+    width: 40px;
+    padding-top: 4px;
 }
 
 .dtail-bar__pic {
