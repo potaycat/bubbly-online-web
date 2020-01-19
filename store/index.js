@@ -1,7 +1,6 @@
 // export const strict = false
 
 export const state = () => ({
-    wsBase: 'ws://localhost:8000/',
     scrollinUp: false,
 
     hasUnreadMsg: null,

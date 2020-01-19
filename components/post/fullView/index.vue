@@ -15,7 +15,7 @@
                 </div>
             </nuxt-link>
 
-            <BubblyMarkdownParse :text="post.text" :attachments="post.attachments||post.attachments_preview.attchs" />
+            <BubblyMarkdownParse :text="post.text" :attachments="post.attachments||post.attachments_preview.atchs" />
 
             <nuxt-link :to="`/communities/${post.allocated_to.id}`" class="pf__where glow">
                 <img class="cmty_ico" :src=" post.allocated_to.icon_img">

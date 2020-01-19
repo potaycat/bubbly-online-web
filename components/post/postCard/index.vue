@@ -33,7 +33,7 @@
             <h4 class="p__title" :style="`border-color:#${allocated_to.theme_color}`">{{ post.title }}</h4>
             <p class="p__prview-txt">{{ post.text }}</p>
             <div class="p__imges">
-                <img v-for="attachment in post.attachments_preview.attchs"
+                <img v-for="attachment in post.attachments_preview.atchs"
                     :key="attachment.order"
                     :src="attachment.content"
                 />

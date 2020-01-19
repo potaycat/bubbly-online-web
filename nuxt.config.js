@@ -1,8 +1,9 @@
 const pkg = require('./package')
+require('dotenv').config()
 
 
 module.exports = {
-  mode: 'spa',
+  mode: 'spa',  
   /*
   ** Headers of the page
   */
@@ -29,6 +30,10 @@ module.exports = {
     '@/mixins/_global', // global mixin
     '@/mixins/s3upload'
   ],
+  
+  buildModules: [
+    '@nuxtjs/dotenv'
+  ],
 
   modules: [
     '@nuxtjs/axios',
@@ -38,13 +43,13 @@ module.exports = {
 
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: 'http://localhost:8000',
+    baseURL: process.env.API_URL || 'http://localhost:8000',
   },
   oneSignal: {
     cdn: true,
     async: true,
     init: {
-      appId: "4378f3a9-be31-4736-9064-f81654754711",
+      appId: process.env.ONE_SIGNAL_APP_ID,
       allowLocalhostAsSecureOrigin: true,
       welcomeNotification: {
         disable: false,

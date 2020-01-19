@@ -183,7 +183,7 @@ export default {
                 this.fullyLoaded = true
                 this.updateSeen()
             })
-        this.$connect(`${this.$store.state.wsBase}ws/chat/${this.roomId}?token=${this.$store.state.auth.jwt}`)
+        this.$connect(`${process.env.WS_BASE}/ws/chat/${this.roomId}?token=${this.$store.state.auth.jwt}`)
             this.$options.sockets.onmessage = (res) => { // collasp for easier skimming
                 const recived = JSON.parse(res.data)
                 if (recived.type == 'tpng') {

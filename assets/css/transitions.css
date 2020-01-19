@@ -2,14 +2,9 @@
 .fade-leave-active {
     transition: opacity .3s !important;
 }
-.fade-enter, .fade-leave-to,
-.slow_fade-enter, .slow_fade-leave-to {
+.fade-enter, .fade-leave-to {
     opacity: 0;
 }
-.slow_fade-enter-active {
-    transition: opacity .6s !important;
-}
-
 
 .zoom_fade-enter-active,
 .zoom_fade-leave-active {
@@ -35,7 +30,6 @@
 }
 
 
-
 .bounce_in-enter-active {
     animation: bounce-in .6s;
 }
@@ -48,7 +42,6 @@
     94% { transform: scale(0.94) }
     99% { transform: scale(1) }
 }
-
 
 
 .zoom_from_click-enter {
