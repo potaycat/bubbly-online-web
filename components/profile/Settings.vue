@@ -1,6 +1,6 @@
 <template>
     <div class="the_big_frame">
-    <div class="common_ls_cntainr --dtail-app-bar">
+    <div class="prfl-edit common_ls_cntainr --dtail-app-bar">
         <FloatingSaveButton v-if="hasUnsaved" :wait="Requesting" :color="formData.fave_color" @clicked="validateThen(finised)"/>
 
         <div class="prfl-edit__cover-pic">
@@ -117,6 +117,10 @@ export default {
 </script>
 
 <style>
+.prfl-edit {
+    padding-bottom: 100px;
+}
+
 .prfl-edit__cover-pic {
     position: relative;
     overflow: hidden;

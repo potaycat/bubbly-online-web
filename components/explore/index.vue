@@ -126,7 +126,7 @@ export default {
     font-size: 10px;
     width: 13px;
     text-align: center;
-    border-radius: 50px;
+    border-radius: 100px;
     color: white;
 }
 </style>

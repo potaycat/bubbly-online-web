@@ -72,6 +72,7 @@ export default {
 
 .react-toggle-btn {
     font-size: 20px;
+    margin: 2px 12px 0 9px;
 }
 .react-toggle-btn.react-icon--smol{
     font-size: 18px;
@@ -80,8 +81,7 @@ export default {
     font-size: 24px;
 }
 
-.reacts-ls__actions {    
-    margin-left: 6px;
+.reacts-ls__actions {
     margin-right: 100px;
     display: flex;
     align-items: center;
@@ -90,8 +90,6 @@ export default {
 }
 .cmt__reply-btn {
     font-size: 12px;
-    margin-left: 8px;
     font-weight: bold;
-
 }
 </style>

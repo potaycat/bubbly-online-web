@@ -257,13 +257,13 @@ export default {
 
 <style>
 #inside-chat-room .common_ls_cntainr {
+    height: 100%;
     padding-bottom: 44px;
-    z-index: 2; 
-    /* disable pull to refresh */
+    overscroll-behavior: contain; /* disable pull to refresh */
 }
 #inside-chat-room .chat-bg {
     z-index: -9;
-    height: 100vh;
+    height: 100%;
     width: 100%;
     position: absolute;
     background-size: cover;

@@ -7,18 +7,21 @@
             ],
             [
                 {icon: 'language', lable: 'Đổi ngôn ngữ', scndIcon: 'chevron_right', action: 'goToLanguage'},
-                {icon: 'cloud_download', lable: 'Install PWA', action: 'goToInstallInstruct'},
+                {icon: 'cloud_download', lable: 'Install app', action: 'goToInstallInstruct'},
                 enableNoti,
             ].filter(x => x),
             [
                 {icon: '_', lable: 'About and FAQs', action: 'goToFAQ', scndIcon: 'chevron_right'},
                 {icon: '_', lable: 'Legal stuff', action: 'goToLegalStuff', scndIcon: 'chevron_right'},
                 {icon: '_', lable: '🤗 Donate/Get involved', action: 'goToCntrbt', scndIcon: 'chevron_right'},
+                {icon: 'feedback', lable: 'Leave feedback', action: 'leaveFdbck'},
             ],
             [
                 {icon: '_', lable: 'Log out', action: 'performLogout', style: 'color:red'},
             ]
         ]"/>
+        <a :href="`mailto:${email}?subject=Bubbly feedback`"
+            style="display:none" ref="fdbck_mailto">{{email}}</a>
     </div>
 </template>
 
@@ -27,7 +30,8 @@ import ButtonList from '@/components/misc/ButtonList'
 export default {
     components: {ButtonList},
     data:() => ({
-        enableNoti: null
+        enableNoti: null,
+        email: process.env.GENERAL_EMAIL
     }),
     created() {
         if (this.$OneSignal) {
@@ -55,6 +59,7 @@ export default {
         goToFAQ() { this.$router.push('/docs/faq') },
         goToLegalStuff() { this.$router.push('/docs/legal') },
         goToCntrbt() { this.$router.push('/docs/contribute') },
+        leaveFdbck() { this.$refs.fdbck_mailto.click() },
 
         performLogout() {
             if (this.confirmLogOut) {

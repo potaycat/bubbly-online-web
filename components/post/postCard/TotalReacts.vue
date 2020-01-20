@@ -4,7 +4,7 @@
             <div class="emo-preview-ctn__ani" ref="emote_ctnr__ani">
                 <div v-for="(emote, index) in emotesPreview" :key="index" class="emot-ico">
                     <img v-if="emote.img_src" :src="emote.img_src">
-                    <p>{{ emote }}</p>
+                    <p v-else>{{ emote }}</p>
                 </div>
             </div>
         </div>

@@ -7,18 +7,18 @@
             <p>
                 Bubbly was made entirely by a college kid in his free time.
                 Keeping the site up and running wouldn't be possible without
-                your help.
+                your support.
             </p>
             <p>
-                Consider donating <a class="hoverline" href="">here</a>
+                Consider donating <a class="hoverline" href="#">here</a>
             </p>
+            <br>
             <p>
                 You can also help out the project by emailing
                 <a :href="`mailto:${email}?subject=I want Bubbly endorsement`"
                     class="hoverline">{{email}}</a>
             </p>
             <p style="font-family:monospace,monospace;font-size:10px">
-                <br>-----------<br>
                 // TODO<br>
                 - ranked posts (sort by hotness)<br>
                 - password reset sequence<br>

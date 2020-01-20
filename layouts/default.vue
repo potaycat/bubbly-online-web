@@ -90,19 +90,21 @@ export default {
         position: relative;
     }
     
-    ::-webkit-scrollbar {
-        width: 8px;
-        background-color: #f5f5f5;
-        transition: .2s;
-        border-radius: 10px;
-    }
-    ::-webkit-scrollbar-thumb {
-        border-radius: 10px;
-        background-color: #ddd;
-    }::-webkit-scrollbar-thumb:hover {
-        background-color: #ccc;
-    }::-webkit-scrollbar-thumb:active {
-        background-color: #bbb;
+    @media (hover: hover) {
+        ::-webkit-scrollbar {
+            width: 8px;
+            background-color: #f5f5f5;
+            transition: .2s;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: #ddd;
+        }::-webkit-scrollbar-thumb:hover {
+            background-color: #ccc;
+        }::-webkit-scrollbar-thumb:active {
+            background-color: #bbb;
+        }
     }
 }
 /* TODO refactor */

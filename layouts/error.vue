@@ -1,5 +1,5 @@
 <template>
-    <div class="err__container">
+    <div class="err__container the_big_frame">
         <h1 v-if="error.statusCode === 404">
             Page not found
         </h1>
@@ -26,7 +26,6 @@ export default {
 
 <style scoped>
 .err__container {
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;

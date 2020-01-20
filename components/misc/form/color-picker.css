@@ -5,7 +5,7 @@
     flex-wrap: wrap;
 }
 .form__color-picker-wrapper > strong {
-    margin-right: 30px;
+    margin-right: 25px;
 }
 .form__color-picker-wrapper input {
     flex-grow: 1;

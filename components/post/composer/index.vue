@@ -157,7 +157,8 @@ export default {
                 const data = {
                     attachments: attchArr,
                     text: this.body,
-                    title: this.title
+                    title: this.title,
+                    is_nsfw: this.isNsfw,
                 }
                 Object.keys(data).forEach((key)=> !data[key] &&delete data[key])
                 this.$axios.post(
@@ -249,9 +250,9 @@ export default {
 
 
 .post-editor-ctnr .pstedit__toolbar {
-    position: fixed;
-    height: 40px;
-    top: calc(100vh - 40px);
+    position: absolute;
+    height: 42px;
+    bottom: 0;
     z-index: 9;
     width: 100%;
     display: flex;
@@ -259,13 +260,13 @@ export default {
 .toolbar__btn {
     color: var(--primary-color);
     height: 100%;
-    min-width: 55px;
+    min-width: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .--file-btn + .toolbar__btn {
-    margin-left: 55px;
+    margin-left: 60px;
 }
 .--nsfw-btn--off {
     color: var(--primary-color-reduced-opacity);

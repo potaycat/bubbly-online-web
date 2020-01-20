@@ -159,15 +159,15 @@ export default {
 
 .nsfw-post {
     color: red;
-    border: solid 1.5px red;
+    border: solid 1.2px red;
     display: inline;
-    padding: 0 5px;
+    padding: 0 4px;
     border-radius: 3px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 10px;
 }
 .nsfw-post + .post__content img {
-    filter: blur(40px)
+    filter: blur(50px)
 }
 
 .post__content .p__title {
@@ -184,6 +184,7 @@ export default {
 .p__imges { 
     /* width: auto; */
     margin: 0 -10px -4px -10px;
+    overflow: hidden;
 }
 .p__imges img {
     margin-top: 2px;

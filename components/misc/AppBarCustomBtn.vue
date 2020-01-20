@@ -23,6 +23,7 @@ export default {
     z-index: 9999999;
 }
 .app-bar-custom-actions > i {
+    border-radius: 100px;
     padding: 12px;
     color: var(--primary-color);
 }

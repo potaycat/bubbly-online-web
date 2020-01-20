@@ -1,7 +1,8 @@
 <template>
     <nav :class="['bottom-nav-bar', onTop?null:'--not-top']">
         <div class="bottom-nav__btn logo" >
-            <img @click="$router.push('/home')" class="push" src="~assets/logo_full.png">
+            <img @click="$router.push('/home')" class="push"
+                :src="require(smolScreen?'static/icon.png':'assets/logo_full.png')">
         </div>
         <div v-for="icon in topLevelDestinLs" :key="icon.toRoute"
             @click="$router.push(icon.toRoute)"
@@ -56,6 +57,9 @@ export default {
         ]
     }),
     computed: {
+        smolScreen() {
+            return window.innerWidth < 1200
+        },
         onTop() {
             return ['home', 'explore', 'communities', 'chat', 'notifications'].includes(this.$route.name)
         },
@@ -119,7 +123,7 @@ export default {
         display: flex;
     }
     .logo {
-        padding: 18px 0 5px 15px;
+        padding: 14px 0 5px 15px;
         background: none !important;
     } .logo > img {
         height: 30px;
@@ -156,10 +160,12 @@ export default {
         background-size: 230%;
         background-position: right bottom;
     }
-    .bottom-nav__btn:hover {
-        background-position: left bottom;
-        background: #777;
-        transition: .15s;
+    @media (hover: hover) {
+        .bottom-nav__btn:hover {
+            background-position: left bottom;
+            background: #777;
+            transition: .15s;
+        }
     }
 }
 @media only screen and (min-width: 1200px) {

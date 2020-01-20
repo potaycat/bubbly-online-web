@@ -89,7 +89,7 @@ export default {
         .FAB {
             position: fixed;
             right: unset;
-            top: 462px;
+            top: 450px;
             left: 4%;
             height: 54px;
             text-align: center;
