@@ -145,20 +145,23 @@ export default {
                         this.fetch()
                     }
                 }
-                if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop <= 200) { // +57 is for hiding url bar
+                if (this.autoScrllng) return
+                if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop <= 100) { // +57 for hiding url bar
                     if (!this.atBottom) this.atBottom = true
                 } else if (this.atBottom) this.atBottom = false
             }, {capture: true, passive: true})
         },
         scroll2Bottom() {
             this.atBottom = true
+            this.autoScrllng = true
+            setTimeout(() => { this.autoScrllng = false }, 1000)
             const ctnr = this.$refs.scrollCtn
-            if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop > 500 || !ctnr.scrollTo) {
+            if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop > 4000 || !ctnr.scrollTo) {
                 ctnr.scrollTop = ctnr.scrollHeight
             } else {
                 ctnr.scrollTo({
                     top: ctnr.scrollHeight,
-                    behavior: this.fetchedData.length<31?'smooth':null
+                    behavior: 'smooth'
                 })
             }
         },
@@ -241,7 +244,8 @@ export default {
             }
     },
     mounted() {
-        this.scroll2Bottom()
+        const ctnr = this.$refs.scrollCtn
+        ctnr.scrollTop = ctnr.scrollHeight
         window.addEventListener('resize', () => {
             if (this.atBottom) this.scroll2Bottom()
         })
@@ -256,8 +260,14 @@ export default {
 </script>
 
 <style>
-#inside-chat-room .common_ls_cntainr {
+#inside-chat-room {
+    height: 100vh;
+}
+#inside-chat-room .the_big_frame{
     height: 100%;
+    position: absolute;
+}
+#inside-chat-room .common_ls_cntainr {
     padding-bottom: 44px;
     overscroll-behavior: contain; /* disable pull to refresh */
 }

@@ -19,7 +19,7 @@ function timestamp_time(d) {
 
 Vue.filter('timeAgo', value => {
     const ago = new Date(value)
-    const delta = new Date() - ago
+    const delta = Date.now() - ago
     const sec_num = delta / 1000
     const days = Math.floor(sec_num / 86400)
     if (days>0 && days<=7) {
@@ -42,7 +42,7 @@ Vue.filter('timeAgo', value => {
 
 Vue.filter('tiemstamp', value => {
     const d = new Date(value)
-    if (new Date() - d < 86400000) {
+    if (Date.now() - d < 86400000) {
         return timestamp_time(d)
     }
     return timestamp_date(d)+", "+timestamp_time(d)
@@ -50,7 +50,7 @@ Vue.filter('tiemstamp', value => {
 
 Vue.filter('tiemstamp2', value => {
     const d = new Date(value)
-    if (new Date() - d < 86400000) {
+    if (Date.now() - d < 86400000) {
         return timestamp_time(d)
     }
     return timestamp_date(d)

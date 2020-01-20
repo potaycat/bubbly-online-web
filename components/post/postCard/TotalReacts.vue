@@ -91,7 +91,7 @@ export default {
 }
 .emot-ico > img{
     height: 100%;
-    width: 100%;
+    min-width: 100%;
 }
 @keyframes slide {
     5%, 25% {

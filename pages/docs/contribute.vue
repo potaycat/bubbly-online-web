@@ -12,7 +12,6 @@
             <p>
                 Consider donating <a class="hoverline" href="#">here</a>
             </p>
-            <br>
             <p>
                 You can also help out the project by emailing
                 <a :href="`mailto:${email}?subject=I want Bubbly endorsement`"
@@ -26,7 +25,7 @@
                 - VIP accounts<br>
                 - OAuth login with Facebook/Google<br>
                 - async database<br>
-                - scalable database (most chalenging)<br>
+                - scalable database (most challenging)<br>
                 - ...<br>
             </p>
         </section>

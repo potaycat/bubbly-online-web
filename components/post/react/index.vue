@@ -72,7 +72,7 @@ export default {
 
 .react-toggle-btn {
     font-size: 20px;
-    margin: 2px 12px 0 9px;
+    margin: 1px 12px 0 9px;
 }
 .react-toggle-btn.react-icon--smol{
     font-size: 18px;

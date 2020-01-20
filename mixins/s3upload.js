@@ -27,7 +27,8 @@ Vue.mixin({
                     ctx.drawImage(img, 0, 0, scaledW, scaledH)
                     ctx.canvas.toBlob(blob => {
                         const now = Date.now()
-                        const exported = new File([blob], `${input.name}_${now}cmprssd.jpeg`, {
+                        const exported = new File([blob],
+                            `${input.name.substr(0,8)}_${now}@bubblysocial.com.jpeg`, {
                             type: 'image/jpeg',
                             lastModified: now
                         })
@@ -54,11 +55,11 @@ Vue.mixin({
                     }
                     postData.append('file', file)
 
-                    const proxyurl = "https://cors-anywhere.herokuapp.com/"
+                    // const proxyurl = "https://cors-anywhere.herokuapp.com/"
                     const s3Url = toPost.url.replace("s3.amazonaws", "s3.ap-east-1.amazonaws") // bruh
                     this.$axios.post(s3Url, postData)
                         .then(res => {
-                            callback(res.headers.location || s3Url+"pblcly_rdable/"+file.name)
+                            callback(res.headers.location || s3Url+"pu/"+file.name)
                         })
                 })
         },
