@@ -23,7 +23,6 @@
                 - password reset sequence<br>
                 - multilang<br>
                 - VIP accounts<br>
-                - OAuth login with Facebook/Google<br>
                 - async database<br>
                 - scalable database (most challenging)<br>
                 - ...<br>

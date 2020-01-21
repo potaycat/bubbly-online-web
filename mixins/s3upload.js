@@ -47,14 +47,15 @@ Vue.mixin({
                 this.$store.state.auth.head
             )
                 .then(res => {
-                    const toPost = res.data.presigned
+                    const toPost = res.data
 
                     let postData = new FormData()
                     for (const key in toPost.fields) {
                         postData.append(key, toPost.fields[key])
                     }
+                    postData.append('Content-Type', file.type)
+                    postData.append('Cache-Control', 'max-age=604800')
                     postData.append('file', file)
-
                     // const proxyurl = "https://cors-anywhere.herokuapp.com/"
                     const s3Url = toPost.url.replace("s3.amazonaws", "s3.ap-east-1.amazonaws") // bruh
                     this.$axios.post(s3Url, postData)
@@ -63,17 +64,18 @@ Vue.mixin({
                         })
                 })
         },
-        batchCompressUpload(fileList, callback, index=0, sittingOnCloud=[]) {
-            if (index+1 > fileList.length) {
-                callback(sittingOnCloud)
-            } else {
-                this.compress(fileList[index], compressed => {
-                    this.performUpload(compressed, uploadedUrl => {
-                        sittingOnCloud.push(uploadedUrl)
-                        this.batchCompressUpload(fileList, callback, index+1, sittingOnCloud)
+        batchCompressUpload(fileList, callback) {
+            let sittingOnCloud = []
+            fileList.forEach((file, index) => {
+                this.compress(file, compressed => {
+                    this.performUpload(compressed, url => {
+                        sittingOnCloud.push(url)
+                        if (fileList.length == index+1) {
+                            callback(sittingOnCloud)
+                        }
                     })
                 })
-            }
+            })
         }
     },
 })

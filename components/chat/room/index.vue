@@ -24,7 +24,7 @@
                 
                 <div ref="sndBxLev" style="transition:.2s"/>
             </div>
-            <transition name="just_slide_up" >
+            <transition name="fade">
                 <button class="chat__s2b-btn shiny-white-bg box-shadow-2 nopaque --lite" v-if="!atBottom"
                     @click="scroll2Bottom">Jump to present</button>
             </transition>
@@ -244,6 +244,7 @@ export default {
             }
     },
     mounted() {
+        document.body.style['overscroll-behavior'] = 'contain'
         const ctnr = this.$refs.scrollCtn
         ctnr.scrollTop = ctnr.scrollHeight
         window.addEventListener('resize', () => {
@@ -251,6 +252,7 @@ export default {
         })
     },
     beforeDestroy() {
+        document.body.style['overscroll-behavior'] = 'auto'
         this.updateSeen()
         this.$disconnect()
         this.$store.commit('chatx/LOAD_THREAD', null)
@@ -263,7 +265,8 @@ export default {
 #inside-chat-room {
     height: 100vh;
 }
-#inside-chat-room .the_big_frame{
+#inside-chat-room .the_big_frame,
+#inside-chat-room .chat-bg {
     height: 100%;
     position: absolute;
 }
@@ -273,9 +276,7 @@ export default {
 }
 #inside-chat-room .chat-bg {
     z-index: -9;
-    height: 100%;
     width: 100%;
-    position: absolute;
     background-size: cover;
     background-repeat: no-repeat;
     transition: background;
@@ -302,13 +303,5 @@ export default {
     color: var(--primary-color);
     z-index: 5;
     word-spacing: 0;
-}
-.just_slide_up-enter-active,
-.just_slide_up-leave-active {
-    transition: .3s;
-}
-.just_slide_up-enter,
-.just_slide_up-leave-to { /* .fade-leave-active below version 2.1.8 */
-    margin-bottom: -40px;
 }
 </style>

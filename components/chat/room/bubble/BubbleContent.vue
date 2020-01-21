@@ -97,6 +97,7 @@ export default {
 }
 .msg-ct--img-ctn .total_darkness {
     border-radius: 20px;
+    z-index: 2;
 }
 
 .msg-ct--img-ctn.--emote-ctn > img {

@@ -67,12 +67,13 @@ export default {
 .total-reacts-ctn span {
     font-size: 12.5px;
     color: #333;
-    margin-left: 7px;
+    margin-left: 8px;
 }
 
 .emo-preview-ctn__ani {
     display: flex;
     width: 60px;
+    padding-left: 2px;
     transform: translateX(-60px);
     animation: slide 24s infinite
 }
