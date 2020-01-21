@@ -1,11 +1,5 @@
 import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 
-function logInToDoThat(app) {
-    if (!app.$store.getters['auth/loggedIn']) {
-        app.$router.push('/auth/register?next=')
-    }
-}
-
 export const performFollow = {
     mixins: [inputDiag],
     methods: {
@@ -34,7 +28,7 @@ export const performFollow = {
                 this.$store.state.auth.head
             )
                 .catch(error => {
-                    logInToDoThat(this)
+                    this.$store.dispatch("auth/logInToDoThat")
                     this.onFollowFailHandle(error)
                 })
         },
@@ -101,7 +95,7 @@ export const performJoin = {
                         this.onJoinHandle(res.data)
                     })
                     .catch(err => {
-                        logInToDoThat(this)
+                        this.$store.dispatch("auth/logInToDoThat")
                     })
             } else {
                 this.confirmJoinWithCode()
@@ -163,7 +157,7 @@ export const performToPrivate = {
                     }
                 })
                 .catch(err => {
-                    logInToDoThat(this)
+                    this.$store.dispatch("auth/logInToDoThat")
                 })
         },
         performToPrivate() {
@@ -176,7 +170,7 @@ export const performToPrivate = {
                     this.$store.dispatch("chatx/toChat", res.data)
                 })
                 .catch(err => {
-                    logInToDoThat(this)
+                    this.$store.dispatch("auth/logInToDoThat")
                 })
         },
 

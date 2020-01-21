@@ -32,7 +32,8 @@ export const sendingHandler = {
 
         },
         outBoxing(input) {
-            if (this.uploading) return
+            const notLoggedIn = this.$store.dispatch("auth/logInToDoThat")
+            if (this.uploading || notLoggedIn) return
             this.uploading = true
             this.batchCompressUpload(this.attachmentList, uploadedUrls => {
                 let url = ""

@@ -35,6 +35,7 @@ export const actions = {
         if (!getters.loggedIn) {
             commit('LOG_IN_TO', this.$router.currentRoute.fullPath)
             this.$router.push('/auth/register')
+            return true
         }
     },
     login({state, commit}, credential) {
