@@ -60,19 +60,20 @@ Vue.mixin({
                     const s3Url = toPost.url.replace("s3.amazonaws", "s3.ap-east-1.amazonaws") // bruh
                     this.$axios.post(s3Url, postData)
                         .then(res => {
-                            callback(res.headers.location || s3Url+"pu/"+file.name)
+                            callback(res.headers.location)
                         })
                 })
         },
         batchCompressUpload(fileList, callback) {
             let sittingOnCloud = []
+            if (!fileList.length)
+                callback(sittingOnCloud)
             fileList.forEach((file, index) => {
                 this.compress(file, compressed => {
                     this.performUpload(compressed, url => {
                         sittingOnCloud.push(url)
-                        if (fileList.length == index+1) {
+                        if (fileList.length == index+1)
                             callback(sittingOnCloud)
-                        }
                     })
                 })
             })

@@ -295,13 +295,13 @@ export default {
 
 .chat__s2b-btn {
     border-radius: 100px 100px 50px 50px ;
-    position: absolute; bottom: 60px;
+    position: absolute;
+    bottom: 59px;
     left: 50%;
     transform: translateX(-50%);
     padding: 4px 8px;
     font-size: 12px;
     color: var(--primary-color);
     z-index: 5;
-    word-spacing: 0;
 }
 </style>

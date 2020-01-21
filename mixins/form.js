@@ -54,7 +54,7 @@ export const formValidate = {
                         g = (rgb >> 8) & 0xff,
                         b = (rgb >> 0) & 0xff,
                         luma = 0.2126*r + 0.7152*g + 0.0722*b // Rec. 709
-                    return luma < 220
+                    return luma < 240
                 },
                 onFailWarn: "Try a different color that isn't too bright"
             },
