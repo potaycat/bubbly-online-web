@@ -1,5 +1,5 @@
 <template>
-    <nav :class="['bottom-nav-bar', onTop?null:'--not-top']">
+    <nav :class="['bottom-nav-bar', onTop||!$store.getters['auth/loggedIn']?null:'--not-top']">
         <div class="bottom-nav__btn logo" >
             <img @click="$router.push('/home')" class="push"
                 :src="require(smolScreen?'static/icon.png':'assets/logo_full.png')">
