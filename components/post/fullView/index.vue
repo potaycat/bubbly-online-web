@@ -47,7 +47,7 @@
         </div>
         <Dropdown v-if="moring" :options="hamburgerOptions" />
         <InputDialog v-if="openDiag" :toDisplay="openDiag" />
-        <Share v-if="sharing" :touchPos="touchPos" :postId="post.id" :postTitle="post.title"/>
+        <Share v-if="sharing" :touchPos="touchPos" :post="post"/>
     </div>
 </transition>
 </template>

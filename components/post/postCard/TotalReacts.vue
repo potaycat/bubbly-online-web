@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 export default {
     props: [
         'total',
@@ -24,14 +23,11 @@ export default {
         'replyCount',
     ],
     // const: {
-        defaultList: ["😢","👍","🤣","😲","😡"],
+        defaultList: ["😢","👍","😆","😲","😡"],
     // }
     computed: {
-        ...mapGetters({
-            emotesByCmty: 'reactionx/emotesByCmty',
-        }),
         emotesPreview() {
-            let emoArr = this.emotesByCmty(this.communityId)
+            let emoArr = this.$store.getters['reactionx/emotesByCmty'](this.communityId)
             const len = emoArr.length
             if (len < 6) {
                 emoArr = [

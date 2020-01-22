@@ -2,7 +2,7 @@
     <div>
         <Users ref="reactors" class="side-bar__item"
             title="People reacted to this post"
-            :toFetch="`posts/${$route.params.slug}/reacts/`"
+            :toFetch="`posts/${$route.params.postId}/reacts/`"
         />
     </div>
 </template>

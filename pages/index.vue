@@ -12,10 +12,12 @@
                 <img class="inline-logo" src="~assets/logo_full.png">
             </h2>
             <div class="links">
-                <Button class="auth-form__btn" style="margin-right:10px"
+                <Button class="frst__btn"
                     text="Login" @clicked="$router.push('/auth/login')" />
-                <Button class="auth-form__btn" 
-                    text="Register" @clicked="$router.push('/auth/register')" fill />
+                <Button class="frst__btn"
+                    text="Register" @clicked="$router.push('/auth/register')" fill/>
+                <br><Button class="frst__btn" :padding="['6px', '30px']"
+                    text="Explore" @clicked="$router.push('/explore')"/>
             </div>
         </section>
         <section class="about">
@@ -48,7 +50,7 @@ export default {
     top: 5px;
     transform:translateX(-50%);
     overflow: hidden;
-    height: 120px;
+    height: 100px;
     width: calc(100vw - 12px);
     border-radius: 20px;
     border-bottom-left-radius: 50% 20%;
@@ -89,18 +91,22 @@ export default {
     padding-top: 15px;
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
+}
+.frst__btn {
+    min-width: 100px;
+}
+.frst__btn:first-child {
+    margin-right: 15px;
+}
+.frst__btn:last-child {
+    margin: 15px 30%;
+    width: 100%;
 }
 
 .about {
     padding: 0 20px;
     color: #333;
-}
-.wavy.about {
-background: #ee55a4;
-    top: unset;
-    left: 0;
-    right: 0;
-    border-radius: 0;
 }
 </style>

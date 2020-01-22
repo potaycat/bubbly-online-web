@@ -60,7 +60,7 @@ import { comment, pinboard } from './typed'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
 import BubblyMarkdownParse from '../mdParse'
 import Spinner from '@/components/misc/Spinner'
-import { formValidate } from '@/mixins/formValidate'
+import { formValidate } from '@/mixins/form_OLD'
 
 export default {
     components: {

@@ -28,10 +28,8 @@ export default {
     },
     methods: {
         simulateDisableKeepAlive() {
-            if (this.fetchedData.length) {
-                this.fetchedData = []
-                this.firstFetch()
-            }
+            this.fetchedData = []
+            this.firstFetch()
         }
     }
 }

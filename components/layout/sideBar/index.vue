@@ -25,7 +25,7 @@ export default {
                     return 'generic'
                 case 'communities-id':
                     return 'cmtymembers'
-                case 'post-slug':
+                case 'post-postId-slug':
                     return 'postreactors'
                 default:
                     return ''

@@ -40,7 +40,7 @@ export default {
             } return ''
         },
         feedUrl() {
-            return `posts/${this.$route.params.slug}/reacts/?emote=${this.currentEmote}&`
+            return `posts/${this.$route.params.postId}/reacts/?emote=${this.currentEmote}&`
         },
         nameLs() {
             const obj = this.reactsAggregate            
@@ -57,8 +57,7 @@ export default {
     },
     created() {
         this.$axios.get(
-            // `reacts/${this.$route.params.slug}`,
-            `posts/${this.$route.query.comment==1?'comment/':''}${this.$route.params.slug}`,
+            `posts/${this.$route.query.comment==1?'comment/':''}${this.$route.params.postId}`,
             this.$store.state.auth.head
         )
             .then(res => {

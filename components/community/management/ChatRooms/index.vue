@@ -15,12 +15,11 @@
         <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
             headsup="It's empty. Too empty"/>
             
-        <FAB @clicked="confirmNewChat"
+        <FAB @clicked="makeNewChat"
             v-if="isAdmin"
             icon= "add"
             actionName= "Create new public chat"
         />
-        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </template>
 
@@ -28,33 +27,29 @@
 import { feedingFrenzy, refreshFrenzy } from '@/mixins/feedingFrenzy'
 import ChatItem from './ChatItem'
 import FAB from '@/components/misc/FAB'
-import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 
 export default {
     components: { ChatItem, FAB },
-    mixins: [feedingFrenzy, refreshFrenzy, inputDiag],
+    mixins: [feedingFrenzy, refreshFrenzy],
     props: ['community', 'isAdmin'],
     data() {return {
         feedUrl: `communities/${this.community.id}/public-rooms/`,
     }},
     methods: {
-        confirmNewChat() {
-            this.openDiag = {
+        makeNewChat() {
+            this.$store.dispatch("cpntCtrl/inputDiag/openDiag", {
                 title: "New public chat room",
                 input_desc: "Enter description"
-            }
-            this.diagHndlFun = this.performNewChat
-        },
-        performNewChat(val) {
-            this.$axios.post(
-                `moderation/${this.community.id}/chat`,
-                {description: val},
-                this.$store.state.auth.head
-            )
+            })
+            .then(input => {
+                this.$axios.post(`moderation/${this.community.id}/chat`,
+                    { description: input }, this.$store.state.auth.head
+                )
                 .then(res => {
                     this.firstFetch()
                 })
-        }
+            })
+        },
     }
 };
 </script>

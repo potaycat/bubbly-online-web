@@ -1,6 +1,7 @@
 <template>
 <transition name="fade" appear >
     <div class="total_darkness no-bg" @click.self="$emit('close')">
+        <!-- TODO refactor transition tags -->
         <transition name="zoom_from_click" appear @enter="enter" >
             <div class="prfl-peak shiny-white-bg box-shadow-3" ref="drpdwn">
                 <img class="pfp" :src="profile.profile_pic" />
@@ -18,20 +19,18 @@
                 </div>
             </div>
         </transition>
-        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </transition>
 </template>
 
 <script>
 import Button from '@/components/misc/Button'
-import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 import { performToPrivate } from '@/mixins/performFollow'
 import { child } from '@/mixins/fancyTransition/zoom_from_click'
 
 export default {
-    components: {Button},
-    mixins: [inputDiag, performToPrivate, child],
+    components: { Button },
+    mixins: [ performToPrivate, child ],
     props: ['profile', 'threadInfo'],
     computed: {
         isAdmin() {

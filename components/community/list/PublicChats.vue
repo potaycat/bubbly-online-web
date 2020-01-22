@@ -34,9 +34,15 @@ export default {
     },
     methods: {
         goToPublic(room) {
-            if (['moderator','administrator','member'].includes((this.community.membership_info ||{}).role)) {
-                this.$store.dispatch('chatx/toChat', room)
+            if (!['moderator','administrator','member']
+                .includes((this.community.membership_info||{}).role)) {
+                this.$store.dispatch("cpntCtrl/inputDiag/openDiag", {
+                    alert: true,
+                    title: "You must join the community first",
+                })
+                return
             }
+            this.$store.dispatch('chatx/toChat', room)
         }
     }
 }

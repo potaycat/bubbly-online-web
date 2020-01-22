@@ -56,19 +56,14 @@ import { sendingHandler } from './sendBox/sendingHandler'
 import Spinner from '@/components/misc/Spinner'
 
 export default {
-    components: {
-        Bubble,
-        PeepTyping,
-        ChatInfo,
-        Spinner
-    },
+    components: { Bubble, PeepTyping, ChatInfo, Spinner },
     mixins: [feedingFrenzy, profilePeak, sendingHandler],
     data() {
         return {
             typing: [],
             atBottom: true,
             fullyLoaded: false,
-            roomId: this.$route.query.room || this.$route.params.id || this.threadInfo.id,
+            roomId: this.$route.query.room || this.$route.params.roomId || this.threadInfo.id,
         }
     },
     // consts: {
@@ -146,7 +141,7 @@ export default {
                     }
                 }
                 if (this.autoScrllng) return
-                if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop <= 100) { // +57 for hiding url bar
+                if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop <= 100) { // 57+ for hiding url bar
                     if (!this.atBottom) this.atBottom = true
                 } else if (this.atBottom) this.atBottom = false
             }, {capture: true, passive: true})
@@ -156,7 +151,8 @@ export default {
             this.autoScrllng = true
             setTimeout(() => { this.autoScrllng = false }, 1000)
             const ctnr = this.$refs.scrollCtn
-            if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop > 4000 || !ctnr.scrollTo) {
+            if (ctnr.scrollHeight-ctnr.clientHeight-ctnr.scrollTop > 4000 ||
+                this.fetchedData.length <= 30 || !ctnr.scrollTo) {
                 ctnr.scrollTop = ctnr.scrollHeight
             } else {
                 ctnr.scrollTo({

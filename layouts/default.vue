@@ -13,6 +13,7 @@
             <Nuxt class="layout__content" keep-alive />
         </transition>
         <SideBar v-if="wideEnough" />
+        <InputDiag />
     </div>
 </template>
 
@@ -20,16 +21,19 @@
 // I leave init codes here
 import TopLvlNavigator from "@/components/layout/bars/TopLvlNavigator"
 import SideBar from "@/components/layout/sideBar/"
+import InputDiag from '@/components/misc/InputDiagGX'
 export default {
-    components: {TopLvlNavigator, SideBar},
+    components: { TopLvlNavigator, SideBar, InputDiag },
     data:() => ({
         transitionName: null,
-        wideEnough: window.innerWidth > 1000,
 
         history: [],
         currentHistory: ''
     }),
     computed: {
+        wideEnough() {
+            return window.innerWidth > 1000 // not reactive
+        },
         userDef() {
             return this.$store.state.auth.my_profile.fave_color || 'ee981e'
         },

@@ -49,34 +49,3 @@ export default {
     },
 }
 </script>
-
-<style>
-.total_darkness #diag-box {
-    border-radius: 15px;
-    width: 320px;
-    /* background: rgba(255, 255, 255, 0.9); */
-}
-
-#diag-box .diag__title{
-    font-weight: bold;
-    font-size: 18px;
-    margin: 18px 18px 15px 18px;
-}
-#diag-box .diag__content{
-    margin: 0 18px;
-}
-#diag-box .diag__btn-ls{
-  direction: rtl;
-    margin: 18px 9px 9px 18px;
-}
-.diag__btn-ls button{
-    font-weight: bold;
-    font-size: 15px;
-    padding: 12px;
-    color: var(--primary-color);
-    border-style: none;
-    border-radius: 3px;
-    margin: 0 8px 0 0;
-}
-
-</style>

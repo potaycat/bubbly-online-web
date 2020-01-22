@@ -23,7 +23,7 @@
 <script>
 import ActivityView from '@/components/layout/ActivityView'
 import AppBarCustomBtn from '@/components/misc/AppBarCustomBtn'
-import { formValidate } from '@/mixins/formValidate'
+import { formValidate } from '@/mixins/form_OLD'
 export default {
     meta: {
         useAppBar: true,

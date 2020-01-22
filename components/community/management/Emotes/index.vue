@@ -12,14 +12,14 @@
         <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
             headsup="It's empty. Too empty"/>
 
-        <FAB @clicked="confirmNewEmote"
+        <FAB @clicked="chooseNewEmo"
             v-if="isAdmin"
             icon= "add"
             actionName= "Upload new emote"
         />
-        <input type="file" accept="image/*" @change="confirmUploadEmo" ref="img_input" style="display:none">
-        <img v-if="openDiag&&toUploadPreview" :src="toUploadPreview" class="preview-b4-upload">
-        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
+        <input type="file" accept="image/*" @change="confirmUpload" ref="img_input" style="display:none">
+        <img v-if="$store.state.cpntCtrl.inputDiag.diag && toUploadPreview"
+            :src="toUploadPreview" class="preview-b4-upload">
     </div>
 </template>
 
@@ -27,11 +27,10 @@
 import { feedingFrenzy } from '@/mixins/feedingFrenzy'
 import EmoteItem from './EmoteItem'
 import FAB from '@/components/misc/FAB'
-import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 
 export default {
     components: { EmoteItem, FAB },
-    mixins: [feedingFrenzy, inputDiag],
+    mixins: [ feedingFrenzy ],
     props: ['community', 'isAdmin'],
     data() {return {
         feedUrl: `communities/${this.community.id}/icons/`,
@@ -40,34 +39,33 @@ export default {
         toUploadPreview: null
     }},
     methods: {
-        confirmNewEmote() {
+        chooseNewEmo() {
             this.$refs.img_input.click()
         },
-        confirmUploadEmo(evt) {
+        confirmUpload(evt) {
             const file = evt.target.files[0]
-            this.$refs.img_input.value=null
+            this.$refs.img_input.value = null
             this.compress(file, output => {
                 this.toUpload = output
                 this.toUploadPreview = URL.createObjectURL(output)
-                this.openDiag = {
+                this.$store.dispatch("cpntCtrl/inputDiag/openDiag", {
                     title: "Confirm upload",
                     description: "You can have a maximum of 20 active emotes",
-                    input_desc: "Name this emote",
-                    hndlFun: this.performUploadEmo
-                }
+                    input_desc: "Name this emote"
+                })
+                .then(input => {
+                    this.performUpload(this.toUpload, uploaded => {
+                        this.$axios.post(`/moderation/${this.community.id}/icons`, {
+                            img_src: uploaded,
+                            name: input
+                        }, this.$store.state.auth.head)
+                        .then(res => {
+                            this.firstFetch()
+                        })
+                    })
+                })
             })
         },
-        performUploadEmo(name) {
-            this.performUpload(this.toUpload, uploaded => {
-                this.$axios.post(`/moderation/${this.community.id}/icons`, {
-                    img_src: uploaded,
-                    name: name
-                }, this.$store.state.auth.head)
-                    .then(res => {
-                        this.firstFetch()
-                    })
-            })
-        }
     }
 };
 </script>

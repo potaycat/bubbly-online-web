@@ -15,12 +15,11 @@
         <StatusIndicator :isFetching="loading4More" :listLen="fetchedData.length"
             headsup="It's empty. Too empty"/>
             
-        <FAB @clicked="confirmNewChat"
+        <FAB @clicked="$router.push(`/post/compose?to=${community.id}&type=pinboard`)"
             v-if="isAdmin"
             icon= "add"
             actionName= "Create new pinned post"
         />
-        <InputDialog v-if="openDiag" :toDisplay="openDiag"/>
     </div>
 </template>
 
@@ -28,33 +27,13 @@
 import { feedingFrenzy, refreshFrenzy } from '@/mixins/feedingFrenzy'
 import PostItem from './PostItem'
 import FAB from '@/components/misc/FAB'
-import { inputDiag } from '@/mixins/cmpnentsCtrl/inputDiag'
 
 export default {
     components: { PostItem, FAB },
-    mixins: [feedingFrenzy, refreshFrenzy, inputDiag],
+    mixins: [ feedingFrenzy, refreshFrenzy ],
     props: ['community', 'isAdmin'],
     data() {return {
         feedUrl: `communities/${this.community.id}/anouncements/`,
     }},
-    methods: {
-        confirmNewChat() {
-            this.openDiag = {
-                title: "New public chat room",
-                input_desc: "Enter description",
-                hndlFun: this.performNewChat
-            }
-        },
-        performNewChat(val) {
-            this.$axios.post(
-                `moderation/${this.community.id}/chat`,
-                {description: val},
-                this.$store.state.auth.head
-            )
-                .then(res => {
-                    this.firstFetch()
-                })
-        }
-    }
 };
 </script>
