@@ -41,8 +41,8 @@ export default {
             return (this.post.title ? this.post.title+" -" : "From") + " Bubbly"
         },
         postLink() {
-            // return `${window.location.origin}/post/${this.post.id}/${this.post.slug||""}`
-            return `${window.location.origin}/post/${this.post.slug||this.post.id}`
+            // return `${window.location.origin}/post/${this.post.slug||this.post.id}`
+            return `${window.location.origin}/post/${this.post.id}/${this.post.slug||""}`
         },
         moreSharingoption() {
             if (navigator.share) { // Web Share API
