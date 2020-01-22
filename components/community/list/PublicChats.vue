@@ -4,7 +4,7 @@
             class="c-p-room box-shadow-2 bg lift"
             @click="goToPublic(room)"
             :key="room.id"
-            :style="`background:url(${room.bg_img || community.cover_img}) center`"
+            :style="`background:${room.bg_img?`url(${room.bg_img})`:'#'+community.theme_color} center`"
         >
             <div class="text-info">
                 <div class="name">{{ room.name || `Chat #${room.order}` }}</div>

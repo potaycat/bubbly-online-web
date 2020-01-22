@@ -78,10 +78,15 @@ export default {
             if (this.threadInfo.bg_img) {
                 return `url(${this.threadInfo.bg_img})`
             }
+            const uwu = this.threadInfo.room_type_data
+            if (this.threadInfo.room_type == 'public') {
+                return "#"+uwu.community.theme_color
+            }
             if (this.threadInfo.room_type == 'direct') {
                 return `linear-gradient(${this.$options.randomDeg
-                    }deg, #${this.$store.state.auth.my_profile.fave_color}, #${this.threadInfo.room_type_data.fave_color})`
-            } return "#fefefe"
+                    }deg, #${this.$store.state.auth.my_profile.fave_color}, #${uwu.fave_color})`
+            }
+            return "#fefefe"
         },
         roomTitle() {
             const owo = this.threadInfo.room_type_data

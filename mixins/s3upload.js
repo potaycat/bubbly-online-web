@@ -64,19 +64,17 @@ Vue.mixin({
                         })
                 })
         },
-        batchCompressUpload(fileList, callback) {
-            let sittingOnCloud = []
-            if (!fileList.length)
+        batchCompressUpload(fileList, callback, index=0, sittingOnCloud=[]) {
+            if (index+1 > fileList.length) {
                 callback(sittingOnCloud)
-            fileList.forEach((file, index) => {
-                this.compress(file, compressed => {
-                    this.performUpload(compressed, url => {
-                        sittingOnCloud.push(url)
-                        if (fileList.length == index+1)
-                            callback(sittingOnCloud)
+            } else {
+                this.compress(fileList[index], compressed => {
+                    this.performUpload(compressed, uploadedUrl => {
+                        sittingOnCloud.push(uploadedUrl)
+                        this.batchCompressUpload(fileList, callback, index+1, sittingOnCloud)
                     })
                 })
-            })
+            }
         }
     },
 })

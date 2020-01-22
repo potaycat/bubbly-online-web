@@ -7,13 +7,11 @@
                 <section class="cmty-inf__txt-ctn">
                     <div class="cmty-inf__txt__smol">
                         {{ community.visibility }} • 
-                        <span class="hoverline" style="color:gray;text-transform:none" @click="toCmtyMembers">
+                        <span class="hoverline cmty-inf__mem-ctn" @click="toCmtyMembers">
                             <strong>{{community.total_members}}</strong> members
                         </span>
                     </div>
-                    <div class="cmty-inf__name">
-                        {{ community.name }}
-                    </div>
+                    <div class="cmty-inf__name">{{ community.name }}</div>
                     <div class="cmty-inf__moto">{{ community.moto }}</div>
                     <div v-if="isBanned">You are banned from this community</div>
                     <div v-else class="cmty-inf__actions">
@@ -130,6 +128,10 @@ export default {
     /* text-align: right; */
     margin: -27px 0 7px 105px;
     font-size: 14px;
+}
+.cmty-inf__mem-ctn {
+    text-transform: none;
+    color: var(--primary-color);
 }
 .cmty-info .cmty-inf__name {
     margin: 5px 0 2px;
