@@ -65,7 +65,7 @@ module.exports = {
   pwa: {
     workbox: {
       importScripts: [
-          './offlineWorker.js'
+        // './someWorker.js'
       ],
       runtimeCaching: [
         {
@@ -85,6 +85,7 @@ module.exports = {
     },
     manifest: {
       name: 'Bubbly',
+      short_name: "Bubbly",
       lang: 'en',
       categories: ["social", "chat"]
     }

@@ -91,6 +91,9 @@ export default {
         },
         copyUrl() {
             navigator.clipboard.writeText(`${window.location.origin}/communities/${this.community.id}`)
+            .then(() => {
+                this.$store.dispatch('cpntCtrl/toast/toastAlert', {message: "Copied to clipboard"})
+            })
         }
     }
 };

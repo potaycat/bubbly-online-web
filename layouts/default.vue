@@ -13,17 +13,19 @@
             <Nuxt class="layout__content" keep-alive />
         </transition>
         <SideBar v-if="wideEnough" />
-        <InputDiag />
+        
+        <InputDiag/><Toast/>
     </div>
 </template>
 
 <script>
-// I leave init codes here
 import TopLvlNavigator from "@/components/layout/bars/TopLvlNavigator"
 import SideBar from "@/components/layout/sideBar/"
 import InputDiag from '@/components/misc/InputDiagGX'
+import Toast from '@/components/misc/Toast'
 export default {
-    components: { TopLvlNavigator, SideBar, InputDiag },
+    components: { TopLvlNavigator, SideBar,
+        InputDiag, Toast },
     data:() => ({
         transitionName: null,
 

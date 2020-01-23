@@ -45,11 +45,21 @@ export const reactAdd = {
                 .then(res => {
                     this.$set(this.post, 'reactions', res.data.reactions)
                 })
-                .catch((error) => {
+                .catch(err => {
                     this.post.my_react = fallBack
-                    this.$store.dispatch("reactionx/getCmtyEmotes", this.post.allocated_to.id)
-                    // console.error("CAUGHT: "+error)
-                    this.$store.dispatch("auth/logInToDoThat")
+                    const code = err.response.status
+                    if (code == 403) {
+                        this.$store.dispatch("cpntCtrl/inputDiag/openDiag", {
+                            alert: true,
+                            title: "You must join the community first",
+                        })
+                    } else if (code == 400) {
+                        this.$store.dispatch("reactionx/getCmtyEmotes",
+                            (this.post.allocated_to||this.community).id
+                        )
+                    } else if (code == 401) {
+                        this.$store.dispatch("auth/logInToDoThat")
+                    }
                 })
             this.closeEmoteSelector()
         },

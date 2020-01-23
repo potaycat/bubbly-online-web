@@ -74,21 +74,24 @@ export default {
         }
     },
     methods: {
+        toast(msg) {
+            this.$store.dispatch('cpntCtrl/toast/toastAlert', {message: msg})
+        },
         onDropDownPick() {
             this.$store.commit('appBar/BURGER_STATE', false)
         },
         onUnfollowHandle() {this.$emit('unfollowed')},
         onPerformFollow() {this.$emit('followed')},
         onFollowFailHandle(e) {this.$emit('unfollowed')},
-        onBlockHandle() {this.$emit('blocked')},
+        onBlockHandle() {
+            this.$emit('blocked')
+            this.toast(`Blocked ${this.profile.alias}`)
+        },
         onUnblockHandle() {this.$emit('unblocked')},
 
         copyUserUrl() {
             navigator.clipboard.writeText(`${window.location.origin}/user/${this.profile.username}`)
-                .then()
-                .catch(err => {
-                    console.error('CATCHED: ', err);
-                })
+            .then(() => { this.toast("Copied to clipboard") })
         },
         viewFollowings() {
             this.$router.push(`/user/${this.profile.username}/circles?get=followings`)

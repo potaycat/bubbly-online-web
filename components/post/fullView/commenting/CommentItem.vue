@@ -87,6 +87,9 @@ export default {
         },
         copyLink() {
             navigator.clipboard.writeText(`${window.location.origin}/comment/${this.comment.id}`)
+            .then(() => {
+                this.$store.dispatch('cpntCtrl/toast/toastAlert', {message: "Copied to clipboard"})
+            })
         }
     }
 }

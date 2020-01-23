@@ -84,6 +84,9 @@ export default {
     methods: {
         copyInviteLink() {
             navigator.clipboard.writeText(this.inviteUrl)
+            .then(() => {
+                this.$store.dispatch('cpntCtrl/toast/toastAlert', {message: "Copied to clipboard"})
+            })
         },
         onCoverChange() {
             const file = this.$refs.cover_input.files[0]

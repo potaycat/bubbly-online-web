@@ -80,11 +80,9 @@ export default {
         rePost() { this.$router.push(`/post/compose?init=${this.postLink}`) },
         copyURL() {
             navigator.clipboard.writeText(this.postLink)
-                .then(() => {
-                })
-                .catch(err => {
-                    console.error('CATCHED: ', err);
-                })
+            .then(() => {
+                this.$store.dispatch('cpntCtrl/toast/toastAlert', {message: "Copied to clipboard"})
+            })
         }
     },
 }

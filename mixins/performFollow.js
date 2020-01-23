@@ -46,25 +46,22 @@ export const performBlock = {
     mixins: [inputDiag],
     methods: {
         confirmBlock() {
-            this.openDiag = {
+            this.$store.dispatch("cpntCtrl/inputDiag/openDiag", {
                 title: `Block ${this.profile.alias}?`,
                 description: "They will no longer be able to interact with you on this site. Private chat will also be deleted",
-                hndlFun: this.performBlock
-            }
-        },
-        onPerformBlock() {
-            // console.log("Perform blocking...")
-        },
-        performBlock() {
-            this.onPerformBlock()
-            this.$axios.post(
-                `circles/block/${this.profile.username}`, null,
-                this.$store.state.auth.head
-            )
+            })
+            .then(() => {
+                this.onPerformBlock()
+                this.$axios.post(
+                    `circles/block/${this.profile.username}`, null,
+                    this.$store.state.auth.head
+                )
                 .then(res => {
                     this.onBlockHandle(res)
                 })
+            })
         },
+        onPerformBlock() { /*console.log("Perform blocking...")*/ },
         onBlockHandle() {console.log("Blocked")},
 
 
@@ -77,7 +74,7 @@ export const performBlock = {
                     this.onUnblockHandle(res)
                 })
         },
-        onUnblockHandle() {console.log("Unlocked")},
+        onUnblockHandle() {console.log("Unblocked")},
     },
 }
 
