@@ -22,6 +22,10 @@ export default {
         )
             .then(res => {
                 this.profile = res.data
+                if (this.isSelf)
+                    this.$store.commit('auth/STORE_AUTH_USR', {
+                        ...this.$store.state.auth.my_profile, ...res.data
+                    })
             })
             .catch(error => {
                 this.$router.replace('/auth/register')

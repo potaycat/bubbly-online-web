@@ -13,6 +13,6 @@ export const actions = {
         commit('TOAST', payload.message)
         setTimeout(() => {
             commit('TOAST', null)
-        }, payload.timeOut || 2500)
+        }, payload.timeOut || 3000)
     },
 }

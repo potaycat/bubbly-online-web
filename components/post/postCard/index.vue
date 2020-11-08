@@ -22,7 +22,7 @@
         <section v-else-if="post.author" class="p-info__author-only">
             <img class="pfp lift" :src="post.author.profile_pic" @click="toAuthor"/>
             <div class="p-info__txt-ctn">
-                <p class="p-info__alias glow" :style="'color:#'+post.author.fave_color" @click="toAuthor"
+                <p class="p-info__alias hoverline" :style="'color:#'+post.author.fave_color" @click="toAuthor"
                     >{{ post.author.alias }}</p>
                 <div class="p-info__timestmp">{{ post.timestamp|timeAgo }}</div>
             </div>

@@ -81,6 +81,7 @@ module.exports = {
       mobileApp: true,
       mobileAppIOS: true,
       name: 'Bubbly',
+      description: "A social networking platform",
       // lang: 
     },
     manifest: {

@@ -38,11 +38,6 @@ export default {
     },
     mixins: [tabs],
     props: ['profile'],
-    created() {
-        if (this.isSelf) this.$store.commit('auth/STORE_AUTH_USR', {
-            ...this.$store.state.auth.my_profile, ...this.profile 
-        })
-    },
     mounted() {
         const scroll = this.$refs.feed
         scroll.addEventListener('scroll', evt => {

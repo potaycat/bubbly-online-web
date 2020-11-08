@@ -1,7 +1,7 @@
 <template>
 <transition appear name="fade">
     <div v-if="message" class="toast-ctn total_darkness no-bg is-fixed">
-        <p class="toast-msg">{{ message }}</p>
+        <p class="toast-msg box-shadow-4">{{ message }}</p>
     </div>
 </transition>
 </template>
